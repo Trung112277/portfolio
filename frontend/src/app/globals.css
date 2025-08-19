@@ -261,4 +261,18 @@
       0 0 30px rgba(var(--glow-color-rgb), 0.2),
       inset 0 0 15px rgba(var(--glow-color-rgb), 0.2);
   }
+
+  @keyframes aurora {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .animate-aurora {
+    animation-name: aurora;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-aurora { animation: none; }
+  }
 }
