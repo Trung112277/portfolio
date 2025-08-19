@@ -1,6 +1,9 @@
 import { FloatingButton } from "@/components/button/floating-button";
+import Intro from "@/components/common/intro";
 import { FrontendGlowBow } from "@/components/feature/glow-bow/frontend-glow-bow";
+import TimelineList from "@/components/feature/timeline/timeline-list";
 import { MainHeader } from "@/components/heading/main-header";
+import { Title } from "@/components/heading/title";
 
 export default function Home() {
   return (
@@ -25,6 +28,27 @@ export default function Home() {
           <FloatingButton color="#4ecdc4" to="#tech">
             Tech
           </FloatingButton>
+        </div>
+      </section>
+      <section id="about" className="flex items-center relative">
+        <div className="top-0 bottom-0 sticky w-1/2 h-full p-5">
+          <div className="flex flex-col mt-20 items-center justify-center h-full">
+            <Title primary="about" secondary="me" />
+          </div>
+        </div>
+        <div className="w-1/2 p-5 flex flex-col gap-12">
+          <Intro />
+          <TimelineList />
+        </div>
+      </section>
+      <section id="tech" className="flex items-center relative">
+        <div className="w-1/2 p-5">
+          sadas
+        </div>
+        <div className="top-0 bottom-0 sticky w-1/2 h-full p-5">
+          <div className="flex flex-col mt-20 items-center justify-center h-full">
+            <Title primary="tech" secondary="set" />
+          </div>
         </div>
       </section>
     </main>

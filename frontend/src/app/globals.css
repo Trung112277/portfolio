@@ -111,17 +111,37 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+
 @layer base {
   * {
-    @apply border-border outline-ring/50 cursor-none;
+    @apply border-border outline-ring/50 cursor-none scroll-smooth;
   }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-open-sans), system-ui, sans-serif;
   }
+  strong {
+    @apply text-primary;
+  }
 }
 
 @layer utilities {
+  /* animation */
+  @keyframes floating {
+   0%, 100% {
+      transform: translateY(0px);
+   }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes aurora {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
   /* Custom Cursor */
   .custom-cursor {
     position: fixed;
@@ -167,14 +187,7 @@
     animation: floating 3s ease-in-out infinite;
   }
 
-  @keyframes floating {
-    0%, 100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
+  
 
   .floating-button::before {
     content: '';
@@ -262,11 +275,7 @@
       inset 0 0 15px rgba(var(--glow-color-rgb), 0.2);
   }
 
-  @keyframes aurora {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
+  
   .animate-aurora {
     animation-name: aurora;
     animation-timing-function: ease-in-out;
@@ -275,4 +284,31 @@
   @media (prefers-reduced-motion: reduce) {
     .animate-aurora { animation: none; }
   }
+  .text-fill-transparent {
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-width: 3px;
+    -webkit-text-stroke-color: var(--primary);
+  }
+
+  .timeline-item::before {
+    position: absolute;
+    content: "";
+    top: 6px;
+    left: -11px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    background-color: #000;
+    z-index: 99;
+}
+.timeline::after {
+  position: absolute;
+  content: "";
+  top: 60px;
+  left: 35px;
+  width: 2px;
+  height: calc(100% - 60px);
+  background-color: var(--primary);
+}
 }

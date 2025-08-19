@@ -14,7 +14,7 @@ export function FloatingButton({
   
   return (
     <Link 
-      href={`${to}`} 
+      href={to} 
       className="floating-button"
       style={{
         '--button-color': color,
