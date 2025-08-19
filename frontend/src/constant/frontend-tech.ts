@@ -1,32 +1,41 @@
-export const FRONTEND_TECH_STACK = [
+interface TechStack {
+  id: string;
+  name: string;
+  color: string;
+  logo: string;
+  description: string;
+  category: string;
+}
+
+export const FRONTEND_TECH_STACK: TechStack[] = [
     {
         id: 'html',
         name: 'HTML',
-        color: '#8b5cf6',
-        logo: '/frontend-tech-tech/html-logo.png',
+        color: '#e34f26',
+        logo: '/frontend-tech/html-logo.png',
         description: 'Hypertext Markup Language',
         category: 'frontend'
     },
     {
         id: 'css',
         name: 'CSS',
-        color: '#1fc3ff',
-        logo: '/frontend-tech-tech/css3-logo.png',
+        color: '#1572b6',
+        logo: '/frontend-tech/css3-logo.png',
         description: 'Cascading Style Sheets',
         category: 'frontend'
     },
     {
         id: 'javascript',
         name: 'JavaScript',
-        color: '#ff6b6b',
-        logo: '/frontend-tech-tech/javascript-logo.png',
+        color: '#f7df1e',
+        logo: '/frontend-tech/javascript-logo.png',
         description: 'JavaScript',
         category: 'frontend'
     },
     {
         id: 'typescript',
         name: 'TypeScript',
-        color: '#00ff00',
+        color: '#3178c6',
         logo: '/frontend-tech/typescript-logo.png',
         description: 'TypeScript',
         category: 'frontend'
@@ -34,7 +43,7 @@ export const FRONTEND_TECH_STACK = [
     {
         id: 'react',
         name: 'React',
-        color: '#00ff00',
+        color: '#61dafb',
         logo: '/frontend-tech/react-logo.png',
         description: 'React',
         category: 'frontend'
@@ -42,7 +51,7 @@ export const FRONTEND_TECH_STACK = [
     {
         id: 'nextjs',
         name: 'Next.js',
-        color: '#00ff00',
+        color: '#000000',
         logo: '/frontend-tech/nextjs-logo.png',
         description: 'Next.js',
         category: 'frontend'
@@ -50,7 +59,7 @@ export const FRONTEND_TECH_STACK = [
     {
         id: 'tailwindcss',
         name: 'Tailwind CSS',
-        color: '#00ff00',
+        color: '#06b6d4',
         logo: '/frontend-tech/tailwindcss-logo.png',
         description: 'Tailwind CSS',
         category: 'frontend'
@@ -58,7 +67,7 @@ export const FRONTEND_TECH_STACK = [
     {
         id: 'redux',
         name: 'Redux',
-        color: '#00ff00',
+        color: '#764abc',
         logo: '/frontend-tech/redux-logo.png',
         description: 'Redux',
         category: 'frontend'
@@ -67,7 +76,7 @@ export const FRONTEND_TECH_STACK = [
     {
         id: 'shadcn',
         name: 'Shadcn',
-        color: '#00ff00',
+        color: '#000000',
         logo: '/frontend-tech/shadcn-logo.png',
         description: 'Shadcn',
         category: 'frontend'

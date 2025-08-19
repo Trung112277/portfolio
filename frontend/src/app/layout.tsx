@@ -10,7 +10,27 @@ const openSans = Open_Sans({
 
 export const metadata: Metadata = {
   title: "Nhat Trung | Portfolio",
-  description: "Nhat Trung's portfolio",
+  description: "Nhat Trung's portfolio showcasing frontend development skills and projects",
+  keywords: ["portfolio", "frontend", "developer", "react", "nextjs", "typescript"],
+  authors: [{ name: "Nhat Trung" }],
+  viewport: "width=device-width, initial-scale=1",
+  icons: { 
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
+  manifest: '/site.webmanifest',
+  openGraph: {
+    title: "Nhat Trung | Portfolio",
+    description: "Nhat Trung's portfolio showcasing frontend development skills and projects",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nhat Trung | Portfolio",
+    description: "Nhat Trung's portfolio showcasing frontend development skills and projects",
+  },
 };
 
 export default function RootLayout({

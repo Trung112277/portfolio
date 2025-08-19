@@ -3,21 +3,25 @@ import { FrontendGlowBow } from "@/components/feature/glow-bow/frontend-glow-bow
 
 export default function Home() {
   return (
-   <div className="container mx-auto px-4">
-    <section className="flex justify-center items-center h-screen">
-      <FloatingButton color="#1fc3ff" to="#">
-        About me
-      </FloatingButton>
-      <FloatingButton color="#ff0000" to="#">
-        Contact me
-      </FloatingButton>
-      <FloatingButton color="#00ff00" to="#">
-        Projects
-      </FloatingButton>
-    </section>
-    <section className="flex justify-center items-center h-screen gap-8">
-      <FrontendGlowBow />
-    </section>
-   </div>
+    <main className="container mx-auto px-4">
+      <section className="flex justify-center items-center h-screen gap-6">
+        <FloatingButton color="#1fc3ff" to="#about">
+          About me
+        </FloatingButton>
+        <FloatingButton color="#ff6b6b" to="#contact">
+          Contact me
+        </FloatingButton>
+        <FloatingButton color="#4ecdc4" to="#projects">
+          Projects
+        </FloatingButton>
+      </section>
+      
+      <section id="tech-stack" className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold mb-8 text-foreground">Frontend Technologies</h2>
+          <FrontendGlowBow />
+        </div>
+      </section>
+    </main>
   );
 }
