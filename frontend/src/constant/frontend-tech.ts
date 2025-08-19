@@ -1,13 +1,6 @@
-interface TechStack {
-  id: string;
-  name: string;
-  color: string;
-  logo: string;
-  description: string;
-  category: string;
-}
+import { BaseTechStack } from "@/types/tech-stack";
 
-export const FRONTEND_TECH_STACK: TechStack[] = [
+export const FRONTEND_TECH_STACK: BaseTechStack[] = [
     {
         id: 'html',
         name: 'HTML',

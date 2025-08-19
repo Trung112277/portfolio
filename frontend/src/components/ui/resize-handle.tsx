@@ -1,6 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
+import { Fugaz_One } from "next/font/google";
+
+const fugazOne = Fugaz_One({
+  weight: "400",
+  subsets: ["latin"],
+});
 
 interface SelectionHandleProps {
   position: string;
@@ -82,7 +88,7 @@ export const FlipWords = ({
 
   return (
     <div
-      className={`inline-block align-middle overflow-hidden w-full min-w-[330px] leading-none ${className}`}
+      className={`inline-block align-middle overflow-hidden w-full min-w-[420px] leading-none ${className}`}
     >
       <AnimatePresence mode="wait">
         <motion.div
@@ -117,15 +123,7 @@ const ResizeHandle = () => {
 
   return (
     <>
-      <style>
-        {`
-          @import url('https://fonts.googleapis.com/css2?family=Phudu:wght@700&display=swap');
-          .font-phudu {
-            font-family: 'Phudu', cursive;
-          }
-        `}
-      </style>
-      <div className="flex flex-col items-center justify-center font-sans p-4 text-center overflow-hidden">
+      <div className={`flex flex-col items-center justify-center font-sans  text-center overflow-hidden italic ${fugazOne.className}`}>
         <motion.div
           layout
           transition={{ type: "spring", stiffness: 400, damping: 30 }}

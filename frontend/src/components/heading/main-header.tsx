@@ -1,10 +1,16 @@
+import { Fugaz_One } from "next/font/google";
 import { AuroraText } from "../ui/aura-text";
 import { BouncyText } from "../ui/bouncy-text";
 import ResizeHandle from "../ui/resize-handle";
 
+const fugazOne = Fugaz_One({
+  weight: "400",
+  subsets: ["latin"],
+});
+
 export function MainHeader() {
   return (
-    <h1 className="text-4xl font-bold text-center inline-block italic">
+    <h1 className={`text-4xl font-bold text-center inline-block italic ${fugazOne.className}`}>
       <BouncyText text="Hello, I'm" />
       <AuroraText
         speed={1}
