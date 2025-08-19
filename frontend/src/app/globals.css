@@ -113,7 +113,7 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50 cursor-none;
   }
   body {
     @apply bg-background text-foreground;
@@ -122,8 +122,34 @@
 }
 
 @layer utilities {
+  /* Custom Cursor */
+  .custom-cursor {
+    position: fixed;
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 0 20px var(--primary);
+    transition: none; 
+    will-change: transform; 
+  }
+
+  /* Trail dots */
+  .cursor-trail {
+    position: fixed;
+    width: 24px; 
+    height: 24px; 
+    background: var(--primary);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: none; 
+  }
+
   .floating-button {
-    @apply rounded-2xl p-2 cursor-pointer w-[150px] h-[50px] flex justify-center items-center text-xl font-bold italic bg-transparent shadow-lg;
+    @apply rounded-2xl p-2  w-[150px] h-[50px] flex justify-center items-center text-xl font-bold italic bg-transparent shadow-lg;
     --button-color: #1fc3ff;
     --button-color-rgb: 31, 195, 255;
     background: linear-gradient(135deg, rgba(var(--button-color-rgb), 0.1) 0%, rgba(var(--button-color-rgb), 0.05) 100%);
@@ -186,7 +212,7 @@
   }
 
   .glow-box {
-    @apply rounded-2xl p-4 cursor-pointer w-[80px] h-[80px] flex justify-center items-center text-2xl font-bold bg-transparent shadow-lg;
+    @apply rounded-2xl p-4  w-[80px] h-[80px] flex justify-center items-center text-2xl font-bold bg-transparent shadow-lg;
     --glow-color: var(--data-color, #8b5cf6);
     --glow-color-rgb: var(--data-color-rgb, 139, 92, 246);
     background: linear-gradient(135deg, rgba(var(--glow-color-rgb), 0.1) 0%, rgba(var(--glow-color-rgb), 0.05) 100%);

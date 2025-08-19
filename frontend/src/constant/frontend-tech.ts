@@ -50,8 +50,8 @@ export const FRONTEND_TECH_STACK: TechStack[] = [
     },
     {
         id: 'nextjs',
-        name: 'Next.js',
-        color: '#000000',
+        name: 'Next.js',    
+        color: '#444444',
         logo: '/frontend-tech/nextjs-logo.png',
         description: 'Next.js',
         category: 'frontend'
