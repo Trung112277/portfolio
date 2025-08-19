@@ -11,7 +11,7 @@ export function GlowBoxList({ techStack }: GlowBoxListProps) {
     <ul className="flex gap-4 flex-wrap justify-center">
       {techStack.map((item) => (
         <GlowBoxItem key={item.id} color={item.color} content={item.description} >
-            <Image src={item.logo} alt={item.name} width={50} height={50} />
+            <Image src={item.logo} loading="lazy"  alt={item.name} width={50} height={50} />
         </GlowBoxItem>
       ))}
     </ul>

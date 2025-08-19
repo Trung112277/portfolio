@@ -7,17 +7,24 @@ export default function Home() {
     <main className="container mx-auto px-4">
       <section className="flex flex-col justify-between items-center h-[900px] relative">
         <div className="flex-1" />
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1 flex items-center justify-center z-10">
           <MainHeader />
         </div>
         <div className="flex-1 flex items-end justify-center pb-8">
           <FrontendGlowBow />
         </div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <span className="w-[300px] h-[300px] bg-primary/40 rounded-full block blur-3xl"></span>
+        </div>
         <div className="absolute top-[100px] left-0">
-          <FloatingButton color="#1fc3ff" to="#about">About me</FloatingButton>
+          <FloatingButton color="#1fc3ff" to="#about">
+            About me
+          </FloatingButton>
         </div>
         <div className="absolute bottom-[100px] right-0">
-          <FloatingButton color="#4ecdc4" to="#tech">Tech</FloatingButton>
+          <FloatingButton color="#4ecdc4" to="#tech">
+            Tech
+          </FloatingButton>
         </div>
       </section>
     </main>
