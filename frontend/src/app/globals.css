@@ -302,13 +302,13 @@
     background-color: #000;
     z-index: 99;
 }
-.timeline::after {
-  position: absolute;
-  content: "";
-  top: 60px;
-  left: 35px;
-  width: 2px;
-  height: calc(100% - 60px);
-  background-color: var(--primary);
-}
+  .timeline::after {
+    position: absolute;
+    content: "";
+    top: 60px;
+    left: 35px;
+    width: 2px;
+    height: calc(100% - 60px);
+    background-color: var(--primary);
+  }
 }

@@ -1,10 +1,10 @@
-import Timeline from "./timeline";
+import TimelineItem from "./timeline-item";
 
 export default function TimelineList() {
   return <div className="flex flex-col gap-10">
-    <Timeline />
-    <Timeline />
-    <Timeline />
-    <Timeline />
+    <TimelineItem />
+    <TimelineItem />
+    <TimelineItem />
+    <TimelineItem />
   </div>;
 }
