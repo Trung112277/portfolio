@@ -1,7 +1,10 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
+
+import { memo } from "react";
+import { motion } from "framer-motion";
 import { Fugaz_One } from "next/font/google";
+import { FlipWords } from "./flip-words";
+import { DEVELOPER_ROLES } from "@/constant/developer-roles";
 
 const fugazOne = Fugaz_One({
   weight: "400",
@@ -12,137 +15,35 @@ interface SelectionHandleProps {
   position: string;
 }
 
-const SelectionHandle = ({ position }: SelectionHandleProps) => {
+const SelectionHandle = memo(({ position }: SelectionHandleProps) => {
+  return <div className={`absolute w-3 h-3 ${position}`} />;
+});
+
+SelectionHandle.displayName = "SelectionHandle";
+
+const ResizeHandle = memo(() => {
   return (
-    <div
-      className={` ${position}`}
-    ></div>
-  );
-};
+    <div className={`flex flex-col items-center justify-center font-sans text-center overflow-hidden italic ${fugazOne.className}`}>
+      <motion.div
+        layout
+        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        className="relative inline-block my-2"
+      >
+        <div className="font-phudu text-3xl  md:text-5xl lg:text-7xl font-bold tracking-tight text-white dark:text-gray-200 py-1 px-4 flex items-center justify-center uppercase relative">
+          <FlipWords words={DEVELOPER_ROLES} duration={3000} />
+          <span className="ml-2">DEVELOPER</span>
+        </div>
 
-interface FlipWordsProps {
-  words: string[];
-  duration?: number;
-  className?: string;
-}
-
-export const FlipWords = ({
-  words,
-  duration = 3000,
-  className,
-}: FlipWordsProps) => {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setIndex((prevIndex) => (prevIndex + 1) % words.length);
-    }, duration);
-
-    return () => clearInterval(intervalId);
-  }, [words, duration]);
-
-  const wordContainerVariants: Variants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.08,
-      },
-    },
-    exit: {
-      transition: {
-        staggerChildren: 0.05,
-        staggerDirection: -1,
-      },
-    },
-  };
-
-  const letterVariants: Variants = {
-    hidden: {
-      opacity: 0,
-      y: 10,
-      filter: "blur(8px)",
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      transition: {
-        type: "tween" as const,
-        ease: [0.25, 0.1, 0.25, 1],
-        duration: 0.4,
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: -10,
-      filter: "blur(8px)",
-      transition: {
-        type: "tween" as const,
-        ease: [0.4, 0, 0.6, 1],
-        duration: 0.4,
-      },
-    },
-  };
-
-  const currentWord = words[index];
-
-  return (
-    <div
-      className={`inline-block align-middle overflow-hidden w-full min-w-[420px] leading-none ${className}`}
-    >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentWord}
-          variants={wordContainerVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          className="inline-block whitespace-nowrap"
-        >
-          {currentWord.split("").map((char, i) => (
-            <motion.span
-              key={`${char}-${i}`}
-              variants={letterVariants}
-              className="inline-block"
-            >
-              {char}
-            </motion.span>
-          ))}
-        </motion.div>
-      </AnimatePresence>
+        {/* Corner handles */}
+        <SelectionHandle position="-top-2 -left-2" />
+        <SelectionHandle position="-top-2 -right-2" />
+        <SelectionHandle position="-bottom-2 -left-2" />
+        <SelectionHandle position="-bottom-2 -right-2" />
+      </motion.div>
     </div>
   );
-};
+});
 
-const ResizeHandle = () => {
-  const phrases = [
-    "FRONTEND",
-    "BACKEND",
-    "FULLSTACK",
-  ];
-
-  return (
-    <>
-      <div className={`flex flex-col items-center justify-center font-sans  text-center overflow-hidden italic ${fugazOne.className}`}>
-        <motion.div
-          layout
-          transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          className="relative inline-block my-2"
-        >
-          <div className="font-phudu text-5xl md:text-7xl font-bold tracking-tight text-white dark:text-gray-200 py-1 px-4 flex items-center justify-center uppercase relative">
-            <FlipWords words={phrases} duration={3000} /> DEVELOPER
-          </div>
-
-          <div className="absolute inset-0 rounded-lg pointer-events-none"></div>
-
-          <SelectionHandle position="-top-2 -left-2" />
-          <SelectionHandle position="-top-2 -right-2" />
-          <SelectionHandle position="-bottom-2 -left-2" />
-          <SelectionHandle position="-bottom-2 -right-2" />
-        </motion.div>
-      </div>
-    </>
-  );
-};
+ResizeHandle.displayName = "ResizeHandle";
 
 export default ResizeHandle;

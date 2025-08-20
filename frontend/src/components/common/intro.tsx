@@ -1,6 +1,6 @@
 export default function Intro() {
   return (
-    <div className="text-center text-xl py-10 px-15 bg-primary/10 rounded-lg flex flex-col gap-3">
+    <div className="text-center text-xl py-5 md:py-10 px-5 md:px-15 bg-primary/10 rounded-lg flex flex-col gap-3">
       <p>👋 Hey, I&apos;m Nhat Trung, a Frontend Developer.</p>
       <p>
         I&apos;ve been working with <strong>React</strong> and <strong>Node</strong> for the past one year,

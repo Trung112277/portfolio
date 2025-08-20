@@ -12,10 +12,12 @@ interface TrailDot {
   createdAt: number;
 }
 
+import { UI_CONSTANTS } from "@/constant/theme-colors";
+
 // Constants
-const TRAIL_DURATION = 600;
-const MAX_TRAIL_DOTS = 50;
-const FADE_THRESHOLD = 0.01;
+const TRAIL_DURATION = UI_CONSTANTS.trailDuration;
+const MAX_TRAIL_DOTS = UI_CONSTANTS.maxTrailDots;
+const FADE_THRESHOLD = UI_CONSTANTS.fadeThreshold;
 
 export default function TrailDots() {
   const [trailDots, setTrailDots] = useState<TrailDot[]>([]);

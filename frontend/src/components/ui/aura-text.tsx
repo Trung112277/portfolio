@@ -1,46 +1,45 @@
 "use client";
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 
 interface AuroraTextProps {
   children: React.ReactNode;
   className?: string;
-  colors?: string[];
+  colors?: readonly string[] | string[];
   speed?: number;
 }
 
-export const AuroraText = memo(
-  ({
-    children,
-    className = "",
+export const AuroraText = memo(({
+  children,
+  className = "",
+  colors = ["#FF0080", "#7928CA", "#0070F3", "#38bdf8"],
+  speed = 1,
+}: AuroraTextProps) => {
+  // Memoize gradient style để tránh tính toán lại khi re-render
+  const gradientStyle = useMemo(() => ({
+    backgroundImage: `linear-gradient(135deg, ${colors.join(", ")}, ${colors[0]})`,
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    animationDuration: `${10 / speed}s`,
+  }), [colors, speed]);
 
-    colors = ["#FF0080", "#7928CA", "#0070F3", "#38bdf8"],
+  // Memoize class names
+  const wrapperClassName = useMemo(() => 
+    `relative inline-block ${className}`,
+    [className]
+  );
 
-    speed = 1,
-  }: AuroraTextProps) => {
-    const gradientStyle = {
-      backgroundImage: `linear-gradient(135deg, ${colors.join(", ")}, ${
-        colors[0]
-      })`,
-      WebkitBackgroundClip: "text",
-      WebkitTextFillColor: "transparent",
-
-      animationDuration: `${10 / speed}s`,
-    };
-
-    return (
-      <span className={`relative inline-block ${className}`}>
-        <span className="sr-only">{children}</span>
-
-        <span
-          className="relative animate-aurora bg-[length:200%_auto] bg-clip-text text-transparent"
-          style={gradientStyle}
-          aria-hidden="true"
-        >
-          {children}
-        </span>
+  return (
+    <span className={wrapperClassName}>
+      <span className="sr-only">{children}</span>
+      <span
+        className="relative animate-aurora bg-[length:200%_auto] bg-clip-text text-transparent"
+        style={gradientStyle}
+        aria-hidden="true"
+      >
+        {children}
       </span>
-    );
-  }
-);
+    </span>
+  );
+});
 
 AuroraText.displayName = "AuroraText";

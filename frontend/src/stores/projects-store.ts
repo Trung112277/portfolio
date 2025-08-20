@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Project } from '@/types/project';
+import { validateProject } from '@/lib/validation';
 
 export interface ProjectsState {
   // Projects data
@@ -54,6 +55,12 @@ export const useProjectsStore = create<ProjectsState>()(
       },
       
       addProject: (project) => {
+        const validation = validateProject(project);
+        if (!validation.isValid) {
+          console.error('Invalid project data:', validation.error);
+          return;
+        }
+        
         const { projects } = get();
         const newProjects = [...projects, project];
         set({ projects: newProjects });

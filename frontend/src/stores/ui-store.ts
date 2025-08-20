@@ -2,9 +2,6 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export interface UIState {
-  // Theme
-  theme: 'light' | 'dark';
-  
   // Cursor effects
   cursorEnabled: boolean;
   cursorSize: number;
@@ -19,8 +16,6 @@ export interface UIState {
   currentSection: string;
   
   // Actions
-  setTheme: (theme: 'light' | 'dark') => void;
-  toggleTheme: () => void;
   toggleCursor: () => void;
   setCursorSize: (size: number) => void;
   toggleCursorTrail: () => void;
@@ -34,7 +29,6 @@ export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
       // Initial state
-      theme: 'dark',
       cursorEnabled: true,
       cursorSize: 24,
       cursorTrailEnabled: true,
@@ -44,12 +38,6 @@ export const useUIStore = create<UIState>()(
       currentSection: 'home',
       
       // Actions
-      setTheme: (theme) => set({ theme }),
-      
-      toggleTheme: () => set((state) => ({ 
-        theme: state.theme === 'light' ? 'dark' : 'light' 
-      })),
-      
       toggleCursor: () => set((state) => ({ 
         cursorEnabled: !state.cursorEnabled 
       })),
@@ -73,7 +61,6 @@ export const useUIStore = create<UIState>()(
     {
       name: 'ui-storage',
       partialize: (state) => ({
-        theme: state.theme,
         cursorEnabled: state.cursorEnabled,
         cursorSize: state.cursorSize,
         cursorTrailEnabled: state.cursorTrailEnabled,

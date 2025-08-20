@@ -1,3 +1,5 @@
+import type { ResponsivePosition, Position } from "@/lib/position-utils";
+
 export interface Project {
   id: string;
   title: string;
@@ -7,24 +9,12 @@ export interface Project {
   color?: string;
   category: string; // Thêm category field
   isActive: boolean;
-  position: {
-    top?: string;
-    left?: string;
-    right?: string;
-    bottom?: string;
-    transform?: string;
-  };
+  position: ResponsivePosition;
 }
 
 export interface ProjectPosition {
   id: string;
-  position: {
-    top?: string;
-    left?: string;
-    right?: string;
-    bottom?: string;
-    transform?: string;
-  };
+  position: Position;
   isActive: boolean;
 }
 

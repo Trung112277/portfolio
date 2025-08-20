@@ -9,7 +9,10 @@ export const PROJECTS_DATA: Project[] = [
     color: "#1fc3ff",
     category: "web-app",
     isActive: true,
-    position: { top: "1/6", left: "1/6" }
+    position: {
+      base: { top: "1/6", left: "1/12" },
+      sm: { top: "1/6", left: "1/6" }
+    }
   },
   {
     id: "project-2",
@@ -19,7 +22,10 @@ export const PROJECTS_DATA: Project[] = [
     color: "#4ecdc4",
     category: "mobile-app",
     isActive: true,
-    position: { top: "1/6", right: "1/6" }
+    position: {
+      base: { top: "1/6", right: "1/12" },
+      sm: { top: "1/6", right: "1/6" }
+    }
   },
   {
     id: "project-3",
@@ -29,7 +35,10 @@ export const PROJECTS_DATA: Project[] = [
     color: "#ff6b6b",
     category: "ai-ml",
     isActive: false, // Test empty slot
-    position: { bottom: "1/6", left: "1/6" }
+    position: {
+      base: { bottom: "1/6", left: "1/12" },
+      sm: { bottom: "1/6", left: "1/6" }
+    }
   },
   {
     id: "project-4",
@@ -39,7 +48,10 @@ export const PROJECTS_DATA: Project[] = [
     color: "#1fc3ff",
     category: "e-commerce",
     isActive: true,
-    position: { bottom: "1/6", right: "1/6" }
+    position: {
+      base: { bottom: "1/6", right: "1/12" },
+      sm: { bottom: "1/6", right: "1/6" }
+    }
   },
   {
     id: "project-5",
@@ -49,7 +61,9 @@ export const PROJECTS_DATA: Project[] = [
     color: "#1fc3ff",
     category: "data-viz",
     isActive: true,
-    position: { top: "1/4", left: "50%", transform: "translateX(-50%)" }
+    position: {
+      base: { top: "1/4", left: "50%", transform: "translateX(-50%)" }
+    }
   },
   {
     id: "project-6",
@@ -59,7 +73,10 @@ export const PROJECTS_DATA: Project[] = [
     color: "#1fc3ff",
     category: "collaboration",
     isActive: false, // Test empty slot
-    position: { top: "50%", left: "1/6", transform: "translateY(-50%)" }
+    position: {
+      base: { top: "50%", left: "1/12", transform: "translateY(-50%)" },
+      sm: { top: "50%", left: "1/6", transform: "translateY(-50%)" }
+    }
   },
   {
     id: "project-7",
@@ -69,7 +86,10 @@ export const PROJECTS_DATA: Project[] = [
     color: "#1fc3ff",
     category: "blockchain",
     isActive: true,
-    position: { top: "50%", right: "1/6", transform: "translateY(-50%)" }
+    position: {
+      base: { top: "50%", right: "1/12", transform: "translateY(-50%)" },
+      sm: { top: "50%", right: "1/6", transform: "translateY(-50%)" }
+    }
   },
   {
     id: "project-8",
@@ -79,6 +99,8 @@ export const PROJECTS_DATA: Project[] = [
     color: "#1fc3ff",
     category: "ai-ml",
     isActive: true,
-    position: { bottom: "1/4", left: "50%", transform: "translateX(-50%)" }
+    position: {
+      base: { bottom: "1/4", left: "50%", transform: "translateX(-50%)" }
+    }
   }
 ];

@@ -161,15 +161,44 @@
   /* Custom Cursor */
   .custom-cursor {
     position: fixed;
+    top: 0;
+    left: 0;
     width: 24px;
     height: 24px;
     background: var(--primary);
     border-radius: 50%;
     pointer-events: none;
     z-index: 9999;
-    box-shadow: 0 0 20px var(--primary);
-    transition: none; 
-    will-change: transform; 
+    box-shadow: 0 0 20px rgba(31, 195, 255, 0.6), 0 0 40px rgba(31, 195, 255, 0.3);
+    backdrop-filter: blur(2px);
+    will-change: transform;
+    transition: width 0.2s ease-out, height 0.2s ease-out, box-shadow 0.2s ease-out;
+    transform-origin: center center;
+  }
+
+  .custom-cursor::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.2s ease-out;
+  }
+
+  .custom-cursor:hover,
+  .custom-cursor.hover {
+    width: 48px;
+    height: 48px;
+    box-shadow: 0 0 30px rgba(31, 195, 255, 0.8), 0 0 60px rgba(31, 195, 255, 0.4);
+  }
+
+  .custom-cursor.hover::before {
+    width: 12px;
+    height: 12px;
   }
 
   /* Trail dots */
@@ -304,29 +333,37 @@
     -webkit-text-stroke-color: var(--primary);
   }
 
-
-
   .timeline-item::before {
     position: absolute;
     content: "";
-    top: 6px;
-    left: -11px;
+    top: 50px;
+    left: -6px;
     width: 15px;
     height: 15px;
     border-radius: 50%;
     border: 2px solid var(--primary);
     background-color: #000;
     z-index: 99;
-}
+  }
+
   .timeline::after {
     position: absolute;
     content: "";
     top: 60px;
-    left: 35px;
+    left: 0;
     width: 2px;
     height: calc(100% - 60px);
     background-color: var(--primary);
   }
+  @media (min-width: 768px) {
+    .timeline::after {
+      left: 35px;
+    }
+    .timeline-item::before {
+      left: -11px;
+    }
+  }
+ 
 
 /* 3D Scene Styles */
   .scene {
@@ -395,7 +432,6 @@
   .scene canvas {
     border-radius: 12px;
   }
-
+  
 }
-
 

@@ -1,20 +1,25 @@
 
 import Link from "next/link";
+import { memo } from "react";
 import { hexToRgb } from "@/lib/utils";
 import { Tooltip, TooltipTrigger } from "@radix-ui/react-tooltip";
 import { BadgeTooltip } from "../common/badge-tooltip";
+import { FloatingButtonProps } from "@/types/components";
 
-export function LinkingFloatingButton({
+interface LinkingFloatingButtonProps extends Omit<FloatingButtonProps, 'onClick'> {
+  to: string;
+  content: string;
+  external?: boolean;
+}
+
+const LinkingFloatingButton = memo(({
   children,
   color = "#1fc3ff",
   to,
   content,
-}: {
-  children: React.ReactNode;
-  color?: string;
-  to: string;
-  content: string;
-}) {
+  external = true,
+  className = "",
+}: LinkingFloatingButtonProps) => {
   const rgbColor = hexToRgb(color);
 
   return (
@@ -23,8 +28,9 @@ export function LinkingFloatingButton({
         <TooltipTrigger>
           <Link
             href={to}
-            className="floating-button"
-            target="_blank"
+            className={`floating-button ${className}`}
+            target={external ? "_blank" : undefined}
+            rel={external ? "noopener noreferrer" : undefined}
             style={
               {
                 "--button-color": color,
@@ -39,4 +45,8 @@ export function LinkingFloatingButton({
       </Tooltip>
     </div>
   );
-}
+});
+
+LinkingFloatingButton.displayName = "LinkingFloatingButton";
+
+export { LinkingFloatingButton };

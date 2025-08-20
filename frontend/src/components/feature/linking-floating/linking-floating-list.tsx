@@ -1,102 +1,88 @@
+import { memo } from "react";
 import { LinkingFloatingButton } from "@/components/button/linking-floating-button";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { PROJECTS_DATA } from "@/data/projects";
 import { PROJECT_POSITIONS } from "@/types/project";
+import { getPositionStyles, resolveResponsivePosition, type Breakpoint } from "@/lib/position-utils";
 
-export function LinkingFloatingList() {
-  // Helper function để convert position thành CSS styles
-  const getPositionStyles = (position: { top?: string; left?: string; right?: string; bottom?: string; transform?: string }) => {
-    const styles: React.CSSProperties = {
-      position: 'absolute' as const,
-    };
+interface EmptySlotProps {
+  index: number;
+  position: React.CSSProperties;
+}
 
-    // Convert Tailwind-like values to CSS values
-    if (position.top) {
-      if (position.top.includes('/')) {
-        // Handle fractions like "2/5" -> "40%"
-        const [numerator, denominator] = position.top.split('/').map(Number);
-        styles.top = `${(numerator / denominator) * 100}%`;
-      } else {
-        styles.top = position.top;
-      }
-    }
-    
-    if (position.left) {
-      if (position.left.includes('/')) {
-        const [numerator, denominator] = position.left.split('/').map(Number);
-        styles.left = `${(numerator / denominator) * 100}%`;
-      } else {
-        styles.left = position.left;
-      }
-    }
-    
-    if (position.right) {
-      if (position.right.includes('/')) {
-        const [numerator, denominator] = position.right.split('/').map(Number);
-        styles.right = `${(numerator / denominator) * 100}%`;
-      } else {
-        styles.right = position.right;
-      }
-    }
-    
-    if (position.bottom) {
-      if (position.bottom.includes('/')) {
-        const [numerator, denominator] = position.bottom.split('/').map(Number);
-        styles.bottom = `${(numerator / denominator) * 100}%`;
-      } else {
-        styles.bottom = position.bottom;
-      }
-    }
+const EmptySlot = memo(({ index, position }: EmptySlotProps) => (
+  <div style={position} className="z-10">
+    <div className="w-[150px] h-[50px] rounded-2xl border-2 border-dashed border-gray-600 flex items-center justify-center text-gray-500 text-sm bg-gray-900/50">
+      Empty Slot {index + 1}
+    </div>
+  </div>
+));
 
-    // Handle transform property
-    if (position.transform) {
-      styles.transform = position.transform;
-    }
+EmptySlot.displayName = "EmptySlot";
 
-    return styles;
-  };
+interface ProjectSlotProps {
+  project: typeof PROJECTS_DATA[number];
+  position: React.CSSProperties;
+  positionId: string;
+}
 
+const ProjectSlot = memo(({ project, position, positionId }: ProjectSlotProps) => (
+  <div key={positionId} style={position} className="z-10">
+    <LinkingFloatingButton
+      to={project.link}
+      content={project.title}
+      color={project.color}
+    >
+      {project.title}
+    </LinkingFloatingButton>
+  </div>
+));
+
+ProjectSlot.displayName = "ProjectSlot";
+
+function useBreakpoint(): Breakpoint {
+  if (typeof window === 'undefined') return 'base';
+  const width = window.innerWidth;
+  if (width >= 1280) return 'xl';
+  if (width >= 1024) return 'lg';
+  if (width >= 768) return 'md';
+  if (width >= 640) return 'sm';
+  return 'base';
+}
+
+export const LinkingFloatingList = memo(() => {
+  const breakpoint = useBreakpoint();
   return (
     <TooltipProvider>
       <div className="relative w-full min-h-[800px]">
-        {/* Debug info */}
-       
-        
         {PROJECT_POSITIONS.map((pos, index) => {
           const project = PROJECTS_DATA[index];
+          const responsivePosition = (project?.position ?? pos.position) as import("@/lib/position-utils").ResponsivePosition;
+          const resolved = resolveResponsivePosition(responsivePosition, breakpoint);
+          const positionStyles = getPositionStyles(resolved);
           
           if (!project || !project.isActive) {
             return (
-              <div
+              <EmptySlot
                 key={pos.id}
-                style={getPositionStyles(pos.position)}
-                className="z-10"
-              >
-                <div className="w-[150px] h-[50px] rounded-2xl border-2 border-dashed border-gray-600 flex items-center justify-center text-gray-500 text-sm bg-gray-900/50">
-                  Empty Slot {index + 1}
-                </div>
-              </div>
+                index={index}
+                position={positionStyles}
+              />
             );
           }
 
-          // Render project button
           return (
-            <div
+            <ProjectSlot
               key={pos.id}
-              style={getPositionStyles(pos.position)}
-              className="z-10"
-            >
-              <LinkingFloatingButton
-                to={project.link}
-                content={project.title}
-                color={project.color}
-              >
-                {project.title}
-              </LinkingFloatingButton>
-            </div>
+              project={project}
+              position={positionStyles}
+              positionId={pos.id}
+            />
           );
         })}
       </div>
     </TooltipProvider>
   );
-}
+});
+
+LinkingFloatingList.displayName = "LinkingFloatingList";

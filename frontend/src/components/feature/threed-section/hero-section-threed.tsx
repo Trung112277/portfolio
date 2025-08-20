@@ -12,6 +12,7 @@ function HeroSectionThreed() {
     const [matcapTexture] = useMatcapTexture("CB4E88_F99AD6_F384C3_ED75B9");
     const ref = useRef<THREE.Mesh>(null);
     const [primaryColor, setPrimaryColor] = useState("#fbbf24");
+    const [textSize, setTextSize] = useState(1);
   
     // Get primary color from CSS
     useEffect(() => {
@@ -19,6 +20,15 @@ function HeroSectionThreed() {
       const computedStyle = getComputedStyle(root);
       const cssPrimaryColor = computedStyle.getPropertyValue('--primary') || '#1fc3ff';
       setPrimaryColor(cssPrimaryColor);
+    }, []);
+
+    // Responsive size for mobile
+    useEffect(() => {
+      const mediaQuery = window.matchMedia('(max-width: 640px)');
+      const updateSize = () => setTextSize(mediaQuery.matches ? 0.6 : 1);
+      updateSize();
+      mediaQuery.addEventListener('change', updateSize);
+      return () => mediaQuery.removeEventListener('change', updateSize);
     }, []);
   
     return (
@@ -28,7 +38,7 @@ function HeroSectionThreed() {
             <Text3D
               position={[0, 0, 0]}
               ref={ref}
-              size={1}
+              size={textSize}
               font={"/fonts/helvetiker_regular.typeface.json"}
               curveSegments={24}
               bevelSegments={1}

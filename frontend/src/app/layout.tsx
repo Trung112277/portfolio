@@ -4,6 +4,7 @@ import "./globals.css";
 import { CustomCursor } from "@/components/feature/cursor/custom-cursor";
 import { ScrollToTop } from "@/components/common/scroll-to-top";
 import { StoreProvider } from "@/components/providers/store-provider";
+import ErrorBoundary from "@/components/common/error-boundary";
 
 const openSans = Open_Sans({
   subsets: ["latin"],
@@ -54,11 +55,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${openSans.variable} font-open-sans antialiased`}>
-        <StoreProvider>
-          <CustomCursor />
-          <ScrollToTop />
-          {children}
-        </StoreProvider>
+        <ErrorBoundary>
+          <StoreProvider>
+            <CustomCursor />
+            <ScrollToTop />
+            {children}
+          </StoreProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

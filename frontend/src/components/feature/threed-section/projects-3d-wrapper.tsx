@@ -1,11 +1,16 @@
 'use client';
 
-import ThreeDSection from './threed-section';
+import { memo } from 'react';
+import LazyThreeDSection from './lazy-threed-section';
 
-export default function Projects3DWrapper() {
+const Projects3DWrapper = memo(() => {
   return (
     <div className="w-full h-full">
-      <ThreeDSection />
+      <LazyThreeDSection />
     </div>
   );
-}
+});
+
+Projects3DWrapper.displayName = "Projects3DWrapper";
+
+export default Projects3DWrapper;
