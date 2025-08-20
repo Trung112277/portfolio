@@ -1,53 +1,63 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import TrailDots from "./trail-dots";
-
-// Constants
-const CURSOR_SIZE = 24;
-const CURSOR_OFFSET = CURSOR_SIZE / 2;
+import { useUIStore } from "@/stores";
 
 export function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [error, setError] = useState<string | null>(null);
+  const { 
+    cursorEnabled, 
+    cursorSize, 
+    cursorTrailEnabled,
+    setScrolling 
+  } = useUIStore();
 
   // Optimized mouse move handler with useCallback
   const handleMouseMove = useCallback((e: MouseEvent) => {
     try {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      if (!cursorEnabled) return;
+      
+      const cursor = cursorRef.current;
+      if (!cursor) return;
+
+      const x = e.clientX - (cursorSize / 2);
+      const y = e.clientY - (cursorSize / 2);
+
+      cursor.style.left = `${x}px`;
+      cursor.style.top = `${y}px`;
     } catch (err) {
-      setError(`Mouse move error: ${err}`);
+      console.error('Mouse move error:', err);
     }
-  }, []);
+  }, [cursorEnabled, cursorSize]);
 
   // Mouse move event listener
   useEffect(() => {
+    if (!cursorEnabled) return;
+    
     try {
       document.addEventListener("mousemove", handleMouseMove);
       return () => document.removeEventListener("mousemove", handleMouseMove);
     } catch (err) {
-      setError(`Event listener error: ${err}`);
+      console.error('Event listener error:', err);
     }
-  }, [handleMouseMove]);
+  }, [handleMouseMove, cursorEnabled]);
 
-  // Update cursor position with error handling
+  // Scroll detection
   useEffect(() => {
-    try {
-      const cursor = cursorRef.current;
-      if (!cursor) return;
+    const handleScroll = () => {
+      setScrolling(true);
+      const timeout = setTimeout(() => setScrolling(false), 150);
+      return () => clearTimeout(timeout);
+    };
 
-      cursor.style.left = `${mousePosition.x - CURSOR_OFFSET}px`;
-      cursor.style.top = `${mousePosition.y - CURSOR_OFFSET}px`;
-    } catch (err) {
-      setError(`Cursor position error: ${err}`);
-    }
-  }, [mousePosition]);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [setScrolling]);
 
-  // Error boundary
-  if (error) {
-    console.error('CustomCursor error:', error);
-    return <div style={{ display: 'none' }}>Custom cursor error: {error}</div>;
+  // Don't render if cursor is disabled
+  if (!cursorEnabled) {
+    return null;
   }
 
   return (
@@ -56,10 +66,14 @@ export function CustomCursor() {
       <div
         ref={cursorRef}
         className="custom-cursor"
+        style={{
+          width: `${cursorSize}px`,
+          height: `${cursorSize}px`,
+        }}
       />
       
-      {/* Trail dots component with error boundary */}
-      <TrailDots mousePosition={mousePosition} />
+      {/* Trail dots component */}
+      {cursorTrailEnabled && <TrailDots />}
     </div>
   );
 }

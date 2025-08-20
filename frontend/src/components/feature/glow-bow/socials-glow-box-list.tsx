@@ -2,7 +2,6 @@ import Image from "next/image";
 import { GlowBoxItem } from "./glow-box-item";
 import Link from "next/link";
 import { Socials } from "@/types/tech-stack";
-import { nav } from "framer-motion/client";
 
 interface SocialsGlowBoxListProps {
   socials: Socials[];

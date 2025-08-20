@@ -5,6 +5,7 @@ export interface Project {
   image?: string;
   link: string;
   color?: string;
+  category: string; // Thêm category field
   isActive: boolean;
   position: {
     top?: string;

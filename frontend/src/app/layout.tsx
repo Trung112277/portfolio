@@ -3,13 +3,13 @@ import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import { CustomCursor } from "@/components/feature/cursor/custom-cursor";
 import { ScrollToTop } from "@/components/common/scroll-to-top";
+import { StoreProvider } from "@/components/providers/store-provider";
 
 const openSans = Open_Sans({
   subsets: ["latin"],
   variable: "--font-open-sans",
   display: "swap",
 });
-
 
 export const metadata: Metadata = {
   title: "Nhat Trung | Portfolio",
@@ -53,11 +53,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-        <body className={`${openSans.variable} font-open-sans antialiased`}>
+      <body className={`${openSans.variable} font-open-sans antialiased`}>
+        <StoreProvider>
           <CustomCursor />
           <ScrollToTop />
-            {children}
-        </body>
+          {children}
+        </StoreProvider>
+      </body>
     </html>
   );
 }

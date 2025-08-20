@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useMemo } from "react";
+import { useUIStore } from "@/stores";
 
 interface TrailDot {
   id: number;
@@ -11,25 +12,33 @@ interface TrailDot {
   createdAt: number;
 }
 
-interface TrailDotsProps {
-  mousePosition: { x: number; y: number };
-}
-
 // Constants
-const CURSOR_OFFSET = 12;
 const TRAIL_DURATION = 600;
 const MAX_TRAIL_DOTS = 50;
 const FADE_THRESHOLD = 0.01;
 
-export default function TrailDots({ mousePosition }: TrailDotsProps) {
+export default function TrailDots() {
   const [trailDots, setTrailDots] = useState<TrailDot[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const { cursorTrailEnabled, cursorSize } = useUIStore();
   const dotIdRef = useRef(0);
   const animationRef = useRef<number | undefined>(undefined);
 
+  // Track mouse position
+  useEffect(() => {
+    if (!cursorTrailEnabled) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, [cursorTrailEnabled]);
+
   // Create new trail dot when mouse moves
   useEffect(() => {
-    if (mousePosition.x === 0 && mousePosition.y === 0) return;
+    if (!cursorTrailEnabled || (mousePosition.x === 0 && mousePosition.y === 0)) return;
 
     try {
       const newDot: TrailDot = {
@@ -46,12 +55,14 @@ export default function TrailDots({ mousePosition }: TrailDotsProps) {
         return newDots.slice(-MAX_TRAIL_DOTS);
       });
     } catch (err) {
-      setError(`Failed to create trail dot: ${err}`);
+      console.error('Failed to create trail dot:', err);
     }
-  }, [mousePosition]);
+  }, [mousePosition, cursorTrailEnabled]);
 
   // Animation loop for trail dots
   useEffect(() => {
+    if (!cursorTrailEnabled) return;
+
     const animate = () => {
       try {
         setTrailDots(prev => {
@@ -76,7 +87,7 @@ export default function TrailDots({ mousePosition }: TrailDotsProps) {
 
         animationRef.current = requestAnimationFrame(animate);
       } catch (err) {
-        setError(`Animation error: ${err}`);
+        console.error('Animation error:', err);
       }
     };
 
@@ -87,7 +98,7 @@ export default function TrailDots({ mousePosition }: TrailDotsProps) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, []);
+  }, [cursorTrailEnabled]);
 
   // Memoized trail dots rendering
   const trailDotsElements = useMemo(() => {
@@ -97,8 +108,10 @@ export default function TrailDots({ mousePosition }: TrailDotsProps) {
           key={dot.id}
           className="cursor-trail"
           style={{
-            left: `${dot.x - CURSOR_OFFSET}px`,
-            top: `${dot.y - CURSOR_OFFSET}px`,
+            left: `${dot.x - (cursorSize / 2)}px`,
+            top: `${dot.y - (cursorSize / 2)}px`,
+            width: `${cursorSize}px`,
+            height: `${cursorSize}px`,
             opacity: dot.opacity,
             transform: `scale(${dot.scale})`,
             boxShadow: `0 0 ${20 * dot.scale}px rgba(31, 195, 255, 0.6)`,
@@ -106,10 +119,10 @@ export default function TrailDots({ mousePosition }: TrailDotsProps) {
         />
       ));
     } catch (err) {
-      setError(`Rendering error: ${err}`);
+      console.error('Rendering error:', err);
       return null;
     }
-  }, [trailDots]);
+  }, [trailDots, cursorSize]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -120,8 +133,9 @@ export default function TrailDots({ mousePosition }: TrailDotsProps) {
     };
   }, []);
 
-  if (error) {
-    return <div style={{ display: 'none' }}>Trail dots error: {error}</div>;
+  // Don't render if trail is disabled
+  if (!cursorTrailEnabled) {
+    return null;
   }
 
   return <>{trailDotsElements}</>;

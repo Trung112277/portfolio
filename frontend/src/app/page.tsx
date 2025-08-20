@@ -7,10 +7,13 @@ import Projects3DWrapper from "@/components/feature/threed-section/projects-3d-w
 import TimelineList from "@/components/feature/timeline/timeline-list";
 import { MainHeader } from "@/components/heading/main-header";
 import { Title } from "@/components/heading/title";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function Home() {
   return (
     <main>
+      <ThemeToggle />
+      
       <section className="container mx-auto px-4 mb-20 flex flex-col justify-between items-center h-[900px] relative">
         <div className="flex-1" />
         <div className="flex-1 flex items-center justify-center z-10">
@@ -43,6 +46,7 @@ export default function Home() {
           </FloatingButton>
         </div>
       </section>
+      
       <section
         id="about"
         className="container mx-auto px-4 mb-20 flex items-center relative"
@@ -57,6 +61,7 @@ export default function Home() {
           <TimelineList />
         </div>
       </section>
+      
       <section
         id="tech"
         className="container mx-auto px-4 mb-20 flex items-center relative"
@@ -70,6 +75,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      
       <section id="projects" className="relative">
         <div className="absolute top-0 left-0 right-0 bottom-0 -z-10">
           <Projects3DWrapper />
