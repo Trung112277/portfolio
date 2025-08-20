@@ -1,15 +1,17 @@
 import { FloatingButton } from "@/components/button/floating-button";
 import Intro from "@/components/common/intro";
 import { FrontendGlowBow } from "@/components/feature/glow-bow/frontend-glow-bow";
+import ProjectsGlowBow from "@/components/feature/glow-bow/projects.glow-bow";
 import TechList from "@/components/feature/tech/tech-list";
+import Projects3DWrapper from "@/components/feature/threed-section/projects-3d-wrapper";
 import TimelineList from "@/components/feature/timeline/timeline-list";
 import { MainHeader } from "@/components/heading/main-header";
 import { Title } from "@/components/heading/title";
 
 export default function Home() {
   return (
-    <main className="container mx-auto px-4 mb-20">
-      <section className="flex flex-col justify-between items-center h-[900px] relative">
+    <main>
+      <section className="container mx-auto px-4 mb-20 flex flex-col justify-between items-center h-[900px] relative">
         <div className="flex-1" />
         <div className="flex-1 flex items-center justify-center z-10">
           <MainHeader />
@@ -31,7 +33,7 @@ export default function Home() {
           </FloatingButton>
         </div>
       </section>
-      <section id="about" className="flex items-center relative">
+      <section id="about" className="container mx-auto px-4 mb-20 flex items-center relative">
         <div className="top-0 bottom-0 sticky w-1/2 h-full p-5">
           <div className="flex flex-col mt-20 items-center justify-center h-full">
             <Title primary="about" secondary="me" />
@@ -42,7 +44,7 @@ export default function Home() {
           <TimelineList />
         </div>
       </section>
-      <section id="tech" className="flex items-center relative">
+      <section id="tech" className="container mx-auto px-4 mb-20 flex items-center relative">
         <div className="w-1/2 p-5">
           <TechList />
         </div>
@@ -50,6 +52,11 @@ export default function Home() {
           <div className="flex flex-col mt-20 items-center justify-center h-full">
             <Title primary="tech" secondary="set" />
           </div>
+        </div>
+      </section>
+      <section id="projects" className="flex items-center relative">
+        <Projects3DWrapper />
+        <div className="absolute top-[100px] right-0">
         </div>
       </section>
     </main>
