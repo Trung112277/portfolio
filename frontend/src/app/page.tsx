@@ -1,7 +1,7 @@
 import { FloatingButton } from "@/components/button/floating-button";
 import Intro from "@/components/common/intro";
 import { FrontendGlowBow } from "@/components/feature/glow-bow/frontend-glow-bow";
-import ProjectsGlowBow from "@/components/feature/glow-bow/projects.glow-bow";
+import { LinkingFloatingList } from "@/components/feature/linking-floating/linking-floating-list";
 import TechList from "@/components/feature/tech/tech-list";
 import Projects3DWrapper from "@/components/feature/threed-section/projects-3d-wrapper";
 import TimelineList from "@/components/feature/timeline/timeline-list";
@@ -32,8 +32,21 @@ export default function Home() {
             Tech
           </FloatingButton>
         </div>
+        <div className="absolute bottom-[100px] left-0">
+          <FloatingButton color="#e34f26" to="#projects">
+            Projects
+          </FloatingButton>
+        </div>
+        <div className="absolute top-[100px] right-0">
+          <FloatingButton color="#764abc" to="/dashboard">
+            Dashboard
+          </FloatingButton>
+        </div>
       </section>
-      <section id="about" className="container mx-auto px-4 mb-20 flex items-center relative">
+      <section
+        id="about"
+        className="container mx-auto px-4 mb-20 flex items-center relative"
+      >
         <div className="top-0 bottom-0 sticky w-1/2 h-full p-5">
           <div className="flex flex-col mt-20 items-center justify-center h-full">
             <Title primary="about" secondary="me" />
@@ -44,7 +57,10 @@ export default function Home() {
           <TimelineList />
         </div>
       </section>
-      <section id="tech" className="container mx-auto px-4 mb-20 flex items-center relative">
+      <section
+        id="tech"
+        className="container mx-auto px-4 mb-20 flex items-center relative"
+      >
         <div className="w-1/2 p-5">
           <TechList />
         </div>
@@ -54,9 +70,12 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section id="projects" className="flex items-center relative">
-        <Projects3DWrapper />
-        <div className="absolute top-[100px] right-0">
+      <section id="projects" className="relative">
+        <div className="absolute top-0 left-0 right-0 bottom-0 -z-10">
+          <Projects3DWrapper />
+        </div>
+        <div className="container mx-auto px-4 flex items-center">
+          <LinkingFloatingList />
         </div>
       </section>
     </main>

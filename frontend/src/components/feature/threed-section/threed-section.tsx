@@ -10,7 +10,7 @@ import HeroSectionThreed from "./hero-section-threed";
 
 export default function ThreeDSection() {
   return (
-    <div className="scene w-full h-full min-h-[500px]">
+    <div className="scene w-full h-full min-h-[800px]">
       <Canvas 
         camera={{ position: [0, 0, -10], fov: 60 }}
         gl={{ 

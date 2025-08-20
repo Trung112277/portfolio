@@ -136,6 +136,9 @@
   strong {
     @apply text-primary;
   }
+  li::marker {
+    @apply text-primary;
+  }
 }
 
 @layer utilities {
@@ -182,7 +185,7 @@
   }
 
   .floating-button {
-    @apply rounded-2xl p-2  w-[150px] h-[50px] flex justify-center items-center text-xl font-bold italic bg-transparent shadow-lg;
+    @apply rounded-2xl p-2 min-w-[150px] h-[50px] flex justify-center items-center text-xl font-bold italic bg-transparent shadow-lg ;
     --button-color: #1fc3ff;
     --button-color-rgb: 31, 195, 255;
     background: linear-gradient(135deg, rgba(var(--button-color-rgb), 0.1) 0%, rgba(var(--button-color-rgb), 0.05) 100%);
@@ -324,6 +327,8 @@
     height: calc(100% - 60px);
     background-color: var(--primary);
   }
+
+/* 3D Scene Styles */
   .scene {
     width: 100vw;
     height: 100vh;
@@ -360,35 +365,37 @@
     margin: 0;
     padding: 0;
   }
+
+  .scene {
+    background: linear-gradient(180deg, 
+      #0a0a0a 0%, 
+      #1a0b2e 20%, 
+      #2d1b4e 40%, 
+      #4a1b6a 60%, 
+      #6b1b8a 80%, 
+    );
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    position: relative;
+  }
+  
+  .scene::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .scene canvas {
+    border-radius: 12px;
+  }
+
 }
 
-/* 3D Scene Styles */
-.scene {
-  background: linear-gradient(180deg, 
-    #0a0a0a 0%, 
-    #1a0b2e 20%, 
-    #2d1b4e 40%, 
-    #4a1b6a 60%, 
-    #6b1b8a 80%, 
-  );
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  position: relative;
-}
 
-.scene::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 50% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.scene canvas {
-  border-radius: 12px;
-}
