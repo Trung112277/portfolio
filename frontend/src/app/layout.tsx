@@ -1,7 +1,8 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata,  } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import { CustomCursor } from "@/components/feature/cursor/custom-cursor";
+import { ScrollToTop } from "@/components/common/scroll-to-top";
 
 const openSans = Open_Sans({
   subsets: ["latin"],
@@ -54,6 +55,7 @@ export default function RootLayout({
     <html lang="en">
         <body className={`${openSans.variable} font-open-sans antialiased`}>
           <CustomCursor />
+          <ScrollToTop />
             {children}
         </body>
     </html>
