@@ -14,7 +14,7 @@ export function MainHeader() {
     <h1 className={` font-bold text-center inline-block italic ${fugazOne.className}`}>
       <BouncyText 
         text="Hello, I'm"
-        className="text-5xl font-bold text-center"
+        className="text-3xl md:text-5xl font-bold text-center"
       />
       <AuroraText
         speed={1}

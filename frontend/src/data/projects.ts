@@ -11,7 +11,7 @@ export const PROJECTS_DATA: Project[] = [
     isActive: true,
     position: {
       base: { top: "1/6", left: "1/12" },
-      sm: { top: "1/6", left: "1/6" }
+      sm: { top: "1/5", left: "1/6" }
     }
   },
   {

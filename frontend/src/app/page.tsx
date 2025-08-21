@@ -26,12 +26,12 @@ export default function Home() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <span className="w-[300px] h-[300px] bg-primary/40 rounded-full block blur-3xl"></span>
         </div>
-        <div className="absolute lg:top-[100px] top-1/4 left-[5%]  lg:left-1/5 2xl:left-0">
+        <div className="absolute lg:top-[100px] top-1/5 left-[5%]  lg:left-1/5 2xl:left-0">
           <FloatingButton color={BUTTON_COLORS.about} to="#about">
             About me
           </FloatingButton>
         </div>
-        <div className="absolute lg:top-[100px] top-1/4 right-[5%]  lg:right-1/5 2xl:right-0">
+        <div className="absolute lg:top-[100px] top-1/5 right-[5%]  lg:right-1/5 2xl:right-0">
           <FloatingButton color={BUTTON_COLORS.dashboard} to="/dashboard">
             Dashboard
           </FloatingButton>
