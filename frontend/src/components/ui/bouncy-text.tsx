@@ -1,5 +1,6 @@
 'use client';
 import { memo, useMemo } from "react";
+// Optimized import - only import what we need
 import { motion } from "framer-motion";
 
 interface BouncyTextProps {

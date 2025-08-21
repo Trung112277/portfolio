@@ -10,92 +10,152 @@ interface LoadingProviderProps {
 
 export function LoadingProvider({ children }: LoadingProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   const pathname = usePathname();
 
-  // Helper: wait for all images currently in DOM to finish loading/decoding
+  // Ensure we're on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Simple and reliable image loading
   const waitForImages = async () => {
+    if (typeof window === 'undefined' || !document) {
+      return;
+    }
+
     try {
-      const images = Array.from(document.images) as HTMLImageElement[];
-      const imagePromises = images.map((img) => {
-        if (img.complete && img.naturalWidth > 0) {
-          return Promise.resolve();
-        }
-        const maybeDecode = img.decode as unknown;
-        if (typeof maybeDecode === "function") {
-          return (img.decode as () => Promise<void>)()
-            .catch(() => undefined);
-        }
+      // Wait for DOM to be ready
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Get all images
+      const images = Array.from(document.images);
+      console.log(`Found ${images.length} images to load`);
+      
+      // Create simple promises for each image
+      const imagePromises = images.map(img => {
         return new Promise<void>((resolve) => {
-          const onDone = () => {
-            img.removeEventListener("load", onDone);
-            img.removeEventListener("error", onDone);
+          if (img.complete && img.naturalWidth > 0) {
+            resolve();
+            return;
+          }
+          
+          const onLoad = () => {
+            img.removeEventListener('load', onLoad);
+            img.removeEventListener('error', onLoad);
             resolve();
           };
-          img.addEventListener("load", onDone, { once: true });
-          img.addEventListener("error", onDone, { once: true });
+          
+          img.addEventListener('load', onLoad);
+          img.addEventListener('error', onLoad);
         });
       });
-
-      // Also wait for CSS background images found in computed styles
-      const elements = Array.from(document.querySelectorAll<HTMLElement>("*"));
-      const bgUrls = new Set<string>();
-      const urlRegex = /url\(("|')?([^"')]+)\1\)/g;
-      for (const el of elements) {
-        const bg = getComputedStyle(el).backgroundImage;
-        if (!bg || bg === "none") continue;
-        let match: RegExpExecArray | null;
-        while ((match = urlRegex.exec(bg)) !== null) {
-          const url = match[2];
-          if (url) bgUrls.add(url);
-        }
-      }
-
-      const bgPromises = Array.from(bgUrls).map((url) =>
-        new Promise<void>((resolve) => {
-          const img = new Image();
-          img.onload = img.onerror = () => resolve();
-          img.src = url;
-        })
-      );
-
-      await Promise.all([...imagePromises, ...bgPromises]);
-    } catch {
-      // Ignore errors, fallback to continue
+      
+      // Wait for all images with a timeout
+      const timeout = new Promise<void>(resolve => {
+        setTimeout(() => {
+          console.log('Image loading timeout');
+          resolve();
+        }, 3000);
+      });
+      
+      await Promise.race([
+        Promise.allSettled(imagePromises),
+        timeout
+      ]);
+      
+      console.log('Image loading completed');
+    } catch (error) {
+      console.warn('Error in image loading:', error);
     }
   };
 
-  // Initial load: ensure we wait for images as well
+  // Load 3D content immediately
+  const preload3DContent = async () => {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      // Simply dispatch the load3d event without scrolling
+      console.log('Triggering 3D content preload');
+      window.dispatchEvent(new CustomEvent('load3d'));
+      
+      // Wait a bit for 3D content to start loading
+      await new Promise(resolve => setTimeout(resolve, 200));
+    } catch (error) {
+      console.warn('Error preloading 3D content:', error);
+    }
+  };
+
+  // Initial load
   useEffect(() => {
+    if (!isClient) return;
+
     let isMounted = true;
     const run = async () => {
       setIsLoading(true);
-      // Wait for all images (including CSS backgrounds) to finish
-      await waitForImages();
-      if (isMounted) setIsLoading(false);
+      
+      try {
+        // Wait for images
+        await waitForImages();
+        
+        // Preload 3D content
+        await preload3DContent();
+        
+        // Additional wait to ensure everything is ready
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.warn('Error in initial load:', error);
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
     };
-    // Run after next tick to ensure DOM rendered
+    
     const id = setTimeout(run, 0);
     return () => {
       isMounted = false;
       clearTimeout(id);
     };
-  }, []);
+  }, [isClient]);
 
-  // Route change loading state (App Router): wait for new page images
+  // Route change
   useEffect(() => {
+    if (!isClient) return;
+
     let isMounted = true;
     const run = async () => {
       setIsLoading(true);
-      // Give React/Next a moment to render new route content
-      await new Promise((r) => setTimeout(r, 0));
-      await waitForImages();
-      if (isMounted) setIsLoading(false);
+      
+      try {
+        // Wait for new content to render
+        await new Promise(resolve => setTimeout(resolve, 100));
+        await waitForImages();
+        
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.warn('Error in route change:', error);
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
     };
+    
     run();
     return () => {
       isMounted = false;
     };
-  }, [pathname]);
+  }, [pathname, isClient]);
+
+  // Don't render loader during SSR
+  if (!isClient) {
+    return <>{children}</>;
+  }
 
   return (
     <>

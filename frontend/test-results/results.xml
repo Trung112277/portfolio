@@ -1,0 +1,142 @@
+<testsuites id="" name="" tests="60" failures="0" skipped="0" errors="0" time="107.12599900000001">
+<testsuite name="dashboard.spec.ts" timestamp="2025-08-21T02:22:07.842Z" hostname="chromium" tests="4" failures="0" skipped="0" time="14.912" errors="0">
+<testcase name="Dashboard Page › should display dashboard page" classname="dashboard.spec.ts" time="3.722">
+</testcase>
+<testcase name="Dashboard Page › should have proper navigation" classname="dashboard.spec.ts" time="3.843">
+</testcase>
+<testcase name="Dashboard Page › should be responsive" classname="dashboard.spec.ts" time="3.54">
+</testcase>
+<testcase name="Dashboard Page › should have proper meta tags" classname="dashboard.spec.ts" time="3.807">
+</testcase>
+</testsuite>
+<testsuite name="home.spec.ts" timestamp="2025-08-21T02:22:07.842Z" hostname="chromium" tests="8" failures="0" skipped="0" time="77.325" errors="0">
+<testcase name="Home Page › should display the main header" classname="home.spec.ts" time="4.287">
+</testcase>
+<testcase name="Home Page › should have working navigation buttons" classname="home.spec.ts" time="5.323">
+</testcase>
+<testcase name="Home Page › should display about section" classname="home.spec.ts" time="11.535">
+</testcase>
+<testcase name="Home Page › should display tech section" classname="home.spec.ts" time="11.733">
+</testcase>
+<testcase name="Home Page › should display projects section" classname="home.spec.ts" time="11.828">
+</testcase>
+<testcase name="Home Page › should have proper meta tags" classname="home.spec.ts" time="11.334">
+</testcase>
+<testcase name="Home Page › should be accessible" classname="home.spec.ts" time="11.173">
+</testcase>
+<testcase name="Home Page › should work on mobile viewport" classname="home.spec.ts" time="10.112">
+</testcase>
+</testsuite>
+<testsuite name="dashboard.spec.ts" timestamp="2025-08-21T02:22:07.842Z" hostname="firefox" tests="4" failures="0" skipped="0" time="39.551" errors="0">
+<testcase name="Dashboard Page › should display dashboard page" classname="dashboard.spec.ts" time="9.829">
+</testcase>
+<testcase name="Dashboard Page › should have proper navigation" classname="dashboard.spec.ts" time="9.443">
+</testcase>
+<testcase name="Dashboard Page › should be responsive" classname="dashboard.spec.ts" time="9.67">
+</testcase>
+<testcase name="Dashboard Page › should have proper meta tags" classname="dashboard.spec.ts" time="10.609">
+</testcase>
+</testsuite>
+<testsuite name="home.spec.ts" timestamp="2025-08-21T02:22:07.842Z" hostname="firefox" tests="8" failures="0" skipped="0" time="120.606" errors="0">
+<testcase name="Home Page › should display the main header" classname="home.spec.ts" time="12.906">
+</testcase>
+<testcase name="Home Page › should have working navigation buttons" classname="home.spec.ts" time="11.819">
+</testcase>
+<testcase name="Home Page › should display about section" classname="home.spec.ts" time="15.946">
+</testcase>
+<testcase name="Home Page › should display tech section" classname="home.spec.ts" time="17.989">
+</testcase>
+<testcase name="Home Page › should display projects section" classname="home.spec.ts" time="17.236">
+</testcase>
+<testcase name="Home Page › should have proper meta tags" classname="home.spec.ts" time="14.212">
+</testcase>
+<testcase name="Home Page › should be accessible" classname="home.spec.ts" time="14.004">
+</testcase>
+<testcase name="Home Page › should work on mobile viewport" classname="home.spec.ts" time="16.494">
+</testcase>
+</testsuite>
+<testsuite name="dashboard.spec.ts" timestamp="2025-08-21T02:22:07.842Z" hostname="webkit" tests="4" failures="0" skipped="0" time="21.633" errors="0">
+<testcase name="Dashboard Page › should display dashboard page" classname="dashboard.spec.ts" time="5.585">
+</testcase>
+<testcase name="Dashboard Page › should have proper navigation" classname="dashboard.spec.ts" time="5.401">
+</testcase>
+<testcase name="Dashboard Page › should be responsive" classname="dashboard.spec.ts" time="5.286">
+</testcase>
+<testcase name="Dashboard Page › should have proper meta tags" classname="dashboard.spec.ts" time="5.361">
+</testcase>
+</testsuite>
+<testsuite name="home.spec.ts" timestamp="2025-08-21T02:22:07.842Z" hostname="webkit" tests="8" failures="0" skipped="0" time="67.33" errors="0">
+<testcase name="Home Page › should display the main header" classname="home.spec.ts" time="6.431">
+</testcase>
+<testcase name="Home Page › should have working navigation buttons" classname="home.spec.ts" time="6.735">
+</testcase>
+<testcase name="Home Page › should display about section" classname="home.spec.ts" time="9.391">
+</testcase>
+<testcase name="Home Page › should display tech section" classname="home.spec.ts" time="10.216">
+</testcase>
+<testcase name="Home Page › should display projects section" classname="home.spec.ts" time="9.689">
+</testcase>
+<testcase name="Home Page › should have proper meta tags" classname="home.spec.ts" time="8.634">
+</testcase>
+<testcase name="Home Page › should be accessible" classname="home.spec.ts" time="7.814">
+</testcase>
+<testcase name="Home Page › should work on mobile viewport" classname="home.spec.ts" time="8.42">
+</testcase>
+</testsuite>
+<testsuite name="dashboard.spec.ts" timestamp="2025-08-21T02:22:07.842Z" hostname="Mobile Chrome" tests="4" failures="0" skipped="0" time="8.616" errors="0">
+<testcase name="Dashboard Page › should display dashboard page" classname="dashboard.spec.ts" time="1.948">
+</testcase>
+<testcase name="Dashboard Page › should have proper navigation" classname="dashboard.spec.ts" time="2.014">
+</testcase>
+<testcase name="Dashboard Page › should be responsive" classname="dashboard.spec.ts" time="2">
+</testcase>
+<testcase name="Dashboard Page › should have proper meta tags" classname="dashboard.spec.ts" time="2.654">
+</testcase>
+</testsuite>
+<testsuite name="home.spec.ts" timestamp="2025-08-21T02:22:07.842Z" hostname="Mobile Chrome" tests="8" failures="0" skipped="0" time="55.862" errors="0">
+<testcase name="Home Page › should display the main header" classname="home.spec.ts" time="6.01">
+</testcase>
+<testcase name="Home Page › should have working navigation buttons" classname="home.spec.ts" time="8.424">
+</testcase>
+<testcase name="Home Page › should display about section" classname="home.spec.ts" time="7.518">
+</testcase>
+<testcase name="Home Page › should display tech section" classname="home.spec.ts" time="7.795">
+</testcase>
+<testcase name="Home Page › should display projects section" classname="home.spec.ts" time="7.806">
+</testcase>
+<testcase name="Home Page › should have proper meta tags" classname="home.spec.ts" time="6.601">
+</testcase>
+<testcase name="Home Page › should be accessible" classname="home.spec.ts" time="5.154">
+</testcase>
+<testcase name="Home Page › should work on mobile viewport" classname="home.spec.ts" time="6.554">
+</testcase>
+</testsuite>
+<testsuite name="dashboard.spec.ts" timestamp="2025-08-21T02:22:07.842Z" hostname="Mobile Safari" tests="4" failures="0" skipped="0" time="12.568" errors="0">
+<testcase name="Dashboard Page › should display dashboard page" classname="dashboard.spec.ts" time="3.116">
+</testcase>
+<testcase name="Dashboard Page › should have proper navigation" classname="dashboard.spec.ts" time="3.163">
+</testcase>
+<testcase name="Dashboard Page › should be responsive" classname="dashboard.spec.ts" time="3.272">
+</testcase>
+<testcase name="Dashboard Page › should have proper meta tags" classname="dashboard.spec.ts" time="3.017">
+</testcase>
+</testsuite>
+<testsuite name="home.spec.ts" timestamp="2025-08-21T02:22:07.842Z" hostname="Mobile Safari" tests="8" failures="0" skipped="0" time="61.653" errors="0">
+<testcase name="Home Page › should display the main header" classname="home.spec.ts" time="8.667">
+</testcase>
+<testcase name="Home Page › should have working navigation buttons" classname="home.spec.ts" time="8.18">
+</testcase>
+<testcase name="Home Page › should display about section" classname="home.spec.ts" time="9.82">
+</testcase>
+<testcase name="Home Page › should display tech section" classname="home.spec.ts" time="9.837">
+</testcase>
+<testcase name="Home Page › should display projects section" classname="home.spec.ts" time="10.194">
+</testcase>
+<testcase name="Home Page › should have proper meta tags" classname="home.spec.ts" time="7.14">
+</testcase>
+<testcase name="Home Page › should be accessible" classname="home.spec.ts" time="3.107">
+</testcase>
+<testcase name="Home Page › should work on mobile viewport" classname="home.spec.ts" time="4.708">
+</testcase>
+</testsuite>
+</testsuites>

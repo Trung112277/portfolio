@@ -22,13 +22,19 @@ const FADE_THRESHOLD = UI_CONSTANTS.fadeThreshold;
 export default function TrailDots() {
   const [trailDots, setTrailDots] = useState<TrailDot[]>([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isClient, setIsClient] = useState(false);
   const { cursorTrailEnabled, cursorSize } = useUIStore();
   const dotIdRef = useRef(0);
   const animationRef = useRef<number | undefined>(undefined);
 
+  // Ensure we're on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   // Track mouse position
   useEffect(() => {
-    if (!cursorTrailEnabled) return;
+    if (!isClient || !cursorTrailEnabled) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -36,11 +42,11 @@ export default function TrailDots() {
 
     document.addEventListener('mousemove', handleMouseMove);
     return () => document.removeEventListener('mousemove', handleMouseMove);
-  }, [cursorTrailEnabled]);
+  }, [cursorTrailEnabled, isClient]);
 
   // Create new trail dot when mouse moves
   useEffect(() => {
-    if (!cursorTrailEnabled || (mousePosition.x === 0 && mousePosition.y === 0)) return;
+    if (!isClient || !cursorTrailEnabled || (mousePosition.x === 0 && mousePosition.y === 0)) return;
 
     try {
       const newDot: TrailDot = {
@@ -59,11 +65,11 @@ export default function TrailDots() {
     } catch (err) {
       console.error('Failed to create trail dot:', err);
     }
-  }, [mousePosition, cursorTrailEnabled]);
+  }, [mousePosition, cursorTrailEnabled, isClient]);
 
   // Animation loop for trail dots
   useEffect(() => {
-    if (!cursorTrailEnabled) return;
+    if (!isClient || !cursorTrailEnabled) return;
 
     const animate = () => {
       try {
@@ -100,10 +106,12 @@ export default function TrailDots() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [cursorTrailEnabled]);
+  }, [cursorTrailEnabled, isClient]);
 
   // Memoized trail dots rendering
   const trailDotsElements = useMemo(() => {
+    if (!isClient) return null;
+    
     try {
       return trailDots.map((dot) => (
         <div
@@ -124,7 +132,7 @@ export default function TrailDots() {
       console.error('Rendering error:', err);
       return null;
     }
-  }, [trailDots, cursorSize]);
+  }, [trailDots, cursorSize, isClient]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -135,8 +143,8 @@ export default function TrailDots() {
     };
   }, []);
 
-  // Don't render if trail is disabled
-  if (!cursorTrailEnabled) {
+  // Don't render during SSR or if trail is disabled
+  if (!isClient || !cursorTrailEnabled) {
     return null;
   }
 

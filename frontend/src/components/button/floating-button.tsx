@@ -16,6 +16,7 @@ export function FloatingButton({
     <Link 
       href={to} 
       className="floating-button"
+      data-testid={`floating-button-${to.replace(/[^a-zA-Z0-9]/g, '-')}`}
       style={{
         '--button-color': color,
         '--button-color-rgb': rgbColor,

@@ -1,11 +1,37 @@
 import { useCallback, useEffect, useRef } from 'react';
 
+/**
+ * Configuration options for the magnetic cursor effect
+ */
 interface MagneticCursorOptions {
+  /** Strength of the magnetic effect (0-1, default: 0.3) */
   strength?: number;
+  /** Distance from element center to trigger effect in pixels (default: 100) */
   distance?: number;
+  /** Duration of the reset animation in seconds (default: 0.3) */
   duration?: number;
 }
 
+/**
+ * Custom hook that creates a magnetic cursor effect for DOM elements
+ * The element will be attracted to the mouse cursor when it's within the specified distance
+ * 
+ * @param options - Configuration options for the magnetic effect
+ * @returns A ref that should be attached to the target DOM element
+ * 
+ * @example
+ * ```tsx
+ * function MagneticButton() {
+ *   const magneticRef = useMagneticCursor({ strength: 0.5, distance: 150 });
+ *   
+ *   return (
+ *     <button ref={magneticRef} className="magnetic-button">
+ *       Hover me!
+ *     </button>
+ *   );
+ * }
+ * ```
+ */
 export function useMagneticCursor({
   strength = 0.3,
   distance = 100,

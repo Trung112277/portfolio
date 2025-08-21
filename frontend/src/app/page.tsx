@@ -1,13 +1,16 @@
+import { Suspense, lazy } from "react";
 import { FloatingButton } from "@/components/button/floating-button";
 import Intro from "@/components/common/intro";
 import { FrontendGlowBow } from "@/components/feature/glow-bow/frontend-glow-bow";
 import { LinkingFloatingList } from "@/components/feature/linking-floating/linking-floating-list";
 import TechList from "@/components/feature/tech/tech-list";
-import Projects3DWrapper from "@/components/feature/threed-section/projects-3d-wrapper";
 import TimelineList from "@/components/feature/timeline/timeline-list";
 import { MainHeader } from "@/components/heading/main-header";
 import { Title } from "@/components/heading/title";
 import { BUTTON_COLORS } from "@/constant/theme-colors";
+
+// Lazy load heavy 3D components
+const Projects3DWrapper = lazy(() => import("@/components/feature/threed-section/projects-3d-wrapper"));
 
 export default function Home() {
   return (
@@ -76,7 +79,16 @@ export default function Home() {
 
       <section id="projects" className="relative">
         <div className="absolute top-0 left-0 right-0 bottom-0 -z-10">
-          <Projects3DWrapper />
+          <Suspense fallback={
+            <div className="w-full h-full bg-gradient-to-br from-purple-900 to-blue-900 flex items-center justify-center">
+              <div className="text-center text-white">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white mx-auto mb-4"></div>
+                <p className="text-lg font-semibold">Loading 3D Projects...</p>
+              </div>
+            </div>
+          }>
+            <Projects3DWrapper />
+          </Suspense>
         </div>
         <div className="container mx-auto px-4 flex items-center">
           <LinkingFloatingList />

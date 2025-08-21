@@ -9,6 +9,7 @@ export function CustomCursor() {
   const animationRef = useRef<number | undefined>(undefined);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   
   const { 
     cursorEnabled, 
@@ -16,6 +17,13 @@ export function CustomCursor() {
     cursorTrailEnabled,
     setScrolling 
   } = useUIStore();
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Ensure we're on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Smooth animation using requestAnimationFrame
   const updateCursorPosition = useCallback(() => {
@@ -44,7 +52,7 @@ export function CustomCursor() {
 
   // Animation loop
   useEffect(() => {
-    if (!cursorEnabled) return;
+    if (!isClient || !cursorEnabled || reducedMotion) return;
     
     animationRef.current = requestAnimationFrame(updateCursorPosition);
     
@@ -53,11 +61,11 @@ export function CustomCursor() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [updateCursorPosition, cursorEnabled]);
+  }, [updateCursorPosition, cursorEnabled, reducedMotion, isClient]);
 
   // Mouse move event listener
   useEffect(() => {
-    if (!cursorEnabled) return;
+    if (!isClient || !cursorEnabled) return;
     
     try {
       document.addEventListener("mousemove", handleMouseMove, { passive: true });
@@ -65,11 +73,33 @@ export function CustomCursor() {
     } catch (err) {
       console.error('Event listener error:', err);
     }
-  }, [handleMouseMove, cursorEnabled]);
+  }, [handleMouseMove, cursorEnabled, isClient]);
+
+  // Respect prefers-reduced-motion
+  useEffect(() => {
+    if (!isClient) return;
+    
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(media.matches);
+    const handler = () => setReducedMotion(media.matches);
+    media.addEventListener('change', handler);
+    return () => media.removeEventListener('change', handler);
+  }, [isClient]);
+
+  // Detect mobile viewport and disable heavy effects
+  useEffect(() => {
+    if (!isClient) return;
+    
+    const media = window.matchMedia('(max-width: 640px)');
+    setIsMobile(media.matches);
+    const handler = () => setIsMobile(media.matches);
+    media.addEventListener('change', handler);
+    return () => media.removeEventListener('change', handler);
+  }, [isClient]);
 
   // Hover detection for interactive elements
   useEffect(() => {
-    if (!cursorEnabled) return;
+    if (!isClient || !cursorEnabled) return;
 
     const handleMouseEnter = () => setIsHovering(true);
     const handleMouseLeave = () => setIsHovering(false);
@@ -89,10 +119,12 @@ export function CustomCursor() {
         el.removeEventListener('mouseleave', handleMouseLeave);
       });
     };
-  }, [cursorEnabled]);
+  }, [cursorEnabled, isClient]);
 
   // Scroll detection
   useEffect(() => {
+    if (!isClient) return;
+    
     const handleScroll = () => {
       setScrolling(true);
       const timeout = setTimeout(() => setScrolling(false), 150);
@@ -101,10 +133,10 @@ export function CustomCursor() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [setScrolling]);
+  }, [setScrolling, isClient]);
 
-  // Don't render if cursor is disabled
-  if (!cursorEnabled) {
+  // Don't render during SSR or if cursor is disabled
+  if (!isClient || !cursorEnabled) {
     return null;
   }
 
@@ -120,8 +152,8 @@ export function CustomCursor() {
         }}
       />
       
-      {/* Trail dots component */}
-      {cursorTrailEnabled && <TrailDots />}
+      {/* Trail dots component (disabled on mobile or reduced motion) */}
+      {cursorTrailEnabled && !reducedMotion && !isMobile && <TrailDots />}
     </div>
   );
 }

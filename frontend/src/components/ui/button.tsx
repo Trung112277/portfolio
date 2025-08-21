@@ -4,6 +4,10 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Button variant definitions using class-variance-authority
+ * Provides consistent styling across different button types and sizes
+ */
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
@@ -37,6 +41,30 @@ const buttonVariants = cva(
   }
 )
 
+/**
+ * Versatile button component with multiple variants and sizes
+ * Supports composition with Radix UI Slot for flexible rendering
+ * 
+ * @param className - Additional CSS classes to apply
+ * @param variant - Visual style variant of the button
+ * @param size - Size variant of the button
+ * @param asChild - Whether to render as a child component using Slot
+ * @param props - Additional button props
+ * 
+ * @example
+ * ```tsx
+ * // Default button
+ * <Button>Click me</Button>
+ * 
+ * // Destructive button with custom size
+ * <Button variant="destructive" size="lg">Delete</Button>
+ * 
+ * // As a link using Slot
+ * <Button asChild>
+ *   <a href="/dashboard">Go to Dashboard</a>
+ * </Button>
+ * ```
+ */
 function Button({
   className,
   variant,

@@ -9,6 +9,9 @@ A modern, responsive portfolio website built with Next.js 15, React 19, TypeScri
 - **Interactive Components**: Floating buttons with glow effects and animated tech stack display
 - **Performance Optimized**: Image optimization, code splitting, and modern build tools
 - **Accessibility**: ARIA labels, semantic HTML, and keyboard navigation support
+- **Comprehensive Testing**: Unit tests with Jest/React Testing Library and E2E tests with Playwright
+- **Performance Monitoring**: Core Web Vitals tracking and custom metrics
+- **Type Safety**: Full TypeScript coverage with strict mode
 
 ## 🛠️ Tech Stack
 
@@ -18,6 +21,9 @@ A modern, responsive portfolio website built with Next.js 15, React 19, TypeScri
 - **UI Components**: Radix UI primitives with custom styling
 - **Icons**: Lucide React
 - **Fonts**: Google Fonts (Open Sans)
+- **Testing**: Jest, React Testing Library, Playwright
+- **State Management**: Zustand
+- **Performance**: Custom monitoring utilities
 
 ## 📁 Project Structure
 
@@ -76,6 +82,11 @@ yarn dev
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
+- `npm run test` - Run unit tests
+- `npm run test:watch` - Run unit tests in watch mode
+- `npm run test:coverage` - Run unit tests with coverage report
+- `npm run test:e2e` - Run end-to-end tests
+- `npm run test:e2e:ui` - Run end-to-end tests with UI
 
 ## 🎨 Customization
 
@@ -119,6 +130,19 @@ export const FRONTEND_TECH_STACK: TechStack[] = [
 - Implement proper TypeScript interfaces
 - Follow the component composition pattern
 - Use CSS custom properties for theming
+
+### Testing Guidelines
+- Write unit tests for all components and hooks
+- Maintain at least 70% code coverage
+- Use React Testing Library for component tests
+- Write E2E tests for critical user flows
+- Test accessibility features
+
+### Performance Guidelines
+- Monitor Core Web Vitals
+- Use performance monitoring utilities
+- Optimize bundle size
+- Implement proper loading states
 
 ## 📱 Responsive Design
 

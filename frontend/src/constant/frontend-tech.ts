@@ -53,7 +53,7 @@ export const FRONTEND_TECH_STACK: BaseTechStack[] = [
         id: 'tailwindcss',
         name: 'Tailwind CSS',
         color: '#06b6d4',
-        logo: '/frontend-tech/tailwindcss-logo.png',
+        logo: '/frontend-tech/css3-logo.png',
         description: 'Tailwind CSS',
         category: 'frontend'
     },
@@ -61,7 +61,7 @@ export const FRONTEND_TECH_STACK: BaseTechStack[] = [
         id: 'redux',
         name: 'Redux',
         color: '#764abc',
-        logo: '/frontend-tech/redux-logo.png',
+        logo: '/frontend-tech/react-logo.png',
         description: 'Redux',
         category: 'frontend'
     },
@@ -70,7 +70,8 @@ export const FRONTEND_TECH_STACK: BaseTechStack[] = [
         id: 'shadcn',
         name: 'Shadcn',
         color: '#000000',
-        logo: '/frontend-tech/shadcn-logo.png',
+        // Placeholder: dùng tạm file.svg nếu thiếu file
+        logo: '/file.svg',
         description: 'Shadcn',
         category: 'frontend'
     },

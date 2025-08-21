@@ -1,4 +1,4 @@
-import type { Metadata,  } from "next";
+import type { Metadata, Viewport } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import { CustomCursor } from "@/components/feature/cursor/custom-cursor";
@@ -6,6 +6,10 @@ import { ScrollToTop } from "@/components/common/scroll-to-top";
 import { StoreProvider } from "@/components/providers/store-provider";
 import { LoadingProvider } from "@/components/providers/loading-provider";
 import ErrorBoundary from "@/components/common/error-boundary";
+import { initPerformanceMonitoring } from "@/lib/analytics";
+import { initResourceHints } from "@/lib/resource-hints";
+import { initCriticalCSS, getCriticalCSS } from "@/lib/critical-css";
+import { serviceWorkerManager } from "@/lib/service-worker";
 
 const openSans = Open_Sans({
   subsets: ["latin"],
@@ -14,6 +18,7 @@ const openSans = Open_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('http://localhost:3000'),
   title: "Nhat Trung | Portfolio",
   description:
     "Nhat Trung's portfolio showcasing frontend development skills and projects",
@@ -26,7 +31,6 @@ export const metadata: Metadata = {
     "typescript",
   ],
   authors: [{ name: "Nhat Trung" }],
-  viewport: "width=device-width, initial-scale=1",
   icons: {
     icon: "/favicon.png",
     shortcut: "/favicon.png",
@@ -39,13 +43,29 @@ export const metadata: Metadata = {
       "Nhat Trung's portfolio showcasing frontend development skills and projects",
     type: "website",
     locale: "en_US",
+    images: [
+      {
+        url: "/open-graph/open-graph-1.png",
+        width: 1200,
+        height: 630,
+        alt: "Nhat Trung | Portfolio",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Nhat Trung | Portfolio",
     description:
       "Nhat Trung's portfolio showcasing frontend development skills and projects",
+    images: [
+      "/open-graph/open-graph-1.png",
+    ],
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -53,15 +73,42 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Initialize performance optimizations on client side
+  if (typeof window !== 'undefined') {
+    // Initialize performance monitoring
+    initPerformanceMonitoring();
+    
+    // Initialize resource hints
+    initResourceHints();
+    
+    // Initialize critical CSS
+    initCriticalCSS({
+      css: getCriticalCSS(),
+      preload: true,
+      nonCriticalUrl: '/styles/non-critical.css'
+    });
+    
+    // Register service worker in production
+    if (process.env.NODE_ENV === 'production') {
+      serviceWorkerManager.register();
+    }
+  }
+
   return (
     <html lang="en">
       <body className={`${openSans.variable} font-open-sans antialiased`}>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] bg-primary text-primary-foreground px-3 py-2 rounded"
+        >
+          Skip to content
+        </a>
         <ErrorBoundary>
           <LoadingProvider>
             <StoreProvider>
               <CustomCursor />
               <ScrollToTop />
-              {children}
+              <div id="main-content">{children}</div>
             </StoreProvider>
           </LoadingProvider>
         </ErrorBoundary>

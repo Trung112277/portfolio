@@ -9,6 +9,7 @@ interface SafeImageProps extends Omit<ImageProps, 'onError' | 'onLoad'> {
   fallbackComponent?: React.ReactNode;
   onError?: (error: Error) => void;
   onLoad?: () => void;
+  blurDataURL?: string;
 }
 
 const SafeImage = memo(({
@@ -19,6 +20,7 @@ const SafeImage = memo(({
   className,
   onError,
   onLoad,
+  blurDataURL,
   ...props
 }: SafeImageProps) => {
   const [hasError, setHasError] = useState(false);
@@ -52,6 +54,8 @@ const SafeImage = memo(({
     );
   }
 
+  const defaultBlur = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMzInIGhlaWdodD0nMzInIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHJlY3Qgd2lkdGg9JzMyJyBoZWlnaHQ9JzMyJyByeD0nNCcgZmlsbD0nI2ZmZicgZmlsbC1vcGFjaXR5PScwLjEnIC8+PC9zdmc+";
+
   return (
     <>
       {isLoading && (
@@ -70,6 +74,8 @@ const SafeImage = memo(({
         )}
         onError={handleError}
         onLoad={handleLoad}
+        placeholder="blur"
+        blurDataURL={blurDataURL ?? defaultBlur}
         {...props}
       />
     </>

@@ -1,17 +1,36 @@
 'use client'
 import { Suspense } from "react";
-import {
-  OrbitControls,
-  Stars,
-  Sparkles,
-} from "@react-three/drei";
+// Optimized imports with tree shaking
+import { OrbitControls } from "@react-three/drei/core/OrbitControls";
+import { Stars } from "@react-three/drei/core/Stars";
+import { Sparkles } from "@react-three/drei/core/Sparkles";
 import { Canvas } from "@react-three/fiber";
+import { useEffect, useState } from "react";
 import HeroSectionThreed from "./hero-section-threed";
 
 export default function ThreeDSection() {
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  // Ensure we're on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+    
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(media.matches);
+    const handler = () => setReducedMotion(media.matches);
+    media.addEventListener('change', handler);
+    return () => media.removeEventListener('change', handler);
+  }, [isClient]);
+
   return (
     <div className="scene w-full h-full min-h-[800px]">
       <Canvas 
+        dpr={[1, 1.5]}
         camera={{ position: [0, 0, -10], fov: 60 }}
         gl={{ 
           alpha: false,
@@ -22,7 +41,7 @@ export default function ThreeDSection() {
       >
         <OrbitControls
           enableZoom={true}
-          autoRotate={true}
+          autoRotate={!reducedMotion}
           autoRotateSpeed={-0.1}
           enablePan={true}
           minAzimuthAngle={-Math.PI / 4}

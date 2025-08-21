@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/safe-image";
 import { GlowBoxItem } from "./glow-box-item";
 import Link from "next/link";
 import { Socials } from "@/types/tech-stack";
@@ -18,7 +18,15 @@ export function SocialsGlowBoxList({ socials }: SocialsGlowBoxListProps) {
             content={item.description}
           >
             <Link href={item.link} target="_blank">
-              <Image src={item.logo} alt={item.name} width={50} height={50} />
+              <SafeImage
+                src={item.logo}
+                alt={item.name}
+                width={50}
+                height={50}
+                loading="lazy"
+                sizes="50px"
+                fallbackSrc="/file.svg"
+              />
             </Link>
           </GlowBoxItem>
         ))}
