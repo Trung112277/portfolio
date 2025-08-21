@@ -8,7 +8,7 @@ export function DashboardOverview() {
     <div className="space-y-6">
       <DashboardTitle
         title="Dashboard Overview"
-        description="Welcome to your portfolio dashboard. Manage your content and track your progress."
+        description="Welcome to portfolio dashboard. Manage content and track progress."
       />
       
       {/* Quick Stats */}

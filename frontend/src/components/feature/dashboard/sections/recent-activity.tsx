@@ -12,7 +12,7 @@ export function RecentActivity() {
       <CardHeader>
         <CardTitle className="text-xl text-primary">Recent Activity</CardTitle>
         <CardDescription className="text-foreground">
-          Your latest portfolio updates and achievements
+          Latest portfolio updates and achievements
         </CardDescription>
       </CardHeader>
       <CardContent>

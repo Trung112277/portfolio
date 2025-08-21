@@ -96,7 +96,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${openSans.variable} font-open-sans antialiased`}>
+      <body className={`${openSans.variable} font-open-sans antialiased`} data-scroll-behavior="smooth" >
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] bg-primary text-primary-foreground px-3 py-2 rounded"

@@ -6,7 +6,7 @@ export function DashboardTech() {
     <div className="space-y-6">
       <DashboardTitle
         title="Tech Stack"
-        description="Manage your technical skills and tools."
+        description="Manage technical skills and tools."
       />
 
       <DashboardEditContainer title="Tech Stack">dsds</DashboardEditContainer>
