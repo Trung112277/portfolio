@@ -95,6 +95,14 @@ export function LoadingProvider({ children }: LoadingProviderProps) {
       setIsLoading(true);
       
       try {
+        // If we're on dashboard, skip loading immediately
+        if (pathname.startsWith('/dashboard')) {
+          if (isMounted) {
+            setIsLoading(false);
+          }
+          return;
+        }
+        
         // Wait for images
         await waitForImages();
         
@@ -120,11 +128,16 @@ export function LoadingProvider({ children }: LoadingProviderProps) {
       isMounted = false;
       clearTimeout(id);
     };
-  }, [isClient]);
+  }, [isClient, pathname]);
 
   // Route change
   useEffect(() => {
     if (!isClient) return;
+
+    // Skip loading for dashboard internal navigation
+    if (pathname.startsWith('/dashboard')) {
+      return;
+    }
 
     let isMounted = true;
     const run = async () => {
@@ -152,6 +165,13 @@ export function LoadingProvider({ children }: LoadingProviderProps) {
     };
   }, [pathname, isClient]);
 
+  // Immediately disable loading when entering dashboard
+  useEffect(() => {
+    if (isClient && pathname.startsWith('/dashboard') && isLoading) {
+      setIsLoading(false);
+    }
+  }, [pathname, isClient, isLoading]);
+
   // Don't render loader during SSR
   if (!isClient) {
     return <>{children}</>;
@@ -159,7 +179,7 @@ export function LoadingProvider({ children }: LoadingProviderProps) {
 
   return (
     <>
-      {isLoading && <FullscreenLoader text="Loading page..." />}
+      {isLoading && !pathname.startsWith('/dashboard') && <FullscreenLoader text="Loading page..." />}
       {children}
     </>
   );

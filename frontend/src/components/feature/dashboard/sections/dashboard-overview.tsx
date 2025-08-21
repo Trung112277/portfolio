@@ -1,5 +1,7 @@
 import { DashboardTitle } from "@/components/heading/dashboar-title";
-import { DashboardEditContainer } from "../dashboard-edit-container";
+import { WelcomeSection } from "./welcome.-section";
+import { QuickStatsSection } from "./quick-stats-section";
+import { RecentActivity } from "./recent-activity";
 
 export function DashboardOverview() {
   return (
@@ -8,10 +10,15 @@ export function DashboardOverview() {
         title="Dashboard Overview"
         description="Welcome to your portfolio dashboard. Manage your content and track your progress."
       />
+      
+      {/* Quick Stats */}
+      <QuickStatsSection />
 
-      <DashboardEditContainer title="Overview">
-        dsds
-      </DashboardEditContainer>
+      {/* Welcome Section */}
+      <WelcomeSection />
+
+      {/* Recent Activity */}
+      <RecentActivity />
     </div>
   );
 }

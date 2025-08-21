@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/feature/sidebar/app-sidebar";
-import { DashboardLoading } from "@/components/feature/dashboard/dashboard-loading";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 
@@ -44,9 +42,7 @@ export default function DashboardLayout({
             </div>
           </header>
           <main className="p-4 w-full">
-            <Suspense fallback={<DashboardLoading />}>
-              {children}
-            </Suspense>
+            {children}
           </main>
         </div>
       </SidebarProvider>

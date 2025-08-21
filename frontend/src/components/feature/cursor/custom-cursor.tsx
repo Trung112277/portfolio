@@ -19,40 +19,83 @@ export function CustomCursor() {
   } = useUIStore();
   const [reducedMotion, setReducedMotion] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Use refs to store current values to avoid dependency issues
+  const cursorEnabledRef = useRef(cursorEnabled);
+  const cursorSizeRef = useRef(cursorSize);
+  
+  // Throttling refs
+  const lastUpdateRef = useRef(0);
+  const throttleDelay = 16; // ~60fps
+  const mousePosRef = useRef({ x: 0, y: 0 });
+  const rafRef = useRef<number | undefined>(undefined);
 
   // Ensure we're on client side
   useEffect(() => {
     setIsClient(true);
   }, []);
 
+  // Update refs when store values change
+  useEffect(() => {
+    cursorEnabledRef.current = cursorEnabled;
+    cursorSizeRef.current = cursorSize;
+  }, [cursorEnabled, cursorSize]);
+
   // Smooth animation using requestAnimationFrame
   const updateCursorPosition = useCallback(() => {
     const cursor = cursorRef.current;
-    if (!cursor || !cursorEnabled) return;
+    if (!cursor || !cursorEnabledRef.current) return;
 
-    const x = mousePos.x - (cursorSize / 2);
-    const y = mousePos.y - (cursorSize / 2);
+    const x = mousePos.x - (cursorSizeRef.current / 2);
+    const y = mousePos.y - (cursorSizeRef.current / 2);
 
     // Sử dụng transform thay vì left/top để performance tốt hơn
     cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
     
     animationRef.current = requestAnimationFrame(updateCursorPosition);
-  }, [mousePos, cursorEnabled, cursorSize]);
+  }, [mousePos.x, mousePos.y]); // Remove store dependencies
 
-  // Optimized mouse move handler with throttling
+  // Optimized mouse move handler with requestAnimationFrame
   const handleMouseMove = useCallback((e: MouseEvent) => {
     try {
-      if (!cursorEnabled) return;
+      // Check cursorEnabled from ref to avoid dependency issues
+      if (!cursorEnabledRef.current) return;
       
-      setMousePos({ x: e.clientX, y: e.clientY });
+      // Store position in ref immediately
+      mousePosRef.current = { x: e.clientX, y: e.clientY };
+      
+      // Use requestAnimationFrame to update state only when needed
+      if (!rafRef.current) {
+        rafRef.current = requestAnimationFrame(() => {
+          setMousePos(mousePosRef.current);
+          rafRef.current = undefined;
+        });
+      }
     } catch (err) {
       console.error('Mouse move error:', err);
     }
-  }, [cursorEnabled]);
+  }, []); // No dependencies needed
+
+  // Handle cursor enabled/disabled state
+  useEffect(() => {
+    if (!isClient) return;
+    
+    if (!cursorEnabled) {
+      // Clean up when cursor is disabled
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = undefined;
+      }
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = undefined;
+      }
+    }
+  }, [cursorEnabled, isClient]);
 
   // Animation loop
   useEffect(() => {
-    if (!isClient || !cursorEnabled || reducedMotion) return;
+    if (!isClient || !cursorEnabledRef.current || reducedMotion) return;
     
     animationRef.current = requestAnimationFrame(updateCursorPosition);
     
@@ -61,11 +104,11 @@ export function CustomCursor() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [updateCursorPosition, cursorEnabled, reducedMotion, isClient]);
+  }, [updateCursorPosition, reducedMotion, isClient]); // Use ref instead of store value
 
   // Mouse move event listener
   useEffect(() => {
-    if (!isClient || !cursorEnabled) return;
+    if (!isClient) return;
     
     try {
       document.addEventListener("mousemove", handleMouseMove, { passive: true });
@@ -73,7 +116,7 @@ export function CustomCursor() {
     } catch (err) {
       console.error('Event listener error:', err);
     }
-  }, [handleMouseMove, cursorEnabled, isClient]);
+  }, [handleMouseMove, isClient]); // Remove cursorEnabled from dependencies
 
   // Respect prefers-reduced-motion
   useEffect(() => {
@@ -99,7 +142,7 @@ export function CustomCursor() {
 
   // Hover detection for interactive elements
   useEffect(() => {
-    if (!isClient || !cursorEnabled) return;
+    if (!isClient || !cursorEnabledRef.current) return;
 
     const handleMouseEnter = () => setIsHovering(true);
     const handleMouseLeave = () => setIsHovering(false);
@@ -119,7 +162,7 @@ export function CustomCursor() {
         el.removeEventListener('mouseleave', handleMouseLeave);
       });
     };
-  }, [cursorEnabled, isClient]);
+  }, [isClient]); // Remove cursorEnabled dependency
 
   // Scroll detection
   useEffect(() => {
@@ -134,6 +177,18 @@ export function CustomCursor() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [setScrolling, isClient]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, []);
 
   // Don't render during SSR or if cursor is disabled
   if (!isClient || !cursorEnabled) {

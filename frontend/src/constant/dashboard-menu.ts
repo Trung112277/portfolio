@@ -8,11 +8,15 @@ export const DASHBOARD_MENU = [
     path: "/dashboard/about-me",
   },
   {
+    name: "Tech",
+    path: "/dashboard/tech",
+  },
+  {
     name: "Projects",
     path: "/dashboard/projects",
   },
   {
-    name: "Tech",
-    path: "/dashboard/tech",
+    name: "User",
+    path: "/dashboard/user",
   },
 ];

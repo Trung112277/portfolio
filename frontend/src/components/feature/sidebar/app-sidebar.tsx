@@ -14,7 +14,7 @@ export function AppSidebar() {
   const [currentSection, setCurrentSection] = useState('overview');
 
   useEffect(() => {
-    // Listen for navigation changes
+    // Listen for navigation changes from dashboard content
     const checkNavigation = () => {
       if (window.dashboardNavigation) {
         setCurrentSection(window.dashboardNavigation.currentSection);
