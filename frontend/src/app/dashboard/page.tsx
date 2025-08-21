@@ -1,9 +1,5 @@
-
+import { DashboardContent } from "@/components/feature/dashboard/dashboard-content";
 
 export default function Dashboard() {
-  return (
-      <div>
-        <h1>Dashboard</h1>
-      </div>
-  );
+  return <DashboardContent />;
 }

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/feature/sidebar/app-sidebar";
+import { DashboardLoading } from "@/components/feature/dashboard/dashboard-loading";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 
@@ -8,6 +10,7 @@ export const metadata: Metadata = {
   title: "Dashboard | Nhat Trung Portfolio",
   description: "Dashboard for managing portfolio content and analytics",
 };
+
 export default function DashboardLayout({
   children,
 }: {
@@ -23,7 +26,7 @@ export default function DashboardLayout({
               <SidebarTrigger />
               <Link
                 href="/"
-                className="hover:text-primary text-xl font-bold flex items-center gap-2"
+                className="hover:text-primary text-xl font-bold flex items-center gap-2 transition-colors"
               >
                 <ArrowLeftIcon className="w-4 h-4" />
                 Go Back to Home
@@ -33,14 +36,18 @@ export default function DashboardLayout({
               <nav className="flex items-center gap-4">
                 <Link
                   href="/login"
-                  className="hover:text-primary  text-xl font-bold "
+                  className="hover:text-primary text-xl font-bold transition-colors"
                 >
                   Login
                 </Link>
               </nav>
             </div>
           </header>
-          <main className="p-4 w-full">{children}</main>
+          <main className="p-4 w-full">
+            <Suspense fallback={<DashboardLoading />}>
+              {children}
+            </Suspense>
+          </main>
         </div>
       </SidebarProvider>
     </>
