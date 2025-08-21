@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/feature/sidebar/app-sidebar";
 import Link from "next/link";
+import { ArrowLeftIcon } from "lucide-react";
 
+export const metadata: Metadata = {
+  title: "Dashboard | Nhat Trung Portfolio",
+  description: "Dashboard for managing portfolio content and analytics",
+};
 export default function DashboardLayout({
   children,
 }: {
@@ -7,22 +15,34 @@ export default function DashboardLayout({
 }) {
   return (
     <>
-      <nav className="bg-background border-b border-border p-4">
-        <div className="container mx-auto flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold hover:text-primary transition-colors">
-            ← Back to Portfolio
-          </Link>
-          <div className="flex items-center space-x-4">
-            <Link href="/" className="hover:text-primary transition-colors">
-              Home
-            </Link>
-            <Link href="/dashboard" className="hover:text-primary transition-colors">
-              Dashboard
-            </Link>
-          </div>
+      <SidebarProvider>
+        <AppSidebar />
+        <div className="flex flex-col w-full min-h-screen bg-gray-900">
+          <header className="flex items-center justify-between bg-background gap-4 w-full h-16 border-b border-border p-4">
+            <div className="flex items-center gap-4">
+              <SidebarTrigger />
+              <Link
+                href="/"
+                className="hover:text-primary text-xl font-bold flex items-center gap-2"
+              >
+                <ArrowLeftIcon className="w-4 h-4" />
+                Go Back to Home
+              </Link>
+            </div>
+            <div>
+              <nav className="flex items-center gap-4">
+                <Link
+                  href="/login"
+                  className="hover:text-primary  text-xl font-bold "
+                >
+                  Login
+                </Link>
+              </nav>
+            </div>
+          </header>
+          <main className="p-4 w-full">{children}</main>
         </div>
-      </nav>
-      {children}
+      </SidebarProvider>
     </>
   );
 }
