@@ -1,11 +1,10 @@
 import { DashboardTitle } from "@/components/heading/dashboar-title";
 import { DashboardEditContainer } from "../dashboard-edit-container";
 import AuthorEditForm from "../../form/dashboard/author-edit-form";
-import PrimaryButton from "@/components/button/primary-button";
-import { PlusIcon } from "lucide-react";
 import SocialMediaEdit from "./social-media-edit";
 import IntroductionEditForm from "../../form/dashboard/introduction-edit-form";
 import { TextStyleButton } from "@/components/button/text-style-button";
+import SocialMediaForm from "../../form/dashboard/social-medie-form";
 
 export function DashboardAboutMe() {
   return (
@@ -24,10 +23,7 @@ export function DashboardAboutMe() {
       </DashboardEditContainer>
       <DashboardEditContainer title="Social Media">
         <div className="flex flex-col gap-4">
-          <PrimaryButton>
-            <PlusIcon className="w-4 h-4" />
-            Add Social Media
-          </PrimaryButton>
+          <SocialMediaForm />
           <SocialMediaEdit />
         </div>
       </DashboardEditContainer>
