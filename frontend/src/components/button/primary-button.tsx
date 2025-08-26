@@ -8,11 +8,13 @@ interface PrimaryButtonProps extends React.ComponentProps<typeof Button> {
 export default function PrimaryButton({
   children,
   className,
+  variant = "default",
   ...props
 }: PrimaryButtonProps) {
   return (
     <Button 
-      className={cn("w-fit text-background mb-0", className)} 
+      className={cn("w-fit mb-0", className)} 
+      variant={variant}
       {...props}
     >
       {children}

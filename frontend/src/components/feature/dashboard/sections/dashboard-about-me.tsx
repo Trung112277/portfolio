@@ -3,7 +3,9 @@ import { DashboardEditContainer } from "../dashboard-edit-container";
 import AuthorEditForm from "../../form/dashboard/author-edit-form";
 import PrimaryButton from "@/components/button/primary-button";
 import { PlusIcon } from "lucide-react";
-import SocialMediaEdit from "../../form/dashboard/social-media-edit";
+import SocialMediaEdit from "./social-media-edit";
+import IntroductionEditForm from "../../form/dashboard/introduction-edit-form";
+import { TextStyleButton } from "@/components/button/text-style-button";
 
 export function DashboardAboutMe() {
   return (
@@ -15,6 +17,10 @@ export function DashboardAboutMe() {
 
       <DashboardEditContainer title="Personal Information">
         <AuthorEditForm />
+      </DashboardEditContainer>
+      <DashboardEditContainer title="Introduction">
+        <TextStyleButton />
+        <IntroductionEditForm />
       </DashboardEditContainer>
       <DashboardEditContainer title="Social Media">
         <div className="flex flex-col gap-4">

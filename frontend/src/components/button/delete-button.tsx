@@ -36,7 +36,7 @@ export default function DeleteButton() {
           <AlertDialogCancel className="bg-primary/10 border-primary/10 hover:bg-primary/20 text-primary hover:border-primary/20 hover:text-primary">
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction className="bg-red-500/10 border-red-500/10 hover:bg-red-500/20  hover:border-red-500/20 hover:text-red-500 text-white">
+          <AlertDialogAction className="bg-red-500/10 border-red-500/10 hover:bg-red-500/20 border hover:border-red-500/20 hover:text-red-500 text-white">
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>

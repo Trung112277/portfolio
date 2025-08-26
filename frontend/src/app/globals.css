@@ -186,7 +186,7 @@
     background: var(--primary);
     border-radius: 50%;
     pointer-events: none;
-    z-index: 9999;
+    z-index: 99999;
     box-shadow: 0 0 20px rgba(31, 195, 255, 0.6), 0 0 40px rgba(31, 195, 255, 0.3);
     backdrop-filter: blur(2px);
     will-change: transform;
@@ -227,7 +227,7 @@
     background: var(--primary);
     border-radius: 50%;
     pointer-events: none;
-    z-index: 9998;
+    z-index: 99998;
     transition: none; 
   }
 
@@ -451,12 +451,4 @@
 
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
 

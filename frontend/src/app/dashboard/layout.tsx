@@ -3,6 +3,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/feature/sidebar/app-sidebar";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Dashboard | Nhat Trung Portfolio",
@@ -41,9 +42,8 @@ export default function DashboardLayout({
               </nav>
             </div>
           </header>
-          <main className="p-4 w-full">
-            {children}
-          </main>
+          <main className="p-4 w-full">{children}</main>
+          <Toaster />
         </div>
       </SidebarProvider>
     </>
