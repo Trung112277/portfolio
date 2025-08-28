@@ -1,6 +1,6 @@
 import DeleteButton from "@/components/button/delete-button";
-import EditButton from "@/components/button/edit-button";
 import { SafeImage } from "@/components/ui/safe-image";
+import EditSocialMediaForm from "../../form/dashboard/edit-social-media-form";
 
 export default function SocialMediaEdit() {
   return (
@@ -32,7 +32,7 @@ export default function SocialMediaEdit() {
             <td className="p-2 border">#1fc3ff</td>
             <td className="p-2 border">
               <div className="flex justify-center items-center gap-2">
-                <EditButton onClick={() => {}} />
+                <EditSocialMediaForm socialMediaId="1" initialData={{}} />
                 <DeleteButton />
               </div>
             </td>
@@ -53,7 +53,7 @@ export default function SocialMediaEdit() {
             <td className="p-2 border">#1fc3ff</td>
             <td className="p-2 border">
               <div className="flex justify-center items-center gap-2">
-                <EditButton onClick={() => {}} />
+                <EditSocialMediaForm socialMediaId="2" initialData={{}} />
                 <DeleteButton />
               </div>
             </td>

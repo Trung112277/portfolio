@@ -4,7 +4,7 @@ import AuthorEditForm from "../../form/dashboard/author-edit-form";
 import SocialMediaEdit from "./social-media-edit";
 import IntroductionEditForm from "../../form/dashboard/introduction-edit-form";
 import { TextStyleButton } from "@/components/button/text-style-button";
-import SocialMediaForm from "../../form/dashboard/social-medie-form";
+import SocialMediaForm from "../../form/dashboard/social-media-form";
 
 export function DashboardAboutMe() {
   return (
@@ -23,7 +23,7 @@ export function DashboardAboutMe() {
       </DashboardEditContainer>
       <DashboardEditContainer title="Social Media">
         <div className="flex flex-col gap-4">
-          <SocialMediaForm />
+          <SocialMediaForm mode="add" />
           <SocialMediaEdit />
         </div>
       </DashboardEditContainer>
