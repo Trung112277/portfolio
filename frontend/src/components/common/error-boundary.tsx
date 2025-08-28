@@ -1,6 +1,7 @@
 "use client";
 
-import React from 'react';
+import React from "react";
+import { Button } from "../ui/button";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -12,7 +13,10 @@ interface ErrorBoundaryProps {
   fallback?: React.ComponentType<{ error?: Error; reset: () => void }>;
 }
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+class ErrorBoundary extends React.Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
@@ -23,7 +27,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error boundary caught an error:', error, errorInfo);
+    console.error("Error boundary caught an error:", error, errorInfo);
   }
 
   reset = () => {
@@ -38,20 +42,22 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
       }
 
       return (
-        <div className="min-h-[200px] flex items-center justify-center bg-card/50 rounded-lg border border-border">
+        <div className="min-h-screen flex items-center bg-background justify-center rounded-lg border border-border">
           <div className="text-center p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-2">
+            <h2 className="text-3xl font-bold uppercase mb-2 text-primary">
               Something went wrong
             </h2>
-            <p className="text-muted-foreground mb-4">
-              {this.state.error?.message || 'An unexpected error occurred'}
+            <p className="text-foreground mb-4">
+              {this.state.error?.message || "An unexpected error occurred"}
             </p>
-            <button
-              onClick={this.reset}
+            <Button
+              onClick={() => {  
+                this.reset();
+              }}
               className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
             >
               Try again
-            </button>
+            </Button>
           </div>
         </div>
       );
