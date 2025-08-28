@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { TargetIcon, UserIcon } from "lucide-react";
 
-export function WelcomeSection() {
+export function WelcomePanel() {
   return (
     <Card className="bg-gradient-to-r from-gray-800/50 to-gray-900/50 border-gray-700">
         <CardHeader>

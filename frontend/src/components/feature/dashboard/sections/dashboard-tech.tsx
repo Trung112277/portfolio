@@ -9,7 +9,7 @@ export function DashboardTech() {
         description="Manage technical skills and tools."
       />
 
-      <DashboardEditContainer title="Tech Stack">dsds</DashboardEditContainer>
+      <DashboardEditContainer title="Tech Set">dsds</DashboardEditContainer>
     </div>
   );
 }

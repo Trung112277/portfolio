@@ -1,7 +1,7 @@
 import { DashboardTitle } from "@/components/heading/dashboar-title";
-import { WelcomeSection } from "./welcome.-section";
-import { QuickStatsSection } from "./quick-stats-section";
-import { RecentActivity } from "./recent-activity";
+import { WelcomePanel } from "../panels/welcome-panel";
+import { QuickStatsPanel } from "../panels/quick-stats-panel";
+import { RecentActivityPanel } from "../panels/recent-activity-panel";
 
 export function DashboardOverview() {
   return (
@@ -12,13 +12,13 @@ export function DashboardOverview() {
       />
       
       {/* Quick Stats */}
-      <QuickStatsSection />
+      <QuickStatsPanel />
 
       {/* Welcome Section */}
-      <WelcomeSection />
+      <WelcomePanel />
 
       {/* Recent Activity */}
-      <RecentActivity />
+      <RecentActivityPanel />
     </div>
   );
 }

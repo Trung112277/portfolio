@@ -6,7 +6,7 @@ import {
   TrendingUpIcon,
 } from "lucide-react";
 
-export function QuickStatsSection() {
+export function QuickStatsPanel() {
   return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
     <Card className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border-blue-500/20">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-0">

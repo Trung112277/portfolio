@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export function RecentActivity() {
+export function RecentActivityPanel() {
   return (
     <Card className="bg-gradient-to-r from-gray-800/50 to-gray-900/50 border-gray-700">
       <CardHeader>
