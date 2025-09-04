@@ -50,10 +50,8 @@ export default function WorkExperienceForm({
     defaultValues: {
       ...initialData,
       workArrangement: initialData?.workArrangement ?? undefined,
-     },
+    },
   });
-
-  
 
   const handleFormSubmit: SubmitHandler<WorkExperienceFormInputs> = async (
     data

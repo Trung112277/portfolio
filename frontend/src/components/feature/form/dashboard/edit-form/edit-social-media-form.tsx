@@ -18,9 +18,15 @@ export default function EditSocialMediaForm({
   onUpdate,
 }: EditSocialMediaFormProps) {
   // Create a wrapper function to handle the image parameter
-  const handleUpdate = async (id: string, data: SocialMediaFormInputs, image?: File | null) => {
+  const handleUpdate = async (id: string, data: SocialMediaFormInputs, ...args: unknown[]) => {
+    // Extract image from args (first argument after data)
+    const image = args[0] as File | null | undefined;
+    
     if (onUpdate) {
       await onUpdate(id, data, image || null);
+    } else {
+      // Default behavior for testing
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
     }
   };
 

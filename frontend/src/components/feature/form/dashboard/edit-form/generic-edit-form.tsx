@@ -4,7 +4,7 @@ import EditButton from "@/components/button/edit-button";
 interface GenericEditFormProps<T> {
   itemId: string;
   initialData: Partial<T>;
-  onUpdate?: (id: string, data: T) => Promise<void>;
+  onUpdate?: (id: string, data: T, ...args: unknown[]) => Promise<void>;
   formComponent: React.ComponentType<{
     mode: "edit";
     initialData: Partial<T>;
@@ -28,14 +28,10 @@ export default function GenericEditForm<T>({
   const handleSubmit = async (data: T, ...args: unknown[]) => {
     try {
       if (onUpdate) {
-        await onUpdate(itemId, data);
+        await onUpdate(itemId, data, ...args);
       } else {
         // Default behavior
-        console.log(`Updating ${itemType}:`, {
-          id: itemId,
-          data,
-          additionalArgs: args,
-        });
+        console.log(`Form submitted, data:`, data);
 
         // TODO: Add API call here
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call

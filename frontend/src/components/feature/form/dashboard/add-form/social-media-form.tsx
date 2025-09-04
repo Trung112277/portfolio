@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 import AddItemButton from "@/components/button/add-item-button";
@@ -53,6 +53,18 @@ export default function SocialMediaForm({
   const { selectedColor, colorText, handleColorChange, handleColorTextChange } =
     useColorSync(watch, setValue);
 
+  // Reset form when initialData changes (important for edit mode)
+  useEffect(() => {
+    if (initialData) {
+      reset(initialData);
+      // Reset image states when editing
+      if (mode === "edit") {
+        setSelectedImage(null);
+        setImagePreview(null);
+      }
+    }
+  }, [initialData, reset, mode]);
+
   const handleImageChange = (file: File | null, preview: string | null) => {
     setSelectedImage(file);
     setImagePreview(preview);
@@ -66,26 +78,31 @@ export default function SocialMediaForm({
   const handleFormSubmit: SubmitHandler<SocialMediaFormInputs> = async (
     data
   ) => {
+    // Always log form data for debugging
+    console.log("Form submitted, data:", data);
+    console.log("Selected image:", selectedImage);
+
     try {
       if (onSubmit) {
         await onSubmit(data, selectedImage);
       } else {
         // Default behavior
-        console.log("Form submitted, data:", data);
-        console.log("Selected image:", selectedImage);
-
         // TODO: Add API call here
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-        console.log("Social media data submitted successfully");
       }
+
+      // Always show success message in console
+      console.log("Social media data submitted successfully");
 
       // Reset form and states
       reset();
       setSelectedImage(null);
       setImagePreview(null);
 
-      // Close dialog
-      setIsOpen(false);
+      // Only close dialog if not controlled by parent (i.e., in add mode)
+      if (mode === "add") {
+        setIsOpen(false);
+      }
 
       toast.success(
         mode === "edit"
