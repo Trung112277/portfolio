@@ -1,10 +1,10 @@
-import IntroductionEditForm from "../../form/dashboard/introduction-edit-form";
 import { DashboardEditContainer } from "../dashboard-edit-container";
+import EditIntroductionForm from "../../form/dashboard/edit-introduction-form";
 
 export function IntroductionPanel() {
   return (
     <DashboardEditContainer title="Introduction">
-      <IntroductionEditForm />
+      <EditIntroductionForm />
     </DashboardEditContainer>
   );
 }

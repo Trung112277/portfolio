@@ -32,7 +32,7 @@ export function ColorPickerField({
           type="color"
           value={selectedColor}
           onChange={onColorChange}
-          className="w-16 h-9 p-1"
+          className={`w-16 h-9 p-1 ${errors.color ? "border-red-500" : ""}`}
           disabled={isSubmitting}
         />
         <Input
@@ -43,12 +43,11 @@ export function ColorPickerField({
           placeholder="Enter color code"
           className={`flex-1 ${errors.color ? "border-red-500" : ""}`}
           disabled={isSubmitting}
+          defaultValue={selectedColor}
         />
       </div>
       {errors.color && (
-        <p className="mt-1 text-sm text-red-600">
-          {errors.color.message}
-        </p>
+        <p className=" text-sm text-red-600">{errors.color.message}</p>
       )}
     </div>
   );

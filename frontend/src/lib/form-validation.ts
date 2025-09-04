@@ -1,9 +1,11 @@
-import { FORM_CONSTANTS } from "@/constant/form-constants";
-import { SocialMediaFormInputs } from "@/types/social-media-form";
 
 export type ValidationSchema = {
   required?: string | boolean;
   minLength?: {
+    value: number;
+    message: string;
+  };
+  maxLength?: {
     value: number;
     message: string;
   };
@@ -14,37 +16,180 @@ export type ValidationSchema = {
   validate?: (value: unknown) => boolean | string; 
 };
 
-
-export const validationSchemas = {
+export const validationPatterns = {
+  // Pattern cho author name
+  authorName: {
+    value: /^(?=.*[a-zA-Z])[0-9a-zA-Z\s,.=\-+]+$/,
+    message: "Author name must contain only letters, digits, commas, hyphens, and equal signs",
+  },
+  
+  // Pattern cho introduction
+  introduction: {
+    value: /^(?=.*[a-zA-Z])[\p{Emoji}0-9a-zA-Z\s,.=\-+!?'"()\[\]{}:;]+$/u,
+    message: "Introduction must contain only letters, digits, commas, hyphens, and equal signs",
+  },
+  
+  // Pattern cho URL
+  url: {
+    value: /^https?:\/\/.+/,
+    message: "Please enter a valid URL starting with http:// or https://",
+  },
+  
+  // Pattern cho color hex
+  colorHex: {
+    value: /^#[0-9A-Fa-f]{6}$/,
+    message: "Please enter a valid hex color code (e.g., #FF0000)",
+  },
+  
+  // Pattern cho description
   description: {
-    required: FORM_CONSTANTS.VALIDATION.DESCRIPTION.REQUIRED_MESSAGE,
-    minLength: {
-      value: FORM_CONSTANTS.VALIDATION.DESCRIPTION.MIN_LENGTH,
-      message: FORM_CONSTANTS.VALIDATION.DESCRIPTION.MIN_LENGTH_MESSAGE,
-    },
+    value: /^[\p{Emoji}0-9a-zA-Z\s,.=\-+!?'"()\[\]{}:;]+$/u,
+    message: "Description contains invalid characters",
   },
-  link: {
-    required: FORM_CONSTANTS.VALIDATION.LINK.REQUIRED_MESSAGE,
-    pattern: {
-      value: FORM_CONSTANTS.VALIDATION.LINK.PATTERN,
-      message: FORM_CONSTANTS.VALIDATION.LINK.PATTERN_MESSAGE,
-    },
+
+  companyName: {
+    value: /^[a-zA-Z0-9\s&.,'-]+$/,
+    message: "Company name contains invalid characters",
   },
-  color: {
-    required: FORM_CONSTANTS.VALIDATION.COLOR.REQUIRED_MESSAGE,
-    pattern: {
-      value: FORM_CONSTANTS.VALIDATION.COLOR.PATTERN,
-      message: FORM_CONSTANTS.VALIDATION.COLOR.PATTERN_MESSAGE,
-    },
+  
+  // Pattern cho position
+  position: {
+    value: /^[a-zA-Z0-9\s&.,'-]+$/,
+    message: "Position contains invalid characters",
   },
-  image: {
-    validate: (value: FileList) => {
-      // This will be handled by the component state
-      return true;
-    },
+  
+  // Pattern cho year
+  year: {
+    value: /^(19|20)\d{2}$/,
+    message: "Please enter a valid year between 1900 and 2099",
+  },
+  
+  // Pattern cho work arrangement
+  workArrangement: {
+    value: /^(Full-time|Part-time|Contract|Freelance|Internship)$/,
+    message: "Please select a valid work arrangement",
+  },
+  
+  // Pattern cho tech stack
+  techStack: {
+    value: /^[a-zA-Z0-9\s,]+$/,
+    message: "Tech stack contains invalid characters",
   },
 } as const;
 
-export const getFieldValidation = (fieldName: keyof SocialMediaFormInputs): ValidationSchema => {
-  return validationSchemas[fieldName] as ValidationSchema;
+export const validationRules = {
+  authorName: {
+    required: "Author name is required",
+    pattern: validationPatterns.authorName,
+    minLength: {
+      value: 2,
+      message: "Name must be at least 2 characters",
+    },
+  },
+  
+  introduction: {
+    required: "Introduction is required",
+    pattern: validationPatterns.introduction,
+    minLength: {
+      value: 20,
+      message: "Introduction must be at least 20 characters",
+    },
+    maxLength: {
+      value: 500,
+      message: "Introduction must be less than 500 characters",
+    },
+  },
+  
+  description: {
+    required: "Description is required",
+    pattern: validationPatterns.description,
+    minLength: {
+      value: 5,
+      message: "Description must be at least 5 characters",
+    },
+    maxLength: {
+      value: 200,
+      message: "Description must be less than 200 characters",
+    },
+  },
+  
+  link: {
+    required: "Link is required",
+    pattern: validationPatterns.url,
+  },
+  
+  color: {
+    required: "Color is required",
+    pattern: validationPatterns.colorHex,
+  },
+
+  companyName: {
+    required: "Company name is required",
+    pattern: validationPatterns.companyName,
+    minLength: {
+      value: 2,
+      message: "Company name must be at least 2 characters",
+    },
+    maxLength: {
+      value: 100,
+      message: "Company name must be less than 100 characters",
+    },
+  },
+  
+  position: {
+    required: "Position is required",
+    pattern: validationPatterns.position,
+    minLength: {
+      value: 2,
+      message: "Position must be at least 2 characters",
+    },
+    maxLength: {
+      value: 100,
+      message: "Position must be less than 100 characters",
+    },
+  },
+  
+  year: {
+    required: "Year is required",
+    pattern: validationPatterns.year,
+  },
+  
+  workArrangement: {
+    required: "Work arrangement is required",
+    pattern: validationPatterns.workArrangement,
+  },
+  
+  techStack: {
+    required: "Tech stack is required",
+    pattern: validationPatterns.techStack,
+    minLength: {
+      value: 2,
+      message: "Tech stack must be at least 2 characters",
+    },
+    maxLength: {
+      value: 200,
+      message: "Tech stack must be less than 200 characters",
+    },
+  },
+  
+  image: {
+    validate: (value: unknown) => {
+      if (value instanceof File) {
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        if (value.size > maxSize) {
+          return "Image size must be less than 10MB";
+        }
+        
+        const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+        if (!allowedTypes.includes(value.type)) {
+          return "Please upload a valid image file (JPEG, PNG, GIF, or WebP)";
+        }
+      }
+      return true;
+    },
+  },
+};
+
+export const getFieldValidation = (fieldName: keyof typeof validationRules): ValidationSchema => {
+  return validationRules[fieldName] as ValidationSchema;
 };

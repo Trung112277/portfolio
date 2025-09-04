@@ -1,10 +1,10 @@
-import AuthorEditForm from "../../form/dashboard/author-edit-form";
 import { DashboardEditContainer } from "../dashboard-edit-container";
+import EditAuthorForm from "../../form/dashboard/edit-author-form";
 
 export function PersonalInformationPanel() {
   return (
     <DashboardEditContainer title="Personal Information">
-    <AuthorEditForm />
+    <EditAuthorForm />
   </DashboardEditContainer>
   );
 }

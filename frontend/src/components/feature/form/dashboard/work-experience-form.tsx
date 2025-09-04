@@ -1,13 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 import AddItemButton from "@/components/button/add-item-button";
 import PrimaryButton from "@/components/button/primary-button";
-import { ImageUploadField } from "../field-form/image-upload-field";
-import { ColorPickerField } from "../field-form/color-picker-field";
-import { useColorSync } from "../../../../hooks/useColorSync";
 import { useDialogState } from "../../../../hooks/useDialogState";
 import {
   Dialog,
@@ -16,84 +12,77 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  SocialMediaFormInputs,
-  SocialMediaFormProps,
-} from "@/types/social-media-form";
+  WorkExperienceFormInputs,
+  WorkExperienceFormProps,
+} from "@/types/work-experience-form";
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "../field-form/text-input-field";
+import { TextareaField } from "../field-form/textarea-field";
+import { SelectField } from "../field-form/select-field";
+import YearField from "../field-form/year-field";
 
-export default function SocialMediaForm({
+const WORK_ARRANGEMENT_OPTIONS = [
+  { value: "Full-time", label: "Full-time" },
+  { value: "Part-time", label: "Part-time" },
+  { value: "Contract", label: "Contract" },
+  { value: "Freelance", label: "Freelance" },
+  { value: "Internship", label: "Internship" },
+];
+
+export default function WorkExperienceForm({
   mode = "add",
   initialData,
   onSubmit,
   onCancel,
   open,
   onOpenChange,
-}: SocialMediaFormProps) {
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-
+}: WorkExperienceFormProps) {
   const { isOpen, setIsOpen } = useDialogState(open, onOpenChange);
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
     reset,
-    setValue,
-    watch,
-  } = useForm<SocialMediaFormInputs>({
+  } = useForm<WorkExperienceFormInputs>({
     mode: "onSubmit",
-    defaultValues: initialData,
+    defaultValues: {
+      ...initialData,
+      workArrangement: initialData?.workArrangement ?? undefined,
+     },
   });
-  const methods = useForm({
-    mode: "onChange",
-  });
 
-  const { selectedColor, colorText, handleColorChange, handleColorTextChange } =
-    useColorSync(watch, setValue);
+  
 
-  const handleImageChange = (file: File | null, preview: string | null) => {
-    setSelectedImage(file);
-    setImagePreview(preview);
-  };
-
-  const handleRemoveImage = () => {
-    setSelectedImage(null);
-    setImagePreview(null);
-  };
-
-  const handleFormSubmit: SubmitHandler<SocialMediaFormInputs> = async (
+  const handleFormSubmit: SubmitHandler<WorkExperienceFormInputs> = async (
     data
   ) => {
     try {
       if (onSubmit) {
-        await onSubmit(data, selectedImage);
+        await onSubmit(data);
       } else {
         // Default behavior
         console.log("Form submitted, data:", data);
-        console.log("Selected image:", selectedImage);
 
         // TODO: Add API call here
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-        console.log("Social media data submitted successfully");
+        console.log("Work experience data submitted successfully");
       }
 
-      // Reset form and states
+      // Reset form
       reset();
-      setSelectedImage(null);
-      setImagePreview(null);
 
       // Close dialog
       setIsOpen(false);
 
       toast.success(
         mode === "edit"
-          ? "Social media updated successfully"
-          : "Social media added successfully"
+          ? "Work experience updated successfully"
+          : "Work experience added successfully"
       );
     } catch (error) {
-      console.error("Error submitting social media data:", error);
+      console.error("Error submitting work experience data:", error);
       if (error instanceof Error) {
         toast.error(`Error: ${error.message}`);
       } else {
@@ -115,7 +104,10 @@ export default function SocialMediaForm({
       return null; // Edit mode doesn't need a trigger button
     }
     return (
-      <AddItemButton onClick={() => setIsOpen(true)} label="Add Social Media" />
+      <AddItemButton
+        onClick={() => setIsOpen(true)}
+        label="Add Work Experience"
+      />
     );
   };
 
@@ -132,50 +124,70 @@ export default function SocialMediaForm({
         >
           <DialogHeader>
             <DialogTitle>
-              {mode === "edit" ? "Edit Social Media" : "Add Social Media"}
+              {mode === "edit" ? "Edit Work Experience" : "Add Work Experience"}
             </DialogTitle>
           </DialogHeader>
 
-          <ImageUploadField
+          <TextInputField
+            label="Position"
             register={register}
+            name="position"
             errors={errors}
-            selectedImage={selectedImage}
-            imagePreview={imagePreview}
-            onImageChange={handleImageChange}
-            onRemoveImage={handleRemoveImage}
+            placeholder="Enter Position"
+            validation={getFieldValidation("position")}
             isSubmitting={isSubmitting}
           />
 
           <TextInputField
+            label="Company Name"
+            register={register}
+            name="companyName"
+            errors={errors}
+            placeholder="Enter Company Name"
+            validation={getFieldValidation("companyName")}
+            isSubmitting={isSubmitting}
+          />
+
+          <YearField
+            label="Year"
+            register={register}
+            name="year"
+            errors={errors}
+            placeholder="Start Year"
+            secondaryPlaceholder="End Year"
+            validation={getFieldValidation("year")}
+            isSubmitting={isSubmitting}
+          />
+          <SelectField
+            label="Work Arrangement"
+            control={control}
+            name="workArrangement"
+            errors={errors}
+            options={WORK_ARRANGEMENT_OPTIONS}
+            validation={getFieldValidation("workArrangement")}
+            isSubmitting={isSubmitting}
+            placeholder="Select work arrangement"
+          />
+
+          <TextInputField
+            label="Tech Stack"
+            register={register}
+            name="techStack"
+            errors={errors}
+            placeholder="Enter Tech Stack"
+            validation={getFieldValidation("techStack")}
+            isSubmitting={isSubmitting}
+          />
+
+          <TextareaField
             label="Description"
             register={register}
             name="description"
             errors={errors}
-            placeholder="Enter description"
+            placeholder="Describe your role and achievements..."
             validation={getFieldValidation("description")}
             isSubmitting={isSubmitting}
-          />
-
-          <TextInputField
-            label="Link"
-            register={register}
-            name="link"
-            errors={errors}
-            placeholder="Enter URL"
-            validation={getFieldValidation("link")}
-            isSubmitting={isSubmitting}
-            type="url"
-          />
-
-          <ColorPickerField
-            register={register}
-            errors={errors}
-            selectedColor={selectedColor}
-            colorText={colorText}
-            onColorChange={handleColorChange}
-            onColorTextChange={handleColorTextChange}
-            validation={getFieldValidation("color")}
-            isSubmitting={isSubmitting}
+            rows={4}
           />
 
           <PrimaryButton type="submit" disabled={isSubmitting}>
@@ -184,8 +196,8 @@ export default function SocialMediaForm({
                 ? "Updating..."
                 : "Adding..."
               : mode === "edit"
-              ? "Update Social Media"
-              : "Add Social Media"}
+              ? "Update Work Experience"
+              : "Add Work Experience"}
           </PrimaryButton>
         </form>
       </DialogContent>

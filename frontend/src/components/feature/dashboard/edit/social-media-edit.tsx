@@ -38,7 +38,7 @@ export default function SocialMediaEdit() {
             </td>
           </tr>
           <tr>
-            <td className="flex justify-center items-center p-2 border ">
+            <td className="flex justify-center items-center p-2 border object-cover ">
               <SafeImage
                 src="/frontend-tech/nextjs-logo.png"
                 alt="Next.js"

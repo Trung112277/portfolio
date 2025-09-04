@@ -20,12 +20,12 @@ const truncateFileName = (fileName: string, maxLength: number = 25) => {
   if (fileName.length <= maxLength) {
     return fileName;
   }
-  
-  const extension = fileName.split('.').pop();
-  const nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
+
+  const extension = fileName.split(".").pop();
+  const nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
   const truncatedName = nameWithoutExtension.substring(0, maxLength - 3);
-  
-  return `${truncatedName}...${extension ? `.${extension}` : ''}`;
+
+  return `${truncatedName}...${extension ? `.${extension}` : ""}`;
 };
 
 export function ImageUploadField({
@@ -77,27 +77,30 @@ export function ImageUploadField({
           className="absolute inset-0 w-full h-full opacity-0 max-w-full"
           {...register("image", {
             onChange: handleImageChange,
-            validate: (value) => {
-              if (!selectedImage) {
-                return "Please select an image";
-              }
-              return true;
+            validate: (value: FileList) => {
+              return value && value.length > 0
+                ? true
+                : "Please select an image";
             },
           })}
         />
-         <div className="flex items-center justify-start w-full h-9 px-3 py-1 text-base border border-input rounded-md bg-transparent text-muted-foreground">
-          <span 
-            className="truncate" 
+        <div
+          className={`flex items-center justify-start w-full h-9 px-3 py-1 text-base border border-input rounded-md bg-transparent text-muted-foreground ${
+            errors.image ? "border-red-500" : ""
+          }`}
+        >
+          <span
+            className="truncate"
             title={selectedImage?.name || "Select image"}
           >
-            {selectedImage ? truncateFileName(selectedImage.name) : "Select image"}
+            {selectedImage
+              ? truncateFileName(selectedImage.name)
+              : "Select image"}
           </span>
         </div>
       </div>
       {errors.image && (
-        <p className="mt-1 text-sm text-red-600">
-          {errors.image.message}
-        </p>
+        <p className="text-sm text-red-600">{errors.image.message}</p>
       )}
     </div>
   );
