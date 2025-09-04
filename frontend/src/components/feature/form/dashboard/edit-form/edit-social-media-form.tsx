@@ -1,7 +1,6 @@
-import { useState } from "react";
 import SocialMediaForm from "../add-form/social-media-form";
 import { SocialMediaFormInputs } from "@/types/social-media-form";
-import EditButton from "@/components/button/edit-button";
+import GenericEditForm from "./generic-edit-form";
 
 interface EditSocialMediaFormProps {
   socialMediaId: string;
@@ -18,49 +17,20 @@ export default function EditSocialMediaForm({
   initialData,
   onUpdate,
 }: EditSocialMediaFormProps) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleSubmit = async (
-    data: SocialMediaFormInputs,
-    image: File | null
-  ) => {
-    try {
-      if (onUpdate) {
-        await onUpdate(socialMediaId, data, image);
-      } else {
-        // Default behavior
-        console.log("Updating social media:", {
-          id: socialMediaId,
-          data,
-          image,
-        });
-
-        // TODO: Add API call here
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-        console.log("Social media updated successfully");
-      }
-    } catch (error) {
-      console.error("Error updating social media:", error);
-      throw error; // Re-throw to let the parent form handle the error
+  // Create a wrapper function to handle the image parameter
+  const handleUpdate = async (id: string, data: SocialMediaFormInputs, image?: File | null) => {
+    if (onUpdate) {
+      await onUpdate(id, data, image || null);
     }
   };
 
-  const handleCancel = () => {
-    setIsOpen(false);
-  };
-
   return (
-    <>
-      <EditButton onClick={() => setIsOpen(true)} />
-
-      <SocialMediaForm
-        mode="edit"
-        initialData={initialData}
-        onSubmit={handleSubmit}
-        onCancel={handleCancel}
-        open={isOpen}
-        onOpenChange={setIsOpen}
-      />
-    </>
+    <GenericEditForm
+      itemId={socialMediaId}
+      initialData={initialData}
+      onUpdate={handleUpdate}
+      formComponent={SocialMediaForm}
+      itemType="social media"
+    />
   );
 }

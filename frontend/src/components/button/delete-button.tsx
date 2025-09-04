@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export default function DeleteButton() {
+export default function DeleteButton({ title }: { title: string }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -26,10 +26,10 @@ export default function DeleteButton() {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="text-primary text-lg font-bold">
-            Delete Social Media
+            Delete {title}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-foreground text-sm">
-            Are you sure you want to delete this social media?
+            Are you sure you want to delete this {title}?
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

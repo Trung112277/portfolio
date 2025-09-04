@@ -33,7 +33,7 @@ export default function SocialMediaEdit() {
             <td className="p-2 border">
               <div className="flex justify-center items-center gap-2">
                 <EditSocialMediaForm socialMediaId="1" initialData={{}} />
-                <DeleteButton />
+                <DeleteButton title="Social Media" />
               </div>
             </td>
           </tr>
@@ -53,8 +53,13 @@ export default function SocialMediaEdit() {
             <td className="p-2 border">#1fc3ff</td>
             <td className="p-2 border">
               <div className="flex justify-center items-center gap-2">
-                <EditSocialMediaForm socialMediaId="2" initialData={{}} />
-                <DeleteButton />
+                <EditSocialMediaForm socialMediaId="2" initialData={{}}
+                onUpdate={async () => {
+                  await new Promise((resolve) => setTimeout(resolve, 1000));
+                  console.log("Social media updated successfully");
+                }}
+                />
+                <DeleteButton title="Social Media" />
               </div>
             </td>
           </tr>

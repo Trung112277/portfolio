@@ -1,4 +1,5 @@
 import DeleteButton from "@/components/button/delete-button";
+import EditWorkExperienceForm from "@/components/feature/form/dashboard/edit-form/edit-work-experience-form";
 
 export function WorkExperienceEditItem() {
   return (
@@ -65,8 +66,15 @@ export function WorkExperienceEditItem() {
         </div>
       </div>
       <div className="flex items-center w-full justify-center gap-4 py-4">
-        <DeleteButton />
-        <DeleteButton />
+        <EditWorkExperienceForm
+          workExperienceId="1"
+          initialData={{}}
+          onUpdate={async () => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            console.log("Work experience updated successfully");
+          }}
+        />
+        <DeleteButton title="Work Experience" />
       </div>
     </div>
   );
