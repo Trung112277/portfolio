@@ -1,6 +1,6 @@
 import DeleteButton from "@/components/button/delete-button";
 import { SafeImage } from "@/components/ui/safe-image";
-import EditSocialMediaForm from "../../form/dashboard/edit-social-media-form";
+import EditSocialMediaForm from "../../../form/dashboard/edit-form/edit-social-media-form";
 
 export default function SocialMediaEdit() {
   return (

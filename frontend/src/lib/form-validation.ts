@@ -1,4 +1,3 @@
-
 export type ValidationSchema = {
   required?: string | boolean;
   minLength?: {
@@ -13,34 +12,36 @@ export type ValidationSchema = {
     value: RegExp;
     message: string;
   };
-  validate?: (value: unknown) => boolean | string; 
+  validate?: (value: unknown) => boolean | string;
 };
 
 export const validationPatterns = {
   // Pattern cho author name
   authorName: {
     value: /^(?=.*[a-zA-Z])[0-9a-zA-Z\s,.=\-+]+$/,
-    message: "Author name must contain only letters, digits, commas, hyphens, and equal signs",
+    message:
+      "Author name must contain only letters, digits, commas, hyphens, and equal signs",
   },
-  
+
   // Pattern cho introduction
   introduction: {
     value: /^(?=.*[a-zA-Z])[\p{Emoji}0-9a-zA-Z\s,.=\-+!?'"()\[\]{}:;]+$/u,
-    message: "Introduction must contain only letters, digits, commas, hyphens, and equal signs",
+    message:
+      "Introduction must contain only letters, digits, commas, hyphens, and equal signs",
   },
-  
+
   // Pattern cho URL
   url: {
     value: /^https?:\/\/.+/,
     message: "Please enter a valid URL starting with http:// or https://",
   },
-  
+
   // Pattern cho color hex
   colorHex: {
     value: /^#[0-9A-Fa-f]{6}$/,
     message: "Please enter a valid hex color code (e.g., #FF0000)",
   },
-  
+
   // Pattern cho description
   description: {
     value: /^[\p{Emoji}0-9a-zA-Z\s,.=\-+!?'"()\[\]{}:;]+$/u,
@@ -51,25 +52,25 @@ export const validationPatterns = {
     value: /^[a-zA-Z0-9\s&.,'-]+$/,
     message: "Company name contains invalid characters",
   },
-  
+
   // Pattern cho position
   position: {
     value: /^[a-zA-Z0-9\s&.,'-]+$/,
     message: "Position contains invalid characters",
   },
-  
+
   // Pattern cho year
   year: {
     value: /^(19|20)\d{2}$/,
     message: "Please enter a valid year between 1900 and 2099",
   },
-  
+
   // Pattern cho work arrangement
   workArrangement: {
     value: /^(Full-time|Part-time|Contract|Freelance|Internship)$/,
     message: "Please select a valid work arrangement",
   },
-  
+
   // Pattern cho tech stack
   techStack: {
     value: /^[a-zA-Z0-9\s,]+$/,
@@ -85,8 +86,12 @@ export const validationRules = {
       value: 2,
       message: "Name must be at least 2 characters",
     },
+    maxLength: {
+      value: 100,
+      message: "Name cannot exceed 100 characters",
+    },
   },
-  
+
   introduction: {
     required: "Introduction is required",
     pattern: validationPatterns.introduction,
@@ -99,7 +104,7 @@ export const validationRules = {
       message: "Introduction must be less than 500 characters",
     },
   },
-  
+
   description: {
     required: "Description is required",
     pattern: validationPatterns.description,
@@ -112,12 +117,12 @@ export const validationRules = {
       message: "Description must be less than 200 characters",
     },
   },
-  
+
   link: {
     required: "Link is required",
     pattern: validationPatterns.url,
   },
-  
+
   color: {
     required: "Color is required",
     pattern: validationPatterns.colorHex,
@@ -135,7 +140,7 @@ export const validationRules = {
       message: "Company name must be less than 100 characters",
     },
   },
-  
+
   position: {
     required: "Position is required",
     pattern: validationPatterns.position,
@@ -148,17 +153,17 @@ export const validationRules = {
       message: "Position must be less than 100 characters",
     },
   },
-  
+
   year: {
     required: "Year is required",
     pattern: validationPatterns.year,
   },
-  
+
   workArrangement: {
     required: "Work arrangement is required",
     pattern: validationPatterns.workArrangement,
   },
-  
+
   techStack: {
     required: "Tech stack is required",
     pattern: validationPatterns.techStack,
@@ -171,7 +176,7 @@ export const validationRules = {
       message: "Tech stack must be less than 200 characters",
     },
   },
-  
+
   image: {
     validate: (value: unknown) => {
       if (value instanceof File) {
@@ -179,8 +184,13 @@ export const validationRules = {
         if (value.size > maxSize) {
           return "Image size must be less than 10MB";
         }
-        
-        const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+
+        const allowedTypes = [
+          "image/jpeg",
+          "image/png",
+          "image/gif",
+          "image/webp",
+        ];
         if (!allowedTypes.includes(value.type)) {
           return "Please upload a valid image file (JPEG, PNG, GIF, or WebP)";
         }
@@ -190,6 +200,8 @@ export const validationRules = {
   },
 };
 
-export const getFieldValidation = (fieldName: keyof typeof validationRules): ValidationSchema => {
+export const getFieldValidation = (
+  fieldName: keyof typeof validationRules
+): ValidationSchema => {
   return validationRules[fieldName] as ValidationSchema;
 };

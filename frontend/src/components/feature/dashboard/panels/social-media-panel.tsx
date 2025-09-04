@@ -1,6 +1,6 @@
-import SocialMediaForm from "../../form/dashboard/social-media-form";
+import SocialMediaForm from "../../form/dashboard/add-form/social-media-form";
 import { DashboardEditContainer } from "../dashboard-edit-container";
-import SocialMediaEdit from "../edit/social-media-edit";
+import SocialMediaEdit from "../edit/social-media-edit/social-media-edit";
 
 export function SocialMediaPanel() {
   return (

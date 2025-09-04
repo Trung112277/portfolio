@@ -1,6 +1,6 @@
 import { DashboardEditContainer } from "../dashboard-edit-container";
-import { WorkExperienceEdit } from "../edit/work-exoerience-edit";
-import WorkExperienceForm from "../../form/dashboard/work-experience-form";
+import { WorkExperienceEdit } from "../edit/work-experience-edit/work-experience-edit";
+import WorkExperienceForm from "../../form/dashboard/add-form/work-experience-form";
 
 export function WorkExperiencePanel() {
   return (

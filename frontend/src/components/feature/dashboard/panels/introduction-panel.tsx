@@ -1,5 +1,5 @@
 import { DashboardEditContainer } from "../dashboard-edit-container";
-import EditIntroductionForm from "../../form/dashboard/edit-introduction-form";
+import EditIntroductionForm from "../../form/dashboard/edit-form/edit-introduction-form";
 
 export function IntroductionPanel() {
   return (

@@ -5,10 +5,10 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 import AddItemButton from "@/components/button/add-item-button";
 import PrimaryButton from "@/components/button/primary-button";
-import { ImageUploadField } from "../field-form/image-upload-field";
-import { ColorPickerField } from "../field-form/color-picker-field";
-import { useColorSync } from "../../../../hooks/useColorSync";
-import { useDialogState } from "../../../../hooks/useDialogState";
+import { ImageUploadField } from "../../field-form/image-upload-field";
+import { ColorPickerField } from "../../field-form/color-picker-field";
+import { useColorSync } from "../../../../../hooks/useColorSync";
+import { useDialogState } from "../../../../../hooks/useDialogState";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   SocialMediaFormProps,
 } from "@/types/social-media-form";
 import { getFieldValidation } from "@/lib/form-validation";
-import { TextInputField } from "../field-form/text-input-field";
+import { TextInputField } from "../../field-form/text-input-field";
 
 export default function SocialMediaForm({
   mode = "add",
