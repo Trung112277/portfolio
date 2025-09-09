@@ -94,7 +94,7 @@ export default function RootLayout({
   }
 
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body
         className={`${openSans.variable} font-open-sans antialiased`}
         data-scroll-behavior="smooth"

@@ -1,4 +1,4 @@
-import TechItem from "./tech-item";
+import TechItem from "@/components/feature/tech/tech-item";
 
 export default function TechList() {
   return <div className="flex flex-col gap-5 md:gap-10">

@@ -1,4 +1,4 @@
-import { FrontendGlowBow } from "../glow-bow/frontend-glow-bow";
+import { FrontendGlowBow } from "@/components/feature/glow-bow/frontend-glow-bow";
 
 interface TechItemProps {
   title: string;

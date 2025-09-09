@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -7,7 +8,6 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { DASHBOARD_MENU } from "@/constant/dashboard-menu";
-import { useEffect, useState } from "react";
 import { DashboardNavButton } from "@/components/button/dashboard-nav-button";
 
 export function AppSidebar() {

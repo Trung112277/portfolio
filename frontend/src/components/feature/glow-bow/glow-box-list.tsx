@@ -1,5 +1,5 @@
 import { SafeImage } from "@/components/ui/safe-image";
-import { GlowBoxItem } from "./glow-box-item";
+import { GlowBoxItem } from "@/components/feature/glow-bow/glow-box-item";
 import { BaseTechStack } from "@/types/tech-stack";
 
 interface GlowBoxListProps {

@@ -8,8 +8,8 @@ import {
   DashboardAboutMe,
   DashboardProjects,
   DashboardTech
-} from "./sections";
-import { DashboardUser } from "./sections/dashboard-user";
+} from "@/components/feature/dashboard/sections";
+import { DashboardUser } from "@/components/feature/dashboard/sections/dashboard-user";
 
 export function DashboardContent() {
   const router = useRouter();

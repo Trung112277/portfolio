@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import BaseEditForm from "./base-edit-form";
+import BaseEditForm from "@/components/feature/form/dashboard/edit-form/base-edit-form";
 import { validationRules } from "@/lib/form-validation";
 import { FormConfig } from "@/hooks/useFormHandler";
 

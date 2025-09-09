@@ -1,5 +1,5 @@
 import { memo } from "react";
-import TimelineItem from "./timeline-item";
+import TimelineItem from "@/components/feature/timeline/timeline-item";
 import { TIMELINE_DATA } from "@/data/timeline-data";
 
 const TimelineList = memo(() => {

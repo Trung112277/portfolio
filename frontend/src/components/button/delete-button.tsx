@@ -1,5 +1,5 @@
 import { TrashIcon } from "lucide-react";
-import IconButton from "./icon-button";
+import IconButton from "@/components/button/icon-button";
 import {
   AlertDialog,
   AlertDialogAction,

@@ -1,5 +1,5 @@
 import { PencilIcon } from "lucide-react";
-import IconButton from "./icon-button";
+import IconButton from "@/components/button/icon-button";
 
 export default function EditButton({ onClick }: { onClick: () => void }) {
   return (

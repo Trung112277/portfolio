@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback, useState } from "react";
-import TrailDots from "./trail-dots";
+import TrailDots from "@/components/feature/cursor/trail-dots";
 import { useUIStore } from "@/stores";
 
 export function CustomCursor() {
@@ -49,7 +49,7 @@ export function CustomCursor() {
     const x = mousePos.x - (cursorSizeRef.current / 2);
     const y = mousePos.y - (cursorSizeRef.current / 2);
 
-    // Sử dụng transform thay vì left/top để performance tốt hơn
+    // Using transform instead of left/top for better performance
     cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
     
     animationRef.current = requestAnimationFrame(updateCursorPosition);

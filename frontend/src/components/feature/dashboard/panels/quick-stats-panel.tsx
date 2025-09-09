@@ -1,10 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BriefcaseIcon,
   CalendarIcon,
   CodeIcon,
   TrendingUpIcon,
 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 
 export function QuickStatsPanel() {
   return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -1,4 +1,4 @@
-import { WorkExperienceEditItem } from "./work-experience-edit-item";
+import { WorkExperienceEditItem } from "@/components/feature/dashboard/edit/work-experience-edit/work-experience-edit-item";
 
 export function WorkExperienceEditList() {
   return (

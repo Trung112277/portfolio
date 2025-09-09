@@ -1,6 +1,6 @@
-import SocialMediaForm from "../add-form/social-media-form";
+import SocialMediaForm from "@/components/feature/form/dashboard/add-form/social-media-form";
 import { SocialMediaFormInputs } from "@/types/social-media-form";
-import GenericEditForm from "./generic-edit-form";
+import GenericEditForm from "@/components/feature/form/dashboard/edit-form/generic-edit-form";
 
 interface EditSocialMediaFormProps {
   socialMediaId: string;

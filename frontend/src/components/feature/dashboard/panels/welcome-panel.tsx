@@ -1,6 +1,6 @@
+import { TargetIcon, UserIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { TargetIcon, UserIcon } from "lucide-react";
 
 export function WelcomePanel() {
   return (

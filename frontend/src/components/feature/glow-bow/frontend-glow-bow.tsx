@@ -1,5 +1,5 @@
 import { FRONTEND_TECH_STACK } from "@/constant/frontend-tech"
-import { GlowBoxList } from "./glow-box-list"
+import { GlowBoxList } from "@/components/feature/glow-bow/glow-box-list"
 
 export function FrontendGlowBow() {
     const frontendTechStack = FRONTEND_TECH_STACK

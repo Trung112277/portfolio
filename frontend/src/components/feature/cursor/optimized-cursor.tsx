@@ -6,7 +6,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback, useState } from "react";
-import TrailDots from "./trail-dots";
+import TrailDots from "@/components/feature/cursor/trail-dots";
 import { useUIStore } from "@/stores";
 import { throttle, rafThrottle, prefersReducedMotion, isMobileDevice } from "@/lib/performance-utils";
 

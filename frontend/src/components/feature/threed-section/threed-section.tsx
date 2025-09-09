@@ -1,12 +1,11 @@
 'use client'
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 // Optimized imports with tree shaking
 import { OrbitControls } from "@react-three/drei/core/OrbitControls";
 import { Stars } from "@react-three/drei/core/Stars";
 import { Sparkles } from "@react-three/drei/core/Sparkles";
 import { Canvas } from "@react-three/fiber";
-import { useEffect, useState } from "react";
-import HeroSectionThreed from "./hero-section-threed";
+import HeroSectionThreed from "@/components/feature/threed-section/hero-section-threed";
 
 export default function ThreeDSection() {
   const [reducedMotion, setReducedMotion] = useState(false);

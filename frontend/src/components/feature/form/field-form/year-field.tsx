@@ -4,7 +4,7 @@ import {
   Path,
   UseFormRegister,
 } from "react-hook-form";
-import { TextInputField } from "./text-input-field";
+import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
 
 interface YearFieldProps<T extends FieldValues> {
   label: string;

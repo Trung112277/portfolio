@@ -1,6 +1,6 @@
-import { SafeImage } from "@/components/ui/safe-image";
-import { GlowBoxItem } from "./glow-box-item";
 import Link from "next/link";
+import { SafeImage } from "@/components/ui/safe-image";
+import { GlowBoxItem } from "@/components/feature/glow-bow/glow-box-item";
 import { Socials } from "@/types/tech-stack";
 
 interface SocialsGlowBoxListProps {

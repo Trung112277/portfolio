@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import PrimaryButton from "./primary-button";
+import PrimaryButton from "@/components/button/primary-button";
 
 interface AddItemButtonProps {
   onClick: () => void;

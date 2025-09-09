@@ -1,5 +1,5 @@
-import { DashboardEditContainer } from "../dashboard-edit-container";
-import EditAuthorForm from "../../form/dashboard/edit-form/edit-author-form";
+import { DashboardEditContainer } from "@/components/feature/dashboard/dashboard-edit-container";
+import EditAuthorForm from "@/components/feature/form/dashboard/edit-form/edit-author-form";
 
 export function PersonalInformationPanel() {
   return (

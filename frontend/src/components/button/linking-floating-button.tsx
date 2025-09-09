@@ -3,7 +3,7 @@ import Link from "next/link";
 import { memo } from "react";
 import { hexToRgb } from "@/lib/utils";
 import { Tooltip, TooltipTrigger } from "@radix-ui/react-tooltip";
-import { BadgeTooltip } from "../common/badge-tooltip";
+import { BadgeTooltip } from "@/components/common/badge-tooltip";
 import { FloatingButtonProps } from "@/types/components";
 
 interface LinkingFloatingButtonProps extends Omit<FloatingButtonProps, 'onClick'> {

@@ -1,5 +1,5 @@
 import { DashboardTitle } from "@/components/heading/dashboar-title";
-import { DashboardEditContainer } from "../dashboard-edit-container";
+import { DashboardEditContainer } from "@/components/feature/dashboard/dashboard-edit-container";
 
 export function DashboardUser() {
   return (

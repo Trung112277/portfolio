@@ -1,4 +1,4 @@
-import { TooltipContent } from "../ui/tooltip";
+import { TooltipContent } from "@/components/ui/tooltip";
 
 export function BadgeTooltip({ children }: { children: React.ReactNode }) {
   return (

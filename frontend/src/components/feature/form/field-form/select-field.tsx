@@ -56,7 +56,7 @@ export function SelectField<T extends FieldValues>({
           <Select
             disabled={isSubmitting}
             onValueChange={(val) => field.onChange(val)}
-            value={(field.value as string | undefined) ?? undefined}
+            value={field.value || ""}
           >
             <SelectTrigger
               id={String(name)}

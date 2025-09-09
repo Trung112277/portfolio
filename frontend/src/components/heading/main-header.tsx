@@ -1,7 +1,7 @@
 import { Fugaz_One } from "next/font/google";
-import { AuroraText } from "../ui/aura-text";
-import { BouncyText } from "../ui/bouncy-text";
-import ResizeHandle from "../ui/resize-handle";
+import { AuroraText } from "@/components/ui/aura-text";
+import { BouncyText } from "@/components/ui/bouncy-text";
+import ResizeHandle from "@/components/ui/resize-handle";
 import { THEME_COLORS } from "@/constant/theme-colors";
 
 const fugazOne = Fugaz_One({

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/feature/sidebar/app-sidebar";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/feature/sidebar/app-sidebar";
 
 export const metadata: Metadata = {
   title: "Dashboard | Nhat Trung Portfolio",

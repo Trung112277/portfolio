@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useUIStore } from "@/stores";
+import { UI_CONSTANTS } from "@/constant/theme-colors";
 
 interface TrailDot {
   id: number;
@@ -11,9 +12,6 @@ interface TrailDot {
   scale: number;
   createdAt: number;
 }
-
-import { UI_CONSTANTS } from "@/constant/theme-colors";
-
 // Constants
 const TRAIL_DURATION = UI_CONSTANTS.trailDuration;
 const MAX_TRAIL_DOTS = UI_CONSTANTS.maxTrailDots;
@@ -26,7 +24,7 @@ export default function TrailDots() {
   const { cursorTrailEnabled, cursorSize } = useUIStore();
   const dotIdRef = useRef(0);
   const animationRef = useRef<number | undefined>(undefined);
-  
+
   // Use refs to store current values to avoid dependency issues
   const cursorTrailEnabledRef = useRef(cursorTrailEnabled);
   const cursorSizeRef = useRef(cursorSize);
@@ -48,7 +46,7 @@ export default function TrailDots() {
   // Handle cursor trail enabled/disabled state
   useEffect(() => {
     if (!isClient) return;
-    
+
     if (!cursorTrailEnabled) {
       // Clean up when trail is disabled
       if (animationRef.current) {
@@ -67,7 +65,7 @@ export default function TrailDots() {
     const handleMouseMove = (e: MouseEvent) => {
       // Store position in ref immediately
       mousePosRef.current = { x: e.clientX, y: e.clientY };
-      
+
       // Use requestAnimationFrame to update state only when needed
       if (!rafRef.current) {
         rafRef.current = requestAnimationFrame(() => {
@@ -77,13 +75,18 @@ export default function TrailDots() {
       }
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    return () => document.removeEventListener('mousemove', handleMouseMove);
+    document.addEventListener("mousemove", handleMouseMove);
+    return () => document.removeEventListener("mousemove", handleMouseMove);
   }, [isClient]); // Remove cursorTrailEnabled dependency
 
   // Create new trail dot when mouse moves
   useEffect(() => {
-    if (!isClient || !cursorTrailEnabledRef.current || (mousePosition.x === 0 && mousePosition.y === 0)) return;
+    if (
+      !isClient ||
+      !cursorTrailEnabledRef.current ||
+      (mousePosition.x === 0 && mousePosition.y === 0)
+    )
+      return;
 
     // Throttle trail dot creation to avoid excessive updates
     const now = Date.now();
@@ -101,13 +104,13 @@ export default function TrailDots() {
         scale: 1,
         createdAt: Date.now(),
       };
-      
-      setTrailDots(prev => {
+
+      setTrailDots((prev) => {
         const newDots = [...prev, newDot];
         return newDots.slice(-MAX_TRAIL_DOTS);
       });
     } catch (err) {
-      console.error('Failed to create trail dot:', err);
+      console.error("Failed to create trail dot:", err);
     }
   }, [mousePosition, isClient]); // Remove cursorTrailEnabled dependency
 
@@ -121,23 +124,23 @@ export default function TrailDots() {
       if (!isAnimating || !cursorTrailEnabledRef.current) return;
 
       try {
-        setTrailDots(prev => {
+        setTrailDots((prev) => {
           const now = Date.now();
           const updatedDots = prev
-            .map(dot => {
+            .map((dot) => {
               const age = now - dot.createdAt;
               const fadeProgress = age / TRAIL_DURATION;
               const newOpacity = Math.max(0, 1 - fadeProgress);
               const newScale = Math.max(0, 1 - fadeProgress);
-              
+
               return {
                 ...dot,
                 opacity: newOpacity,
                 scale: newScale,
               };
             })
-            .filter(dot => dot.opacity > FADE_THRESHOLD);
-          
+            .filter((dot) => dot.opacity > FADE_THRESHOLD);
+
           return updatedDots;
         });
 
@@ -145,7 +148,7 @@ export default function TrailDots() {
           animationRef.current = requestAnimationFrame(animate);
         }
       } catch (err) {
-        console.error('Animation error:', err);
+        console.error("Animation error:", err);
       }
     };
 
@@ -163,15 +166,15 @@ export default function TrailDots() {
   // Memoized trail dots rendering
   const trailDotsElements = useMemo(() => {
     if (!isClient) return null;
-    
+
     try {
       return trailDots.map((dot) => (
         <div
           key={dot.id}
           className="cursor-trail"
           style={{
-            left: `${dot.x - (cursorSizeRef.current / 2)}px`,
-            top: `${dot.y - (cursorSizeRef.current / 2)}px`,
+            left: `${dot.x - cursorSizeRef.current / 2}px`,
+            top: `${dot.y - cursorSizeRef.current / 2}px`,
             width: `${cursorSizeRef.current}px`,
             height: `${cursorSizeRef.current}px`,
             opacity: dot.opacity,
@@ -181,7 +184,7 @@ export default function TrailDots() {
         />
       ));
     } catch (err) {
-      console.error('Rendering error:', err);
+      console.error("Rendering error:", err);
       return null;
     }
   }, [trailDots, isClient]); // Remove cursorSize dependency

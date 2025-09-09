@@ -1,6 +1,6 @@
-import WorkExperienceForm from "../add-form/work-experience-form";
+import WorkExperienceForm from "@/components/feature/form/dashboard/add-form/work-experience-form";
 import { WorkExperienceFormInputs } from "@/types/work-experience-form";
-import GenericEditForm from "./generic-edit-form";
+import GenericEditForm from "@/components/feature/form/dashboard/edit-form/generic-edit-form";
 
 interface EditWorkExperienceFormProps {
   workExperienceId: string;

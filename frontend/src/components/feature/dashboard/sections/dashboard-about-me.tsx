@@ -1,8 +1,8 @@
 import { DashboardTitle } from "@/components/heading/dashboar-title";
-import { IntroductionPanel } from "../panels/introduction-panel";
-import { SocialMediaPanel } from "../panels/social-media-panel";
-import { PersonalInformationPanel } from "../panels/personal-information-panel";
-import { WorkExperiencePanel } from "../panels/work-experience-panel";
+import { IntroductionPanel } from "@/components/feature/dashboard/panels/introduction-panel";
+import { SocialMediaPanel } from "@/components/feature/dashboard/panels/social-media-panel";
+import { PersonalInformationPanel } from "@/components/feature/dashboard/panels/personal-information-panel";
+import { WorkExperiencePanel } from "@/components/feature/dashboard/panels/work-experience-panel";
 
 export function DashboardAboutMe() {
   return (

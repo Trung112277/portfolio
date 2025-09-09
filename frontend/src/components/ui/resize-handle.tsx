@@ -3,7 +3,7 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { Fugaz_One } from "next/font/google";
-import { FlipWords } from "./flip-words";
+import { FlipWords } from "@/components/ui/flip-words";
 import { DEVELOPER_ROLES } from "@/constant/developer-roles";
 
 const fugazOne = Fugaz_One({

@@ -4,7 +4,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 import AddItemButton from "@/components/button/add-item-button";
 import PrimaryButton from "@/components/button/primary-button";
-import { useDialogState } from "../../../../../hooks/useDialogState";
+import { useDialogState } from "@/hooks/useDialogState";
 import {
   Dialog,
   DialogContent,
@@ -16,10 +16,10 @@ import {
   WorkExperienceFormProps,
 } from "@/types/work-experience-form";
 import { getFieldValidation } from "@/lib/form-validation";
-import { TextInputField } from "../../field-form/text-input-field";
-import { TextareaField } from "../../field-form/textarea-field";
-import { SelectField } from "../../field-form/select-field";
-import YearField from "../../field-form/year-field";
+import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
+import { TextareaField } from "@/components/feature/form/field-form/textarea-field";
+import { SelectField } from "@/components/feature/form/field-form/select-field";
+import YearField from "@/components/feature/form/field-form/year-field";
 
 const WORK_ARRANGEMENT_OPTIONS = [
   { value: "Full-time", label: "Full-time" },
