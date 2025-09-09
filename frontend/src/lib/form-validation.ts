@@ -23,6 +23,11 @@ export const validationPatterns = {
       "Author name must contain only letters, digits, commas, hyphens, and equal signs",
   },
 
+  name: {
+    value: /^[a-zA-Z0-9\s,.=\-+]{2,100}$/,
+    message: "Name must contain only letters, digits, commas, hyphens, and equal signs",
+  },
+
   // Pattern cho introduction
   introduction: {
     value: /^(?=.*[a-zA-Z])[\p{Emoji}0-9a-zA-Z\s,.=\-+!?'"()\[\]{}:;]+$/u,
@@ -70,6 +75,10 @@ export const validationPatterns = {
     value: /^(Full-time|Part-time|Contract|Freelance|Internship)$/,
     message: "Please select a valid work arrangement",
   },
+  category: {
+    value: /^(frontend|backend|database|devops)$/,
+    message: "Please select a valid category",
+  },
 
   // Pattern cho tech stack
   techStack: {
@@ -82,6 +91,18 @@ export const validationRules = {
   authorName: {
     required: "Author name is required",
     pattern: validationPatterns.authorName,
+    minLength: {
+      value: 2,
+      message: "Name must be at least 2 characters",
+    },
+    maxLength: {
+      value: 100,
+      message: "Name cannot exceed 100 characters",
+    },
+  },
+  name: {
+    required: "Name is required",
+    pattern: validationPatterns.name,
     minLength: {
       value: 2,
       message: "Name must be at least 2 characters",
@@ -116,6 +137,11 @@ export const validationRules = {
       value: 200,
       message: "Description must be less than 200 characters",
     },
+  },
+
+  category: {
+    required: "Category is required",
+    pattern: validationPatterns.category,
   },
 
   link: {

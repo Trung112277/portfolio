@@ -8,7 +8,6 @@ export interface WorkExperienceFormInputs {
   }
   
   export interface WorkExperienceFormProps {
-    mode?: "add" | "edit";
     initialData?: Partial<WorkExperienceFormInputs>;
     onSubmit?: (data: WorkExperienceFormInputs) => Promise<void>;
     onCancel?: () => void;

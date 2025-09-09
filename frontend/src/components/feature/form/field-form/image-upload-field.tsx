@@ -1,14 +1,13 @@
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { UseFormRegister, FieldErrors, FieldValues, Path } from "react-hook-form";
 import { XIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SafeImage } from "@/components/ui/safe-image";
 import IconButton from "@/components/button/icon-button";
-import { SocialMediaFormInputs } from "@/types/social-media-form";
 
-interface ImageUploadFieldProps {
-  register: UseFormRegister<SocialMediaFormInputs>;
-  errors: FieldErrors<SocialMediaFormInputs>;
+interface ImageUploadFieldProps<T extends FieldValues> {
+  register: UseFormRegister<T>;
+  errors: FieldErrors<T>;
   selectedImage: File | null;
   imagePreview: string | null;
   onImageChange: (file: File | null, preview: string | null) => void;
@@ -28,7 +27,7 @@ const truncateFileName = (fileName: string, maxLength: number = 25) => {
   return `${truncatedName}...${extension ? `.${extension}` : ""}`;
 };
 
-export function ImageUploadField({
+export function ImageUploadField<T extends FieldValues>({
   register,
   errors,
   selectedImage,
@@ -36,7 +35,7 @@ export function ImageUploadField({
   onImageChange,
   onRemoveImage,
   isSubmitting,
-}: ImageUploadFieldProps) {
+}: ImageUploadFieldProps<T>) {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -75,7 +74,7 @@ export function ImageUploadField({
           type="file"
           accept="image/*"
           className="absolute inset-0 w-full h-full opacity-0 max-w-full"
-          {...register("image", {
+          {...register("image" as Path<T>, {
             onChange: handleImageChange,
             validate: (value: FileList) => {
               return value && value.length > 0
@@ -100,7 +99,7 @@ export function ImageUploadField({
         </div>
       </div>
       {errors.image && (
-        <p className="text-sm text-red-600">{errors.image.message}</p>
+        <p className="text-sm text-red-600">{errors.image.message as string}</p>
       )}
     </div>
   );

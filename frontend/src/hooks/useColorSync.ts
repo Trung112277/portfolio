@@ -1,15 +1,14 @@
-import { SocialMediaFormInputs } from "@/types/social-media-form";
 import { useState, useEffect } from "react";
-import { UseFormWatch, UseFormSetValue } from "react-hook-form";
+import { UseFormWatch, UseFormSetValue, FieldValues, Path, PathValue } from "react-hook-form";
 
-export function useColorSync(
-  watch: UseFormWatch<SocialMediaFormInputs>,
-  setValue: UseFormSetValue<SocialMediaFormInputs>
+export function useColorSync<T extends FieldValues>(
+  watch: UseFormWatch<T>,
+  setValue: UseFormSetValue<T>
 ) {
   const [selectedColor, setSelectedColor] = useState("--primary");
   const [colorText, setColorText] = useState("--primary");
 
-  const watchedColor = watch("color");
+  const watchedColor = watch("color" as Path<T>);
 
   // Sync colorText with form value
   useEffect(() => {
@@ -28,7 +27,7 @@ export function useColorSync(
       if (primaryColor) {
         setSelectedColor(primaryColor);
         setColorText(primaryColor);
-        setValue("color", primaryColor);
+        setValue("color" as Path<T>, primaryColor as PathValue<T, Path<T>>);
       }
     };
 
@@ -47,7 +46,7 @@ export function useColorSync(
     const color = e.target.value;
     setSelectedColor(color);
     setColorText(color);
-    setValue("color", color);
+    setValue("color" as Path<T>, color as PathValue<T, Path<T>>);
   };
 
   const handleColorTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +55,7 @@ export function useColorSync(
 
     if (/^#[0-9A-F]{6}$/i.test(newColorText)) {
       setSelectedColor(newColorText);
-      setValue("color", newColorText);
+      setValue("color" as Path<T>, newColorText as PathValue<T, Path<T>>);
     }
 
     return newColorText; // Return value for register

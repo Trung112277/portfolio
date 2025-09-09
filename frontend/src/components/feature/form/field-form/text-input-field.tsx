@@ -18,7 +18,7 @@ interface TextInputFieldProps<T extends FieldValues> {
   secondaryPlaceholder?: string;
   validation?: Record<string, unknown>;
   isSubmitting?: boolean;
-  type?: "text" | "email" | "password" | "url" | "tel";
+  type?: "text" | "email" | "password" | "url" | "tel" | "number";
   variant?: "default" | "year";
 }
 

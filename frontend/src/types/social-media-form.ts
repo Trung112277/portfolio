@@ -6,7 +6,6 @@ export type SocialMediaFormInputs = {
   };
   
   export interface SocialMediaFormProps {
-    mode?: "add" | "edit";
     initialData?: Partial<SocialMediaFormInputs>;
     onSubmit?: (data: SocialMediaFormInputs, image: File | null) => Promise<void>;
     onCancel?: () => void;

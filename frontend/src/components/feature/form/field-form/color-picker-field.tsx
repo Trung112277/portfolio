@@ -1,12 +1,11 @@
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { UseFormRegister, FieldErrors, FieldValues, Path } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SocialMediaFormInputs } from "@/types/social-media-form";
 import { ValidationSchema } from "@/lib/form-validation";
 
-interface ColorPickerFieldProps {
-  register: UseFormRegister<SocialMediaFormInputs>;
-  errors: FieldErrors<SocialMediaFormInputs>;
+interface ColorPickerFieldProps<T extends FieldValues> {
+  register: UseFormRegister<T>;
+  errors: FieldErrors<T>;
   selectedColor: string;
   colorText: string;
   onColorChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -15,7 +14,7 @@ interface ColorPickerFieldProps {
   validation: ValidationSchema;
 }
 
-export function ColorPickerField({
+export function ColorPickerField<T extends FieldValues>({
   register,
   errors,
   selectedColor,
@@ -23,7 +22,7 @@ export function ColorPickerField({
   onColorTextChange,
   isSubmitting,
   validation,
-}: ColorPickerFieldProps) {
+}: ColorPickerFieldProps<T>) {
   return (
     <div className="flex flex-col gap-2">
       <Label className="text-lg text-primary">Color</Label>
@@ -36,7 +35,7 @@ export function ColorPickerField({
           disabled={isSubmitting}
         />
         <Input
-          {...register("color", {
+          {...register("color" as Path<T>, {
             ...validation,
             onChange: onColorTextChange,
           })}
@@ -47,7 +46,7 @@ export function ColorPickerField({
         />
       </div>
       {errors.color && (
-        <p className=" text-sm text-red-600">{errors.color.message}</p>
+        <p className=" text-sm text-red-600">{errors.color.message as string}</p>
       )}
     </div>
   );
