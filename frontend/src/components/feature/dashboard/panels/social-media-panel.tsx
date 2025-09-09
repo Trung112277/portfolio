@@ -6,7 +6,7 @@ export function SocialMediaPanel() {
   return (
     <DashboardEditContainer title="Social Media">
       <div className="flex flex-col gap-4">
-        <SocialMediaForm mode="add" />
+        <SocialMediaForm />
         <SocialMediaEdit />
       </div>
     </DashboardEditContainer>

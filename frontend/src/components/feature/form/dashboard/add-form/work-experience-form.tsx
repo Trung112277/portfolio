@@ -45,7 +45,6 @@ export default function WorkExperienceAddForm() {
       // Reset form
       reset();
       setIsOpen(false);
-
       toast.success("Work experience added successfully");
     } catch (error) {
       console.error("Error adding work experience:", error);

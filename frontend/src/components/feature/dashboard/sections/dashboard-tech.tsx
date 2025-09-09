@@ -1,6 +1,5 @@
 import { DashboardTitle } from "@/components/heading/dashboar-title";
-import { DashboardEditContainer } from "@/components/feature/dashboard/dashboard-edit-container";
-import TechListAddForm from "@/components/feature/form/dashboard/add-form/tech-list-form";
+import { TechListPanel } from "../panels/tech-list-panel";
 
 export function DashboardTech() {
   return (
@@ -10,9 +9,7 @@ export function DashboardTech() {
         description="Manage technical skills and tools."
       />
 
-      <DashboardEditContainer title="Tech Set">
-        <TechListAddForm />
-      </DashboardEditContainer>
+      <TechListPanel />
     </div>
   );
 }
