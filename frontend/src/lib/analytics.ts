@@ -1,4 +1,20 @@
 /**
+ * Enhanced Analytics Integration
+ * Combines performance monitoring with Google Analytics
+ */
+
+import { 
+  trackPageView, 
+  trackPerformance, 
+  trackEngagement,
+  trackScrollDepth,
+  trackTimeOnPage,
+  trackPortfolioEvent,
+  trackProjectInteraction,
+  trackTechInteraction
+} from './google-analytics';
+
+/**
  * Performance monitoring and analytics utilities
  * Provides functions to track Core Web Vitals and custom metrics
  */
@@ -212,7 +228,7 @@ class PerformanceMonitor {
    * @param name - Metric name
    * @param value - Metric value
    */
-  private logMetric(name: string, value: number): void {
+  protected logMetric(name: string, value: number): void {
     if (process.env.NODE_ENV === 'development') {
       console.log(`📊 ${name}:`, value.toFixed(2));
     }
@@ -225,7 +241,7 @@ class PerformanceMonitor {
    * Log event to console (can be replaced with actual analytics service)
    * @param event - Event to log
    */
-  private logEvent(event: AnalyticsEvent): void {
+  protected logEvent(event: AnalyticsEvent): void {
     if (process.env.NODE_ENV === 'development') {
       console.log('📈 Event:', event);
     }
@@ -244,16 +260,193 @@ class PerformanceMonitor {
 }
 
 /**
- * Global performance monitor instance
+ * Enhanced Performance Monitor
  */
-export const performanceMonitor = new PerformanceMonitor();
+class EnhancedPerformanceMonitor extends PerformanceMonitor {
+  private startTime: number = Date.now();
+  private scrollDepthTracked: Set<number> = new Set();
+  private timeOnPageInterval: NodeJS.Timeout | null = null;
+
+  /**
+   * Initialize enhanced performance monitoring
+   */
+  init(): void {
+    super.init();
+    this.initScrollTracking();
+    this.initTimeOnPageTracking();
+    this.initEngagementTracking();
+  }
+
+  /**
+   * Initialize scroll depth tracking
+   */
+  private initScrollTracking(): void {
+    if (typeof window === 'undefined') return;
+
+    const scrollDepths = [25, 50, 75, 90, 100];
+    
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = Math.round((scrollTop / docHeight) * 100);
+
+      scrollDepths.forEach(depth => {
+        if (scrollPercent >= depth && !this.scrollDepthTracked.has(depth)) {
+          this.scrollDepthTracked.add(depth);
+          trackScrollDepth(depth);
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+  }
+
+  /**
+   * Initialize time on page tracking
+   */
+  private initTimeOnPageTracking(): void {
+    if (typeof window === 'undefined') return;
+
+    this.timeOnPageInterval = setInterval(() => {
+      const timeOnPage = Math.round((Date.now() - this.startTime) / 1000);
+      
+      // Track at specific intervals
+      if (timeOnPage === 30 || timeOnPage === 60 || timeOnPage === 120) {
+        trackTimeOnPage(timeOnPage);
+      }
+    }, 1000);
+
+    // Track when user leaves page
+    window.addEventListener('beforeunload', () => {
+      const timeOnPage = Math.round((Date.now() - this.startTime) / 1000);
+      trackTimeOnPage(timeOnPage);
+    });
+  }
+
+  /**
+   * Initialize engagement tracking
+   */
+  private initEngagementTracking(): void {
+    if (typeof window === 'undefined') return;
+
+    // Track clicks on interactive elements
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      
+      if (target.matches('a[href^="#"]')) {
+        trackEngagement('anchor_click', {
+          target: target.getAttribute('href'),
+          text: target.textContent?.trim()
+        });
+      }
+      
+      if (target.matches('.floating-button')) {
+        trackEngagement('floating_button_click', {
+          text: target.textContent?.trim()
+        });
+      }
+      
+      if (target.matches('[data-track="project"]')) {
+        const projectName = target.getAttribute('data-project-name');
+        if (projectName) {
+          trackProjectInteraction(projectName, 'click');
+        }
+      }
+      
+      if (target.matches('[data-track="tech"]')) {
+        const techName = target.getAttribute('data-tech-name');
+        if (techName) {
+          trackTechInteraction(techName, 'click');
+        }
+      }
+    });
+
+    // Track form interactions
+    document.addEventListener('submit', (event) => {
+      const form = event.target as HTMLFormElement;
+      trackEngagement('form_submit', {
+        form_id: form.id,
+        form_class: form.className
+      });
+    });
+  }
+
+  /**
+   * Enhanced metric logging with Google Analytics
+   */
+  protected logMetric(name: string, value: number): void {
+    super.logMetric(name, value);
+    
+    // Send to Google Analytics
+    trackPerformance(name, value, {
+      page_url: window.location.href,
+      page_title: document.title
+    });
+  }
+
+  /**
+   * Enhanced event logging with Google Analytics
+   */
+  protected logEvent(event: AnalyticsEvent): void {
+    super.logEvent(event);
+    
+    // Send to Google Analytics
+    trackPortfolioEvent(event.name, {
+      category: event.category,
+      action: event.action,
+      label: event.label,
+      value: event.value,
+      ...event.properties
+    });
+  }
+
+  /**
+   * Track page view with enhanced data
+   */
+  trackPageView(pageData?: Record<string, unknown>): void {
+    trackPageView({
+      page_title: document.title,
+      page_location: window.location.href,
+      page_path: window.location.pathname,
+      content_group1: 'Portfolio',
+      content_group2: this.getPageCategory(),
+      ...pageData
+    });
+  }
+
+  /**
+   * Get page category
+   */
+  private getPageCategory(): string {
+    const path = window.location.pathname;
+    
+    if (path === '/') return 'Home';
+    if (path.startsWith('/dashboard')) return 'Dashboard';
+    if (path.startsWith('/projects')) return 'Projects';
+    if (path.startsWith('/about')) return 'About';
+    if (path.startsWith('/tech')) return 'Tech Stack';
+    
+    return 'Other';
+  }
+
+  /**
+   * Cleanup resources
+   */
+  cleanup(): void {
+    if (this.timeOnPageInterval) {
+      clearInterval(this.timeOnPageInterval);
+    }
+  }
+}
+
+// Export enhanced instance
+export const enhancedPerformanceMonitor = new EnhancedPerformanceMonitor();
 
 /**
- * Initialize performance monitoring
- * Call this in your app's entry point
+ * Initialize enhanced performance monitoring
  */
-export function initPerformanceMonitoring(): void {
-  performanceMonitor.init();
+export function initEnhancedPerformanceMonitoring(): void {
+  enhancedPerformanceMonitor.init();
 }
 
 /**
@@ -262,7 +455,7 @@ export function initPerformanceMonitoring(): void {
  * @param renderFunction - Function that renders the component
  */
 export function measureRender<T>(componentName: string, renderFunction: () => T): T {
-  return performanceMonitor.measureComponentRender(componentName, renderFunction);
+  return enhancedPerformanceMonitor.measureComponentRender(componentName, renderFunction);
 }
 
 /**
@@ -271,7 +464,7 @@ export function measureRender<T>(componentName: string, renderFunction: () => T)
  * @param interactionFunction - Function to measure
  */
 export function measureInteraction<T>(interactionName: string, interactionFunction: () => Promise<T> | T): Promise<T> {
-  return performanceMonitor.measureInteraction(interactionName, interactionFunction);
+  return enhancedPerformanceMonitor.measureInteraction(interactionName, interactionFunction);
 }
 
 /**
@@ -291,7 +484,7 @@ export function trackEvent(
   value?: number,
   properties?: Record<string, unknown>
 ): void {
-  performanceMonitor.trackEvent({
+  enhancedPerformanceMonitor.trackEvent({
     name,
     category,
     action,

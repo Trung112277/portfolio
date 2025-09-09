@@ -1,4 +1,5 @@
 import { Suspense, lazy } from "react";
+import { Metadata } from "next";
 import { FloatingButton } from "@/components/button/floating-button";
 import Intro from "@/components/common/intro";
 import { FrontendGlowBow } from "@/components/feature/glow-bow/frontend-glow-bow";
@@ -8,9 +9,18 @@ import TimelineList from "@/components/feature/timeline/timeline-list";
 import { MainHeader } from "@/components/heading/main-header";
 import { Title } from "@/components/heading/title";
 import { BUTTON_COLORS } from "@/constant/theme-colors";
+import { generateSEOMetadata } from "@/components/seo/page-head";
 
 // Lazy load heavy 3D components
 const Projects3DWrapper = lazy(() => import("@/components/feature/threed-section/projects-3d-wrapper"));
+
+// Generate metadata for home page (this overrides the default from layout.tsx)
+export const metadata: Metadata = generateSEOMetadata({
+  page: "home",
+  title: "Nhat Trung | Developer Portfolio",
+  description: "Professional portfolio showcasing frontend development skills, React, Next.js, TypeScript projects, and modern web technologies.",
+  keywords: ["portfolio", "frontend developer", "react", "nextjs", "typescript", "web developer"],
+});
 
 export default function Home() {
   return (

@@ -1,16 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import { Open_Sans } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { CustomCursor } from "@/components/feature/cursor/custom-cursor";
 import { ScrollToTop } from "@/components/common/scroll-to-top";
 import { StoreProvider } from "@/components/feature/loading/store-provider";
 import { LoadingProvider } from "@/components/feature/loading/loading-provider";
 import ErrorBoundary from "@/components/common/error-boundary";
-import { initPerformanceMonitoring } from "@/lib/analytics";
+import { initEnhancedPerformanceMonitoring } from "@/lib/analytics";
 import { initResourceHints } from "@/lib/resource-hints";
 import { initCriticalCSS, getCriticalCSS } from "@/lib/critical-css";
 import { serviceWorkerManager } from "@/lib/service-worker";
 import { SkipLink } from "@/components/common/skip-link";
+import { baseSEO, generatePersonStructuredData, generateWebsiteStructuredData } from "@/lib/seo";
 
 const openSans = Open_Sans({
   subsets: ["latin"],
@@ -19,52 +21,82 @@ const openSans = Open_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("http://localhost:3000"),
-  title: "Nhat Trung | Portfolio",
-  description:
-    "Nhat Trung's portfolio showcasing frontend development skills and projects",
-  keywords: [
-    "portfolio",
-    "frontend",
-    "developer",
-    "react",
-    "nextjs",
-    "typescript",
-  ],
-  authors: [{ name: "Nhat Trung" }],
+  metadataBase: new URL(baseSEO.url),
+  title: {
+    default: baseSEO.title,
+    template: `%s | ${baseSEO.siteName}`
+  },
+  description: baseSEO.description,
+  keywords: baseSEO.keywords,
+  authors: [{ name: baseSEO.author }],
+  creator: baseSEO.author,
+  publisher: baseSEO.author,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   icons: {
-    icon: "/favicon.png",
+    icon: [
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
     shortcut: "/favicon.png",
-    apple: "/favicon.png",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
   manifest: "/site.webmanifest",
   openGraph: {
-    title: "Nhat Trung | Portfolio",
-    description:
-      "Nhat Trung's portfolio showcasing frontend development skills and projects",
-    type: "website",
-    locale: "en_US",
+    type: baseSEO.type,
+    locale: baseSEO.locale,
+    url: baseSEO.url,
+    title: baseSEO.title,
+    description: baseSEO.description,
+    siteName: baseSEO.siteName,
     images: [
       {
-        url: "/open-graph/open-graph-1.png",
+        url: `${baseSEO.url}${baseSEO.image}`,
         width: 1200,
         height: 630,
-        alt: "Nhat Trung | Portfolio",
+        alt: baseSEO.title,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nhat Trung | Portfolio",
-    description:
-      "Nhat Trung's portfolio showcasing frontend development skills and projects",
-    images: ["/open-graph/open-graph-1.png"],
+    title: baseSEO.title,
+    description: baseSEO.description,
+    images: [`${baseSEO.url}${baseSEO.image}`],
+    creator: baseSEO.twitterHandle,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+    yahoo: process.env.NEXT_PUBLIC_YAHOO_VERIFICATION,
   },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+  ],
 };
 
 export default function RootLayout({
@@ -74,8 +106,8 @@ export default function RootLayout({
 }>) {
   // Initialize performance optimizations on client side
   if (typeof window !== "undefined") {
-    // Initialize performance monitoring
-    initPerformanceMonitoring();
+    // Initialize enhanced performance monitoring
+    initEnhancedPerformanceMonitoring();
 
     // Initialize resource hints
     initResourceHints();
@@ -93,8 +125,61 @@ export default function RootLayout({
     }
   }
 
+  // Generate structured data
+  const personStructuredData = generatePersonStructuredData(baseSEO);
+  const websiteStructuredData = generateWebsiteStructuredData(baseSEO);
+
   return (
     <html lang="en" data-scroll-behavior="smooth">
+      <head>
+        {/* Google Analytics */}
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
+                  page_title: document.title,
+                  page_location: window.location.href,
+                  send_page_view: false
+                });
+              `}
+            </Script>
+          </>
+        )}
+
+        {/* Structured Data */}
+        <Script
+          id="structured-data-person"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(personStructuredData),
+          }}
+        />
+        <Script
+          id="structured-data-website"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteStructuredData),
+          }}
+        />
+
+        {/* Preconnect to external domains */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.google-analytics.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+
+        {/* DNS Prefetch */}
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//www.google-analytics.com" />
+      </head>
       <body
         className={`${openSans.variable} font-open-sans antialiased`}
         data-scroll-behavior="smooth"
