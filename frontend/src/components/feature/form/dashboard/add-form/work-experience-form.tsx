@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 import AddItemButton from "@/components/button/add-item-button";
@@ -11,34 +12,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  WorkExperienceFormInputs,
-  WorkExperienceFormProps,
-} from "@/types/work-experience-form";
+import { WorkExperienceFormInputs } from "@/types/work-experience-form";
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
 import { TextareaField } from "@/components/feature/form/field-form/textarea-field";
 import { SelectField } from "@/components/feature/form/field-form/select-field";
 import YearField from "@/components/feature/form/field-form/year-field";
+import { WORK_ARRANGEMENT_OPTIONS } from "@/constant/work-arrangement-options";
 
-const WORK_ARRANGEMENT_OPTIONS = [
-  { value: "Full-time", label: "Full-time" },
-  { value: "Part-time", label: "Part-time" },
-  { value: "Contract", label: "Contract" },
-  { value: "Freelance", label: "Freelance" },
-  { value: "Internship", label: "Internship" },
-];
-
-export default function WorkExperienceForm({
-  mode = "add",
-  initialData,
-  onSubmit,
-  onCancel,
-  open,
-  onOpenChange,
-}: WorkExperienceFormProps) {
-  const { isOpen, setIsOpen } = useDialogState(open, onOpenChange);
-
+export default function WorkExperienceAddForm() {
+  const { isOpen, setIsOpen } = useDialogState();
+  
   const {
     register,
     handleSubmit,
@@ -47,83 +31,47 @@ export default function WorkExperienceForm({
     reset,
   } = useForm<WorkExperienceFormInputs>({
     mode: "onSubmit",
-    defaultValues: {
-      ...initialData,
-      workArrangement: initialData?.workArrangement ?? undefined,
-    },
   });
 
-  const handleFormSubmit: SubmitHandler<WorkExperienceFormInputs> = async (
-    data
-  ) => {
-    try {
-      if (onSubmit) {
-        await onSubmit(data);
-      } else {
-        // Default behavior
-        console.log("Form submitted, data:", data);
+  const handleFormSubmit: SubmitHandler<WorkExperienceFormInputs> = async (data) => {
+    console.log("Adding work experience, data:", data);
 
-        // TODO: Add API call here
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-        console.log("Work experience data submitted successfully");
-      }
+    try {
+      // TODO: Replace with actual API call
+      // Simulate API call delay to show submitting effect
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    
+      console.log("Work experience added successfully");
 
       // Reset form
       reset();
-
-      // Close dialog
       setIsOpen(false);
 
-      toast.success(
-        mode === "edit"
-          ? "Work experience updated successfully"
-          : "Work experience added successfully"
-      );
+      toast.success("Work experience added successfully");
     } catch (error) {
-      console.error("Error submitting work experience data:", error);
+      console.error("Error adding work experience:", error);
       if (error instanceof Error) {
         toast.error(`Error: ${error.message}`);
       } else {
-        toast.error("An error occurred");
+        toast.error("An error occurred while adding work experience");
       }
     }
   };
 
-  const handleClose = () => {
-    if (onCancel) {
-      onCancel();
-    } else {
-      setIsOpen(false);
-    }
-  };
-
-  const renderTrigger = () => {
-    if (mode === "edit") {
-      return null; // Edit mode doesn't need a trigger button
-    }
-    return (
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <AddItemButton
         onClick={() => setIsOpen(true)}
         label="Add Work Experience"
       />
-    );
-  };
-
-  return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      {renderTrigger()}
+      
       <DialogContent
         aria-describedby={undefined}
         className="overflow-y-auto max-h-[90vh]"
       >
-        <form
-          onSubmit={handleSubmit(handleFormSubmit)}
-          className="flex flex-col gap-4"
-        >
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
           <DialogHeader>
-            <DialogTitle>
-              {mode === "edit" ? "Edit Work Experience" : "Add Work Experience"}
-            </DialogTitle>
+            <DialogTitle>Add Work Experience</DialogTitle>
           </DialogHeader>
 
           <TextInputField
@@ -156,6 +104,7 @@ export default function WorkExperienceForm({
             validation={getFieldValidation("year")}
             isSubmitting={isSubmitting}
           />
+
           <SelectField
             label="Work Arrangement"
             control={control}
@@ -189,13 +138,7 @@ export default function WorkExperienceForm({
           />
 
           <PrimaryButton type="submit" disabled={isSubmitting}>
-            {isSubmitting
-              ? mode === "edit"
-                ? "Updating..."
-                : "Adding..."
-              : mode === "edit"
-              ? "Update Work Experience"
-              : "Add Work Experience"}
+            {isSubmitting ? "Adding..." : "Add Work Experience"}
           </PrimaryButton>
         </form>
       </DialogContent>

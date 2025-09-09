@@ -3,7 +3,8 @@
 import { ReactNode } from "react";
 import { UseFormReturn } from "react-hook-form";
 import PrimaryButton from "@/components/button/primary-button";
-import { useFormHandler, FormConfig } from "@/hooks/useFormHandler";
+import { useFormHandler } from "@/hooks/useFormHandler";
+import { FormConfig } from "@/hooks/useFormHandler";
 
 interface BaseEditFormProps {
   config: FormConfig;

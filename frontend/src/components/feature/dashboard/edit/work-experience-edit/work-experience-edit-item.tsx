@@ -65,7 +65,7 @@ export function WorkExperienceEditItem() {
           </ul>
         </div>
       </div>
-      <div className="flex items-center w-full justify-center gap-4 py-4">
+      <div className="flex justify-center items-center gap-2 w-full py-4">
         <EditWorkExperienceForm
           workExperienceId="1"
           initialData={{}}

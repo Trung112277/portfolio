@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 import AddItemButton from "@/components/button/add-item-button";
@@ -15,25 +15,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  SocialMediaFormInputs,
-  SocialMediaFormProps,
-} from "@/types/social-media-form";
+import { SocialMediaFormInputs } from "@/types/social-media-form";
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
 
-export default function SocialMediaForm({
-  mode = "add",
-  initialData,
-  onSubmit,
-  onCancel,
-  open,
-  onOpenChange,
-}: SocialMediaFormProps) {
+export default function SocialMediaAddForm() {
+  const { isOpen, setIsOpen } = useDialogState();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-
-  const { isOpen, setIsOpen } = useDialogState(open, onOpenChange);
 
   const {
     register,
@@ -44,26 +33,10 @@ export default function SocialMediaForm({
     watch,
   } = useForm<SocialMediaFormInputs>({
     mode: "onSubmit",
-    defaultValues: initialData,
-  });
-  const methods = useForm({
-    mode: "onChange",
   });
 
   const { selectedColor, colorText, handleColorChange, handleColorTextChange } =
     useColorSync(watch, setValue);
-
-  // Reset form when initialData changes (important for edit mode)
-  useEffect(() => {
-    if (initialData) {
-      reset(initialData);
-      // Reset image states when editing
-      if (mode === "edit") {
-        setSelectedImage(null);
-        setImagePreview(null);
-      }
-    }
-  }, [initialData, reset, mode]);
 
   const handleImageChange = (file: File | null, preview: string | null) => {
     setSelectedImage(file);
@@ -75,82 +48,63 @@ export default function SocialMediaForm({
     setImagePreview(null);
   };
 
-  const handleFormSubmit: SubmitHandler<SocialMediaFormInputs> = async (
-    data
-  ) => {
-    // Always log form data for debugging
-    console.log("Form submitted, data:", data);
+  const handleFormSubmit: SubmitHandler<SocialMediaFormInputs> = async (data) => {
+    console.log("Adding social media, data:", data);
     console.log("Selected image:", selectedImage);
 
     try {
-      if (onSubmit) {
-        await onSubmit(data, selectedImage);
-      } else {
-        // Default behavior
-        // TODO: Add API call here
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-      }
-
-      // Always show success message in console
-      console.log("Social media data submitted successfully");
-
+      // TODO: Replace with actual API call
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+     
       // Reset form and states
       reset();
       setSelectedImage(null);
       setImagePreview(null);
-
-      // Only close dialog if not controlled by parent (i.e., in add mode)
-      if (mode === "add") {
-        setIsOpen(false);
-      }
-
-      toast.success(
-        mode === "edit"
-          ? "Social media updated successfully"
-          : "Social media added successfully"
-      );
+      setIsOpen(false);
+      console.log("Social media added successfully");
+      toast.success("Social media added successfully");
     } catch (error) {
-      console.error("Error submitting social media data:", error);
+      console.error("Error adding social media:", error);
       if (error instanceof Error) {
         toast.error(`Error: ${error.message}`);
       } else {
-        toast.error("An error occurred");
+        toast.error("An error occurred while adding social media");
       }
     }
   };
 
-  const handleClose = () => {
-    if (onCancel) {
-      onCancel();
-    } else {
-      setIsOpen(false);
-    }
+  // Helper function to convert file to base64
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
   };
 
-  const renderTrigger = () => {
-    if (mode === "edit") {
-      return null; // Edit mode doesn't need a trigger button
+  const handleDialogClose = (open: boolean) => {
+    setIsOpen(open);
+    if (!open) {
+      // Reset form when dialog is closed
+      reset();
+      setSelectedImage(null);
+      setImagePreview(null);
     }
-    return (
-      <AddItemButton onClick={() => setIsOpen(true)} label="Add Social Media" />
-    );
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      {renderTrigger()}
+    <Dialog open={isOpen} onOpenChange={handleDialogClose}>
+      <AddItemButton onClick={() => setIsOpen(true)} label="Add Social Media" />
+      
       <DialogContent
         aria-describedby={undefined}
         className="overflow-y-auto max-h-[90vh]"
       >
-        <form
-          onSubmit={handleSubmit(handleFormSubmit)}
-          className="flex flex-col gap-4"
-        >
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
           <DialogHeader>
-            <DialogTitle>
-              {mode === "edit" ? "Edit Social Media" : "Add Social Media"}
-            </DialogTitle>
+            <DialogTitle>Add Social Media</DialogTitle>
           </DialogHeader>
 
           <ImageUploadField
@@ -196,13 +150,7 @@ export default function SocialMediaForm({
           />
 
           <PrimaryButton type="submit" disabled={isSubmitting}>
-            {isSubmitting
-              ? mode === "edit"
-                ? "Updating..."
-                : "Adding..."
-              : mode === "edit"
-              ? "Update Social Media"
-              : "Add Social Media"}
+            {isSubmitting ? "Adding..." : "Add Social Media"}
           </PrimaryButton>
         </form>
       </DialogContent>

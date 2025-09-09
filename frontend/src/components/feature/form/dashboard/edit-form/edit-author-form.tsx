@@ -1,7 +1,6 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import BaseEditForm from "@/components/feature/form/dashboard/edit-form/base-edit-form";
 import { validationRules } from "@/lib/form-validation";
 import { FormConfig } from "@/hooks/useFormHandler";
@@ -24,12 +23,6 @@ export default function EditAuthorForm() {
     <BaseEditForm config={config}>
       {(form, isSubmitting) => (
         <div>
-          <Label
-            htmlFor="name"
-            className="block text-sm font-medium text-blue-500 mb-2"
-          >
-            Author Name
-          </Label>
           <Input
             id="name"
             {...form.register("name", validationRules.authorName)}

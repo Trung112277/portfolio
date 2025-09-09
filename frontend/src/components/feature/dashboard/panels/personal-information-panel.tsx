@@ -3,7 +3,7 @@ import EditAuthorForm from "@/components/feature/form/dashboard/edit-form/edit-a
 
 export function PersonalInformationPanel() {
   return (
-    <DashboardEditContainer title="Personal Information">
+    <DashboardEditContainer title="Author Name">
       <EditAuthorForm />
     </DashboardEditContainer>
   );
