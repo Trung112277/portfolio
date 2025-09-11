@@ -21,7 +21,7 @@ export function WelcomePanel() {
                 <TargetIcon className="h-4 w-4 text-green-400" />
                 What can be done here:
               </h4>
-              <ul className="text-sm  space-y-1">
+              <ul className="text-sm space-y-1">
                 <li>• Manage and update project portfolio</li>
                 <li>• Showcase technical skills and expertise</li>
                 <li>• Track professional growth and achievements</li>
