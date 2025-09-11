@@ -1,14 +1,15 @@
-
+import Auth from "@/components/feature/auth/auth";
+import Link from "next/link";
 export default function Login() {
   return (
-    <>
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="w-full max-w-md p-6 bg-card rounded-lg shadow-lg border border-border">
-          <h1 className="text-2xl font-bold text-center  mb-6 uppercase text-primary">
-            Login
-          </h1>
-        </div>
-      </div>
-    </>
+    <div className="min-h-screen flex items-center justify-center flex-col gap-4">
+      <Auth />
+      <Link
+        href="/"
+        className="text-xl font-bold text-white border bg-primary border-primary rounded-md p-2 hover:bg-primary/80 hover:border-primary/80 transition-colors"
+      >
+        Go Back to Home
+      </Link>
+    </div>
   );
 }
