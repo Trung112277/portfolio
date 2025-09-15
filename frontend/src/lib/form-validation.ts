@@ -22,7 +22,14 @@ export const validationPatterns = {
     message:
       "Author name must contain only letters, digits, commas, hyphens, and equal signs",
   },
-
+  email: {
+    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    message: "Invalid email format",
+  },
+  password: {
+    value: /^[0-9a-zA-Z\s,.=\-+]+$/,
+    message: "Password must contain only letters, digits, commas, hyphens, and equal signs",
+  },
   name: {
     value: /^[a-zA-Z0-9\s,.=\-+]{2,100}$/,
     message: "Name must contain only letters, digits, commas, hyphens, and equal signs",
@@ -201,6 +208,14 @@ export const validationRules = {
       value: 200,
       message: "Tech stack must be less than 200 characters",
     },
+  },
+  email: {
+    required: "Email is required",
+    pattern: validationPatterns.email,
+  },
+  password: {
+    required: "Password is required",
+    pattern: validationPatterns.password,
   },
 
   image: {

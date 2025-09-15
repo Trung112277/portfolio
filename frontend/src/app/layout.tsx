@@ -12,6 +12,7 @@ import { initResourceHints } from "@/lib/resource-hints";
 import { initCriticalCSS, getCriticalCSS } from "@/lib/critical-css";
 import { serviceWorkerManager } from "@/lib/service-worker";
 import { SkipLink } from "@/components/common/skip-link";
+import { Toaster } from "@/components/ui/sonner";
 import { baseSEO, generatePersonStructuredData, generateWebsiteStructuredData } from "@/lib/seo";
 
 const openSans = Open_Sans({
@@ -191,6 +192,7 @@ export default function RootLayout({
             <StoreProvider>
               <ScrollToTop />
               <div id="main-content">{children}</div>
+              <Toaster />
             </StoreProvider>
           </LoadingProvider>
         </ErrorBoundary>
