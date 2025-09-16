@@ -2,7 +2,7 @@ import { WorkExperienceEditItem } from "@/components/feature/dashboard/edit/work
 
 export function WorkExperienceEditList() {
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid xl:grid-cols-2 grid-cols-1 gap-4">
       <WorkExperienceEditItem />
       <WorkExperienceEditItem />
     </div>

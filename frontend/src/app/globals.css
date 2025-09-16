@@ -147,6 +147,31 @@
     display: none; /* Chrome, Safari, Opera */
   }
 
+  /* Show scrollbar for table containers */
+  .table-scroll {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: var(--primary) rgba(255, 255, 255, 0.1); /* Firefox */
+  }
+
+  .table-scroll::-webkit-scrollbar {
+    display: block;
+    height: 8px;
+  }
+
+  .table-scroll::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  .table-scroll::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+  }
+
+  .table-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(31, 195, 255, 0.8);
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-open-sans), system-ui, sans-serif;

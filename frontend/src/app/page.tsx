@@ -25,33 +25,33 @@ export const metadata: Metadata = generateSEOMetadata({
 export default function Home() {
   return (
     <main>
-      <section className="container mx-auto px-4 mb-10 md:mb-20 flex flex-col justify-between items-center h-screen 2xl:h-[900px] relative">
+      <section className="container mx-auto px-4 mb-10 md:mb-20 flex flex-col justify-between items-center h-screen min-h-[700px] relative">
         <div className="flex-1" />
         <div className="flex-1 flex items-center justify-center z-10">
           <MainHeader />
         </div>
-        <div className="flex-1 flex items-end justify-center pb-1 md:pb-8">
+        <div className="flex-1 flex justify-center pb-1 md:pb-8 mt-[100px]">
           <FrontendGlowBow />
         </div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <span className="w-[300px] h-[300px] bg-primary/40 rounded-full block blur-3xl"></span>
         </div>
-        <div className="absolute lg:top-[100px] top-1/5 left-[5%]  lg:left-1/5 2xl:left-0">
+        <div className="absolute lg:top-[100px] top-1/5 left-[5%]  xl:left-1/5 2xl:left-0">
           <FloatingButton color={BUTTON_COLORS.about} to="#about">
             About me
           </FloatingButton>
         </div>
-        <div className="absolute lg:top-[100px] top-1/5 right-[5%]  lg:right-1/5 2xl:right-0">
+        <div className="absolute lg:top-[100px] top-1/5 right-[5%]  xl:right-1/5 2xl:right-0">
           <FloatingButton color={BUTTON_COLORS.dashboard} to="/dashboard">
             Dashboard
           </FloatingButton>
         </div>
-        <div className="absolute xl:bottom-[130px] lg:bottom-[100px] bottom-1/3 md:bottom-2/7 right-[5%]   xl:right-1/5 2xl:right-0 ">
+        <div className="absolute bottom-2/6 md:bottom-[240px] lg:bottom-[200px] right-[5%]   xl:right-1/5 2xl:right-0 ">
           <FloatingButton color={BUTTON_COLORS.tech} to="#tech">
             Tech
           </FloatingButton>
         </div>
-        <div className="absolute xl:bottom-[130px] lg:bottom-[100px] bottom-1/3 md:bottom-2/7 left-[5%]  xl:left-1/5 2xl:left-0 ">
+        <div className="absolute bottom-2/6 md:bottom-[240px] lg:bottom-[200px] left-[5%]  xl:left-1/5 2xl:left-0 ">
           <FloatingButton color={BUTTON_COLORS.projects} to="#projects">
             Projects
           </FloatingButton>
@@ -63,7 +63,7 @@ export default function Home() {
         className="container mx-auto px-4 mb-10 md:mb-20 flex flex-col lg:flex-row items-center relative"
       >
         <div className="top-0 bottom-0 block lg:sticky w-full lg:w-1/2 h-full p-5">
-          <div className="flex flex-col mt-0 md:mt-20 items-center justify-center h-full">
+          <div className="flex flex-col mt-0 lg:mt-20 items-center justify-center h-full">
             <Title primary="about" secondary="me" />
           </div>
         </div>
@@ -81,7 +81,7 @@ export default function Home() {
           <TechList />
         </div>
         <div className="top-0 bottom-0 block lg:sticky w-full lg:w-1/2 h-full p-5">
-          <div className="flex flex-col mt-0 md:mt-20 items-center justify-center h-full">
+          <div className="flex flex-col mt-0 lg:mt-20 items-center justify-center h-full">
             <Title primary="tech" secondary="set" />
           </div>
         </div>

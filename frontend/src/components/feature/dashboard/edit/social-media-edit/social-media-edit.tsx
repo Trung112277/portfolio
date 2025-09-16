@@ -4,15 +4,15 @@ import EditSocialMediaForm from "@/components/feature/form/dashboard/edit-form/e
 
 export default function SocialMediaEdit() {
   return (
-    <div>
-      <table className="w-full text-center">
+    <div className="table-scroll overflow-x-auto">
+      <table className="text-center w-full min-w-[800px]">
         <thead>
-          <tr className=" text-xl font-bold border-b">
-            <th className="p-2 border ">Image</th>
-            <th className="p-2 border">Description</th>
-            <th className="p-2 border">Link</th>
-            <th className="p-2 border">Color</th>
-            <th className="p-2 border ">Action</th>
+          <tr className=" text-xl font-bold border-b text-primary text-center">
+            <th className="p-2 border w-[100px]" >Image</th>
+            <th className="p-2 border w-[150px]" >Description</th>
+            <th className="p-2 border w-[300px]" >Link</th>
+            <th className="p-2 border w-[100px]" >Color</th>
+            <th className="p-2 border w-[150px]" >Action</th>
           </tr>
         </thead>
         <tbody>
@@ -26,13 +26,20 @@ export default function SocialMediaEdit() {
               />
             </td>
             <td className="p-2 border">React</td>
-            <td className="p-2 border">
+            <td className="p-2 border max-w-[200px] truncate">
               https://www.facebook.com/nhattrung.dev
             </td>
             <td className="p-2 border">#1fc3ff</td>
             <td className="p-2 border">
               <div className="flex justify-center items-center gap-2">
-                <EditSocialMediaForm socialMediaId="1" initialData={{}} />
+                <EditSocialMediaForm
+                  socialMediaId="1"
+                  initialData={{}}
+                  onUpdate={async () => {
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                    console.log("Social media updated successfully");
+                  }}
+                />
                 <DeleteButton title="Social Media" />
               </div>
             </td>
@@ -47,17 +54,19 @@ export default function SocialMediaEdit() {
               />
             </td>
             <td className="p-2 border">Next.js</td>
-            <td className="p-2 border">
+            <td className="p-2 border max-w-[200px] truncate">
               https://www.facebook.com/nhattrung.dev
             </td>
             <td className="p-2 border">#1fc3ff</td>
             <td className="p-2 border">
               <div className="flex justify-center items-center gap-2">
-                <EditSocialMediaForm socialMediaId="2" initialData={{}}
-                onUpdate={async () => {
-                  await new Promise((resolve) => setTimeout(resolve, 1000));
-                  console.log("Social media updated successfully");
-                }}
+                <EditSocialMediaForm
+                  socialMediaId="2"
+                  initialData={{}}
+                  onUpdate={async () => {
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                    console.log("Social media updated successfully");
+                  }}
                 />
                 <DeleteButton title="Social Media" />
               </div>

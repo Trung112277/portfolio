@@ -3,22 +3,20 @@ import EditProjectsForm from "@/components/feature/form/dashboard/edit-form/edit
 
 export default function ProjectsEdit() {
   return (
-    <div>
-      <table className="w-full text-center">
+    <div className="w-full table-scroll overflow-x-auto">
+      <table className="w-full text-center min-w-[500px]">
         <thead>
-          <tr className=" text-xl font-bold border-b">
-            <th className="p-2 border">Name</th>
-            <th className="p-2 border">Description</th>
-            <th className="p-2 border">Link</th>
-            <th className="p-2 border">Color</th>
-            <th className="p-2 border ">Action</th>
+          <tr className=" text-xl font-bold border-b text-primary text-center">
+            <th className="p-2 border w-[100px]">Name</th>
+            <th className="p-2 border w-[150px]">Description</th>
+            <th className="p-2 border w-[300px]">Link</th>
+            <th className="p-2 border w-[100px]">Color</th>
+            <th className="p-2 border w-[150px]">Action</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td className="p-2 border ">
-                React   
-            </td>
+            <td className="p-2 border ">React</td>
             <td className="p-2 border">React</td>
             <td className="p-2 border">
               https://www.facebook.com/nhattrung.dev
@@ -32,9 +30,7 @@ export default function ProjectsEdit() {
             </td>
           </tr>
           <tr>
-            <td className="p-2 border ">
-                Next.js
-            </td>
+            <td className="p-2 border ">Next.js</td>
             <td className="p-2 border">Next.js</td>
             <td className="p-2 border">
               https://www.facebook.com/nhattrung.dev
@@ -42,11 +38,13 @@ export default function ProjectsEdit() {
             <td className="p-2 border">#1fc3ff</td>
             <td className="p-2 border">
               <div className="flex justify-center items-center gap-2">
-                <EditProjectsForm projectsId="2" initialData={{}}
-                onUpdate={async () => {
-                  await new Promise((resolve) => setTimeout(resolve, 1000));
-                  console.log("Social media updated successfully");
-                }}
+                <EditProjectsForm
+                  projectsId="2"
+                  initialData={{}}
+                  onUpdate={async () => {
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                    console.log("Social media updated successfully");
+                  }}
                 />
                 <DeleteButton title="Social Media" />
               </div>

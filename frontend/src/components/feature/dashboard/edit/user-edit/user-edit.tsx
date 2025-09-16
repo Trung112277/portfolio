@@ -9,13 +9,13 @@ import {
 export default function UserEdit() {
   return (
     <div>
-      <div>
-        <table className="w-full text-center">
+      <div className="w-full table-scroll overflow-x-auto">
+        <table className="w-full text-center min-w-[500px]">
           <thead>
-            <tr className=" text-xl font-bold border-b">
-              <th className="p-2 border">Name</th>
-              <th className="p-2 border">Email</th>
-              <th className="p-2 border">Role</th>
+            <tr className=" text-xl font-bold border-b text-primary text-center">
+              <th className="p-2 border w-[100px]">Name</th>
+              <th className="p-2 border w-[150px]">Email</th>
+              <th className="p-2 border w-[150px]">Role</th>
             </tr>
           </thead>
           <tbody>

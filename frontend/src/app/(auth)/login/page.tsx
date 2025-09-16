@@ -14,7 +14,7 @@ export default function Login() {
           height={1000}
         />
       </div>
-      <div className="min-h-screen flex items-center justify-center flex-col gap-4 relative z-10 ">
+      <div className="min-h-screen flex items-center justify-center flex-col gap-4 relative z-10 p-5">
         <Auth />
         <Link
           href="/"

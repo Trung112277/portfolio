@@ -15,8 +15,8 @@ export function WelcomePanel() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-4">
-            <div className="space-y-2 text-foreground w-1/2">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="space-y-2 text-foreground w-full md:w-1/2">
               <h4 className="font-semibold flex items-center gap-2">
                 <TargetIcon className="h-4 w-4 text-green-400" />
                 What can be done here:
@@ -29,7 +29,7 @@ export function WelcomePanel() {
                 <li>• Add new projects and skills</li>
               </ul>
             </div>
-            <div className="space-y-2 w-1/2">
+            <div className="space-y-2 w-full md:w-1/2">
               <h4 className="font-semibold text-foreground">Quick Actions:</h4>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 hover:bg-blue-500/30">

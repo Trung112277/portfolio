@@ -81,7 +81,7 @@ export function DashboardContent() {
   };
 
   return (
-    <div className="dashboard-content">
+    <div className="dashboard-content ">
       {renderContent()}
     </div>
   );
