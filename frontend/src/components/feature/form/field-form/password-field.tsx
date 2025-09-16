@@ -43,7 +43,7 @@ export function PasswordField<T extends FieldValues>({
           {...register(name, validation)}
           placeholder={placeholder}
           autoComplete="off"
-          className={`w-full ${errors[name] ? "border-red-500" : ""}`}
+          className={`w-full pr-7 ${errors[name] ? "border-red-500" : ""}`}
           name={String(name)}
           type={type}
           disabled={isSubmitting}

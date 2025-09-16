@@ -2,7 +2,7 @@
 import { PasswordField } from "@/components/feature/form/field-form/password-field";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { useFormHandler } from "@/hooks/useFormHandler";
@@ -11,7 +11,7 @@ import { getFieldValidation } from "@/lib/form-validation";
 
 export default function LoginForm() {
   const router = useRouter();
-  
+
   const { form, isSubmitting, handleFormSubmit } = useFormHandler({
     defaultValues: {
       email: "",
@@ -26,7 +26,7 @@ export default function LoginForm() {
       // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
       console.log("Login successfully");
-      
+
       // Redirect to dashboard after successful login
       router.push("/dashboard");
     },
@@ -55,18 +55,17 @@ export default function LoginForm() {
         placeholder="Enter your password"
         validation={getFieldValidation("password")}
       />
-        <div className="flex flex-row gap-2 items-center">
-          <Input
-            type="checkbox"
-            {...register("rememberMe")}
-            id="rememberMe"
-            disabled={isSubmitting}
-            className="w-4 h-4"
-          />
-          <Label htmlFor="rememberMe" className="text-sm text-primary">
-            Remember me
-          </Label>
-        </div>
+      <div className="flex flex-row gap-2 items-center">
+        <Checkbox
+          {...register("rememberMe")}
+          id="rememberMe"
+          disabled={isSubmitting}
+          className="w-4 h-4"
+        />
+        <Label htmlFor="rememberMe" className="text-sm text-primary">
+          Remember me
+        </Label>
+      </div>
       <Button type="submit" disabled={isSubmitting}>
         Login {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
       </Button>

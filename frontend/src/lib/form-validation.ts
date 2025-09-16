@@ -28,11 +28,21 @@ export const validationPatterns = {
   },
   password: {
     value: /^[0-9a-zA-Z\s,.=\-+]+$/,
-    message: "Password must contain only letters, digits, commas, hyphens, and equal signs",
+    message:
+      "Password must contain only letters, digits, commas, hyphens, and equal signs",
+    minLength: {
+      value: 6,
+      message: "Password must be at least 6 characters",
+    },
+    maxLength: {
+      value: 50,
+      message: "Password must be less than 50 characters",
+    },
   },
   name: {
     value: /^[a-zA-Z0-9\s,.=\-+]{2,100}$/,
-    message: "Name must contain only letters, digits, commas, hyphens, and equal signs",
+    message:
+      "Name must contain only letters, digits, commas, hyphens, and equal signs",
   },
 
   // Pattern cho introduction
@@ -216,6 +226,8 @@ export const validationRules = {
   password: {
     required: "Password is required",
     pattern: validationPatterns.password,
+    minLength: validationPatterns.password.minLength,
+    maxLength: validationPatterns.password.maxLength,
   },
 
   image: {
