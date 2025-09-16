@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
-import { Toaster } from "@/components/ui/sonner";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/feature/sidebar/app-sidebar";
+import { DashboardLoadingProvider } from "@/components/feature/loading/dashboard-loading-context";
 
 export const metadata: Metadata = {
   title: "Dashboard | Nhat Trung Portfolio",
@@ -42,8 +42,11 @@ export default function DashboardLayout({
               </nav>
             </div>
           </header>
-          <main className="p-4 w-full">{children}</main>
-          <Toaster />
+          <main className="p-4 w-full">
+            <DashboardLoadingProvider>
+              {children}
+            </DashboardLoadingProvider>
+          </main>
         </div>
       </SidebarProvider>
     </>

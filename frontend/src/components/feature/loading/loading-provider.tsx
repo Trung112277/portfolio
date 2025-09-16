@@ -92,16 +92,17 @@ export function LoadingProvider({ children }: LoadingProviderProps) {
 
     let isMounted = true;
     const run = async () => {
-      setIsLoading(true);
+      const previousPath = sessionStorage.getItem('previousPath') || '';
+      console.log('Initial load:', { pathname, previousPath });
       
       try {
-        // If we're on dashboard, skip loading immediately
+        // Skip initial load logic for dashboard - let route change handle it
         if (pathname.startsWith('/dashboard')) {
-          if (isMounted) {
-            setIsLoading(false);
-          }
+          console.log('Dashboard page, skipping initial load logic');
           return;
         }
+        
+        setIsLoading(true);
         
         // Wait for images
         await waitForImages();
@@ -130,13 +131,46 @@ export function LoadingProvider({ children }: LoadingProviderProps) {
     };
   }, [isClient, pathname]);
 
-  // Route change
+  // Route change - track navigation using sessionStorage
   useEffect(() => {
     if (!isClient) return;
 
-    // Skip loading for dashboard internal navigation
-    if (pathname.startsWith('/dashboard')) {
+    const previousPath = sessionStorage.getItem('previousPath') || '';
+    console.log('Route change:', { pathname, previousPath });
+
+    // If entering dashboard from outside
+    if (pathname.startsWith('/dashboard') && previousPath && !previousPath.startsWith('/dashboard')) {
+      console.log('LoadingProvider: Entering dashboard from outside, showing loading...');
+      setIsLoading(true);
+      // Wait for dashboard to load - minimum 800ms
+      setTimeout(() => {
+        console.log('LoadingProvider: Dashboard loading completed, hiding loading...');
+        setIsLoading(false);
+      }, 1200);
+      // Update sessionStorage and return early
+      sessionStorage.setItem('previousPath', pathname);
       return;
+    }
+    // If dashboard internal navigation - no loading screen and don't update sessionStorage
+    else if (pathname.startsWith('/dashboard') && previousPath.startsWith('/dashboard')) {
+      console.log('Dashboard internal navigation, no loading');
+      setIsLoading(false);
+      // Don't update sessionStorage here to avoid triggering DashboardLoadingProvider
+      return;
+    }
+    // If leaving dashboard
+    else if (!pathname.startsWith('/dashboard') && previousPath.startsWith('/dashboard')) {
+      console.log('Leaving dashboard, showing loading...');
+      setIsLoading(true);
+      // Wait for new page to load
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+    }
+
+    // Update sessionStorage for non-dashboard routes
+    if (!pathname.startsWith('/dashboard')) {
+      sessionStorage.setItem('previousPath', pathname);
     }
 
     let isMounted = true;
@@ -165,21 +199,21 @@ export function LoadingProvider({ children }: LoadingProviderProps) {
     };
   }, [pathname, isClient]);
 
-  // Immediately disable loading when entering dashboard
-  useEffect(() => {
-    if (isClient && pathname.startsWith('/dashboard') && isLoading) {
-      setIsLoading(false);
-    }
-  }, [pathname, isClient, isLoading]);
 
   // Don't render loader during SSR
   if (!isClient) {
     return <>{children}</>;
   }
 
+  console.log('LoadingProvider render:', { isLoading, pathname });
+
   return (
     <>
-      {isLoading && !pathname.startsWith('/dashboard') && <FullscreenLoader text="Loading page..." />}
+      {isLoading && (
+        <FullscreenLoader 
+          text={pathname.startsWith('/dashboard') ? "Loading dashboard..." : "Loading page..."} 
+        />
+      )}
       {children}
     </>
   );

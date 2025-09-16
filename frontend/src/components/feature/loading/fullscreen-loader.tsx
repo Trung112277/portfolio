@@ -9,7 +9,10 @@ interface FullscreenLoaderProps {
 
 const FullscreenLoader = memo(({ text = "Loading..." }: FullscreenLoaderProps) => {
   return (
-    <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-background/90 backdrop-blur-sm">
+    <div 
+      className="fixed inset-0 z-[9998] flex items-center justify-center bg-background/90 backdrop-blur-sm"
+      data-loading="true"
+    >
       <div className="flex flex-col items-center gap-4">
         <LoadingSpinner size="xl" />
         <p className="text-sm text-muted-foreground">{text}</p>

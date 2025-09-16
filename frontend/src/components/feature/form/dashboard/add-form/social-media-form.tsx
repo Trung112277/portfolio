@@ -49,6 +49,7 @@ export default function SocialMediaAddForm() {
   };
 
   const handleFormSubmit: SubmitHandler<SocialMediaFormInputs> = async (data) => {
+    console.log("=== FORM SUBMIT START ===");
     console.log("Adding social media, data:", data);
     console.log("Selected image:", selectedImage);
 
@@ -62,8 +63,10 @@ export default function SocialMediaAddForm() {
       setSelectedImage(null);
       setImagePreview(null);
       setIsOpen(false);
-      console.log("Social media added successfully");
-      toast.success("Social media added successfully");
+      console.log("=== TOAST SUCCESS CALLED ===");
+      toast.success("Social media added successfully", {
+        id: `social-media-add-${Date.now()}`
+      });
     } catch (error) {
       console.error("Error adding social media:", error);
       if (error instanceof Error) {
