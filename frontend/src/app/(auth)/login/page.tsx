@@ -1,11 +1,12 @@
 import Auth from "@/components/feature/auth/auth";
-import { SafeImage } from "@/components/ui/safe-image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 export default function Login() {
+  const Image = dynamic(() => import("next/image"));
   return (
     <div className="relative">
       <div className="absolute top-0 left-0 w-full h-full">
-        <SafeImage
+        <Image
           src="/background/background-login.jpg"
           alt="Background Login"
           className="w-full h-full object-cover -z-10 brightness-50 blur-xs"

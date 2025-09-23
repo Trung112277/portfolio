@@ -23,7 +23,7 @@ export const validationPatterns = {
       "Author name must contain only letters, digits, commas, hyphens, and equal signs",
   },
   email: {
-    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    value: /^[^\s@]+[^#$%&'*+\-/=?^_`{|}~]+[\w-]+@[^\s@]+\.[^\s@]+$/,
     message: "Invalid email format",
   },
   password: {

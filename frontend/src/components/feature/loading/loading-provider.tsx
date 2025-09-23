@@ -200,11 +200,6 @@ export function LoadingProvider({ children }: LoadingProviderProps) {
   }, [pathname, isClient]);
 
 
-  // Don't render loader during SSR
-  if (!isClient) {
-    return <>{children}</>;
-  }
-
   console.log('LoadingProvider render:', { isLoading, pathname });
 
   return (
