@@ -5,6 +5,7 @@ import {
   useContext,
   useState,
   useEffect,
+  useCallback,
   ReactNode,
 } from "react";
 import { usePathname } from "next/navigation";
@@ -40,6 +41,7 @@ export function DashboardLoadingProvider({
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [isGlobalLoading, setIsGlobalLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [wasGlobalLoading, setWasGlobalLoading] = useState(false);
   const pathname = usePathname();
 
   // Initialize after a delay to let LoadingProvider run first
@@ -57,7 +59,16 @@ export function DashboardLoadingProvider({
 
     const checkGlobalLoading = () => {
       const loader = document.querySelector('[data-loading="true"]');
-      setIsGlobalLoading(!!loader);
+      const currentlyLoading = !!loader;
+      
+      // Track when global loading ends
+      if (isGlobalLoading && !currentlyLoading) {
+        setWasGlobalLoading(true);
+        // Reset after a delay to allow navigation logic to run
+        setTimeout(() => setWasGlobalLoading(false), 100);
+      }
+      
+      setIsGlobalLoading(currentlyLoading);
     };
 
     // Check immediately
@@ -67,10 +78,10 @@ export function DashboardLoadingProvider({
     const interval = setInterval(checkGlobalLoading, 100);
 
     return () => clearInterval(interval);
-  }, [isInitialized]);
+  }, [isInitialized, isGlobalLoading]);
 
-  // Handle dashboard internal navigation with skeleton
-  useEffect(() => {
+  // Handle dashboard navigation logic
+  const handleDashboardNavigation = useCallback(() => {
     if (!isInitialized) return;
 
     if (pathname.startsWith("/dashboard")) {
@@ -80,7 +91,6 @@ export function DashboardLoadingProvider({
         pathname,
         previousPath,
         isFirstLoad,
-        isDashboardLoading,
         isGlobalLoading,
         isInitialized,
       });
@@ -101,27 +111,33 @@ export function DashboardLoadingProvider({
         return;
       }
 
-      // Skip skeleton when coming from outside dashboard
+      // Show skeleton when coming from outside dashboard, but skip if global loading just ended
       if (previousPath && !previousPath.startsWith("/dashboard")) {
-        console.log("Coming from outside dashboard, no skeleton");
-        setIsDashboardLoading(false);
+        if (wasGlobalLoading) {
+          console.log("Global loading just ended, skipping skeleton");
+          setIsDashboardLoading(false);
+        } else {
+          console.log("Coming from outside dashboard, showing skeleton...");
+          setIsDashboardLoading(true);
+          
+          // Show skeleton for 500ms to allow content to load
+          setTimeout(() => {
+            setIsDashboardLoading(false);
+          }, 500);
+        }
+        
         sessionStorage.setItem("previousPath", pathname);
         return;
       }
 
-      // Only show skeleton if we're actually navigating between different dashboard pages
+      // Skip skeleton for internal dashboard navigation - DashboardContent handles this
       if (
         previousPath &&
         previousPath.startsWith("/dashboard") &&
         previousPath !== pathname
       ) {
-        console.log("Dashboard internal navigation, showing skeleton...");
-        setIsDashboardLoading(true);
-
-        // Show skeleton for 300ms
-        setTimeout(() => {
-          setIsDashboardLoading(false);
-        }, 300);
+        console.log("Dashboard internal navigation, skipping skeleton (handled by DashboardContent)");
+        setIsDashboardLoading(false);
       } else {
         // No navigation, no skeleton
         console.log("No navigation, no skeleton");
@@ -131,7 +147,12 @@ export function DashboardLoadingProvider({
 
     // Update sessionStorage
     sessionStorage.setItem("previousPath", pathname);
-  }, [pathname, isFirstLoad, isGlobalLoading, isInitialized]);
+  }, [pathname, isFirstLoad, isGlobalLoading, isInitialized, wasGlobalLoading]);
+
+  // Handle dashboard internal navigation with skeleton
+  useEffect(() => {
+    handleDashboardNavigation();
+  }, [handleDashboardNavigation]);
 
   // Don't render anything if global loading is active
   if (isGlobalLoading) {
