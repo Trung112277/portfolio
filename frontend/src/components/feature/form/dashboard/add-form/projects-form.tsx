@@ -16,6 +16,7 @@ import {
 import { ProjectsFormInputs } from "@/types/projects-form";
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
+import { ProjectsService } from "@/services/projects";
 
 export default function ProjectsAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
@@ -38,7 +39,45 @@ export default function ProjectsAddForm() {
     console.log("Adding project, data:", data);
 
     try {
-      // TODO: Replace with actual API call
+      /const handleSubmit = async (data: ProjectFormData) => {
+        try {
+          setIsSubmitting(true)
+          
+          // Upload image to Supabase Storage if needed
+          let imageUrl = data.image_url
+          if (data.image_file) {
+            const { data: uploadData, error: uploadError } = await supabase.storage
+              .from('project-images')
+              .upload(`${Date.now()}-${data.image_file.name}`, data.image_file)
+            
+            if (uploadError) throw uploadError
+            
+            const { data: { publicUrl } } = supabase.storage
+              .from('project-images')
+              .getPublicUrl(uploadData.path)
+            
+            imageUrl = publicUrl
+          }
+      
+          // Create project
+          const project = await ProjectsService.create({
+            title: data.title,
+            description: data.description,
+            image_url: imageUrl,
+            tech_stack: data.tech_stack,
+            github_url: data.github_url,
+            live_url: data.live_url,
+          })
+      
+          toast.success('Project created successfully!')
+          onSuccess?.(project)
+        } catch (error) {
+          console.error('Error creating project:', error)
+          toast.error('Failed to create project')
+        } finally {
+          setIsSubmitting(false)
+        }
+      }
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
      
