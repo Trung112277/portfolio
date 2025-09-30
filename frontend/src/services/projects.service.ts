@@ -1,3 +1,4 @@
+// frontend/src/services/projects.service.ts
 import { supabase } from '@/lib/supabase'
 import { Database } from '@/types/database'
 
@@ -6,7 +7,6 @@ type ProjectInsert = Database['public']['Tables']['projects']['Insert']
 type ProjectUpdate = Database['public']['Tables']['projects']['Update']
 
 export class ProjectsService {
-  // Get all projects
   static async getAll(): Promise<Project[]> {
     const { data, error } = await supabase
       .from('projects')
@@ -17,8 +17,7 @@ export class ProjectsService {
     return data
   }
 
-  // Get project by ID
-  static async getById(id: string): Promise<Project | null> {
+  static async getById(id: number): Promise<Project | null> {
     const { data, error } = await supabase
       .from('projects')
       .select('*')
@@ -29,7 +28,6 @@ export class ProjectsService {
     return data
   }
 
-  // Create new project
   static async create(project: ProjectInsert): Promise<Project> {
     const { data, error } = await supabase
       .from('projects')
@@ -41,8 +39,7 @@ export class ProjectsService {
     return data
   }
 
-  // Update project
-  static async update(id: string, updates: ProjectUpdate): Promise<Project> {
+  static async update(id: number, updates: ProjectUpdate): Promise<Project> {
     const { data, error } = await supabase
       .from('projects')
       .update({ ...updates, updated_at: new Date().toISOString() })
@@ -54,8 +51,7 @@ export class ProjectsService {
     return data
   }
 
-  // Delete project
-  static async delete(id: string): Promise<void> {
+  static async delete(id: number): Promise<void> {
     const { error } = await supabase
       .from('projects')
       .delete()

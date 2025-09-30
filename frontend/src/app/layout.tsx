@@ -15,6 +15,7 @@ import { SkipLink } from "@/components/common/skip-link";
 import { Toaster } from "@/components/ui/sonner";
 import { baseSEO, generatePersonStructuredData, generateWebsiteStructuredData } from "@/lib/seo";
 
+
 const openSans = Open_Sans({
   subsets: ["latin"],
   variable: "--font-open-sans",

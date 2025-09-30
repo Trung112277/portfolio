@@ -16,14 +16,14 @@ import {
 import { ProjectsFormInputs } from "@/types/projects-form";
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
-import { ProjectsService } from "@/services/projects";
+import { ProjectsService } from "@/services/projects.service";
 
 export default function ProjectsAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
 
   const {
     register,
-    handleSubmit,
+    handleSubmit: handleSubmitForm,
     formState: { errors, isSubmitting },
     reset,
     setValue,
@@ -35,67 +35,26 @@ export default function ProjectsAddForm() {
   const { selectedColor, colorText, handleColorChange, handleColorTextChange } =
     useColorSync(watch, setValue);
 
-  const handleFormSubmit: SubmitHandler<ProjectsFormInputs> = async (data) => {
-    console.log("Adding project, data:", data);
-
-    try {
-      /const handleSubmit = async (data: ProjectFormData) => {
-        try {
-          setIsSubmitting(true)
-          
-          // Upload image to Supabase Storage if needed
-          let imageUrl = data.image_url
-          if (data.image_file) {
-            const { data: uploadData, error: uploadError } = await supabase.storage
-              .from('project-images')
-              .upload(`${Date.now()}-${data.image_file.name}`, data.image_file)
-            
-            if (uploadError) throw uploadError
-            
-            const { data: { publicUrl } } = supabase.storage
-              .from('project-images')
-              .getPublicUrl(uploadData.path)
-            
-            imageUrl = publicUrl
-          }
-      
-          // Create project
-          const project = await ProjectsService.create({
-            title: data.title,
-            description: data.description,
-            image_url: imageUrl,
-            tech_stack: data.tech_stack,
-            github_url: data.github_url,
-            live_url: data.live_url,
-          })
-      
-          toast.success('Project created successfully!')
-          onSuccess?.(project)
-        } catch (error) {
-          console.error('Error creating project:', error)
-          toast.error('Failed to create project')
-        } finally {
-          setIsSubmitting(false)
-        }
-      }
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-     
-      // Reset form and states
-      reset();
-      setIsOpen(false);
-      console.log("Project added successfully");
-      toast.success("Project added successfully");
-    } catch (error) {
-      console.error("Error adding projects:", error);
-      if (error instanceof Error) {
-        toast.error(`Error: ${error.message}`);
-      } else {
-        toast.error("An error occurred while adding project");
+    const handleSubmit = async (data: ProjectsFormInputs) => {
+      try {
+        setIsOpen(true)
+        
+        const project = await ProjectsService.create({
+          name: data.name,
+          description: data.description,
+          link: data.link,
+          color: data.color,
+        })
+    
+        toast.success('Project created successfully!')
+        setIsOpen(false)
+      } catch (error) {
+        console.error('Error creating project:', error)
+        toast.error('Failed to create project')
+      } finally {
+        setIsOpen(false)
       }
     }
-  };
-
 
   const handleDialogClose = (open: boolean) => {
     setIsOpen(open);
@@ -108,12 +67,15 @@ export default function ProjectsAddForm() {
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogClose}>
       <AddItemButton onClick={() => setIsOpen(true)} label="Add Project" />
-      
+
       <DialogContent
         aria-describedby={undefined}
         className="overflow-y-auto max-h-[90vh]"
       >
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
+        <form
+          onSubmit={handleSubmitForm(handleSubmit)}
+          className="flex flex-col gap-4"
+        >
           <DialogHeader>
             <DialogTitle>Add Project</DialogTitle>
           </DialogHeader>

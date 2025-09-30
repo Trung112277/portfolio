@@ -1,5 +1,7 @@
+"use client";
 import { DashboardTitle } from "@/components/heading/dashboar-title";
 import { ProjectsPanel } from "../panels/projects-panel";
+
 export function DashboardProjects() {
   return (
     <div className="space-y-6">

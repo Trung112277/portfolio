@@ -1,16 +1,15 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense, lazy } from "react";
 import { useRouter, usePathname } from "next/navigation";
-
-import {
-  DashboardOverview,
-  DashboardAboutMe,
-  DashboardProjects,
-  DashboardTech
-} from "@/components/feature/dashboard/sections";
-import { DashboardUser } from "@/components/feature/dashboard/sections/dashboard-user";
 import { DashboardSkeleton } from "@/components/feature/loading/dashboard-skeleton";
+
+// Lazy load components
+const DashboardOverview = lazy(() => import("@/components/feature/dashboard/sections/dashboard-overview").then(module => ({ default: module.DashboardOverview })));
+const DashboardAboutMe = lazy(() => import("@/components/feature/dashboard/sections/dashboard-about-me").then(module => ({ default: module.DashboardAboutMe })));
+const DashboardProjects = lazy(() => import("@/components/feature/dashboard/sections/dashboard-projects").then(module => ({ default: module.DashboardProjects })));
+const DashboardTech = lazy(() => import("@/components/feature/dashboard/sections/dashboard-tech").then(module => ({ default: module.DashboardTech })));
+const DashboardUser = lazy(() => import("@/components/feature/dashboard/sections/dashboard-user").then(module => ({ default: module.DashboardUser })));
 
 export function DashboardContent() {
   const router = useRouter();
@@ -109,17 +108,41 @@ export function DashboardContent() {
   const renderContent = () => {
     switch (currentSection) {
       case 'overview':
-        return <DashboardOverview />;
+        return (
+          <Suspense fallback={<DashboardSkeleton />}>
+            <DashboardOverview />
+          </Suspense>
+        );
       case 'about-me':
-        return <DashboardAboutMe />;
+        return (
+          <Suspense fallback={<DashboardSkeleton />}>
+            <DashboardAboutMe />
+          </Suspense>
+        );
       case 'projects':
-        return <DashboardProjects />;
+        return (
+          <Suspense fallback={<DashboardSkeleton />}>
+            <DashboardProjects />
+          </Suspense>
+        );
       case 'tech':
-        return <DashboardTech />;
+        return (
+          <Suspense fallback={<DashboardSkeleton />}>
+            <DashboardTech />
+          </Suspense>
+        );
       case 'user':
-        return <DashboardUser />;
+        return (
+          <Suspense fallback={<DashboardSkeleton />}>
+            <DashboardUser />
+          </Suspense>
+        );
       default:
-        return <DashboardOverview />;
+        return (
+          <Suspense fallback={<DashboardSkeleton />}>
+            <DashboardOverview />
+          </Suspense>
+        );
     }
   };
 
