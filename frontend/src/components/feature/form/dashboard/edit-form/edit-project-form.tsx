@@ -17,15 +17,18 @@ import {
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
 import { ProjectsFormInputs } from "@/types/projects-form";
+import { ProjectsService } from "@/services/projects.service";
 
 interface ProjectsEditFormProps {
   socialMediaId: string;
   initialData: Partial<ProjectsFormInputs>;
+  onUpdate?: (updatedData: ProjectsFormInputs) => void;
 }
 
 export default function ProjectsEditForm({
   socialMediaId,
   initialData,
+  onUpdate,
 }: ProjectsEditFormProps) {
   const { isOpen, setIsOpen } = useDialogState();
 
@@ -52,38 +55,40 @@ export default function ProjectsEditForm({
   }, [initialData, reset]);
 
   const handleFormSubmit: SubmitHandler<ProjectsFormInputs> = async (data) => {
-    console.log("Updating social media:", socialMediaId, data);
+    console.log("Updating project:", socialMediaId, data);
 
     try {
-      // TODO: Replace with actual API call
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    
+      // Call API to update project
+      const projectId = parseInt(socialMediaId);
+      const updatedProject = await ProjectsService.update(projectId, {
+        name: data.name,
+        description: data.description,
+        link: data.link,
+        color: data.color,
+      });
+
+      console.log("Project updated successfully:", updatedProject);
 
       // Reset form and states
       reset(initialData);
       setIsOpen(false);
-      console.log("Social media updated successfully");
-      toast.success("Social media updated successfully");
+      
+      // Call onUpdate callback with updated data
+      if (onUpdate) {
+        onUpdate(data);
+      }
+      
+      toast.success("Project updated successfully");
     } catch (error) {
-      console.error("Error updating social media:", error);
+      console.error("Error updating project:", error);
       if (error instanceof Error) {
         toast.error(`Error: ${error.message}`);
       } else {
-        toast.error("An error occurred while updating social media");
+        toast.error("An error occurred while updating project");
       }
     }
   };
 
-  // Helper function to convert file to base64
-  const convertFileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
-    });
-  };
 
   const handleDialogClose = (open: boolean) => {
     setIsOpen(open);
@@ -149,7 +154,7 @@ export default function ProjectsEditForm({
           />
 
           <PrimaryButton type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Updating..." : "Update Social Media"}
+            {isSubmitting ? "Updating..." : "Update Project"}
           </PrimaryButton>
         </form>
       </DialogContent>

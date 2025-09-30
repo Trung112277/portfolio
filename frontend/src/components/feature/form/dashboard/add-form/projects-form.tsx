@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import AddItemButton from "@/components/button/add-item-button";
 import PrimaryButton from "@/components/button/primary-button";
@@ -16,10 +16,11 @@ import {
 import { ProjectsFormInputs } from "@/types/projects-form";
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
-import { ProjectsService } from "@/services/projects.service";
+import { useProjects } from "@/hooks/useProjects";
 
 export default function ProjectsAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
+  const { createProject } = useProjects();
 
   const {
     register,
@@ -37,22 +38,24 @@ export default function ProjectsAddForm() {
 
     const handleSubmit = async (data: ProjectsFormInputs) => {
       try {
-        setIsOpen(true)
-        
-        const project = await ProjectsService.create({
+        const project = await createProject({
           name: data.name,
           description: data.description,
           link: data.link,
           color: data.color,
         })
     
+        console.log('Project created successfully:', project)
         toast.success('Project created successfully!')
+        reset() // Reset form after successful creation
         setIsOpen(false)
       } catch (error) {
         console.error('Error creating project:', error)
-        toast.error('Failed to create project')
-      } finally {
-        setIsOpen(false)
+        if (error instanceof Error) {
+          toast.error(`Error: ${error.message}`)
+        } else {
+          toast.error('Failed to create project')
+        }
       }
     }
 

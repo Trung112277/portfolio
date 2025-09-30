@@ -12,7 +12,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export default function DeleteButton({ title }: { title: string }) {
+interface DeleteButtonProps {
+  title: string;
+  onDelete: () => void;
+}
+
+export default function DeleteButton({ title, onDelete }: DeleteButtonProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -36,7 +41,10 @@ export default function DeleteButton({ title }: { title: string }) {
           <AlertDialogCancel className="bg-primary/10 border-primary/10 hover:bg-primary/20 text-primary hover:border-primary/20 hover:text-primary">
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction className="bg-red-500/10 border-red-500/10 hover:bg-red-500/20 border hover:border-red-500/20 hover:text-red-500 text-white">
+          <AlertDialogAction 
+            onClick={onDelete}
+            className="bg-red-500/10 border-red-500/10 hover:bg-red-500/20 border hover:border-red-500/20 hover:text-red-500 text-white"
+          >
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>

@@ -2,14 +2,26 @@
 import { lazy, useEffect, useState } from "react";
 import { useProjects } from "@/hooks/useProjects";
 import { DashboardSkeleton } from "@/components/feature/loading/dashboard-skeleton";
+import { toast } from "sonner";
 
 // Lazy load components
 const DeleteButton = lazy(() => import("@/components/button/delete-button"));
 const EditProjectsForm = lazy(() => import("@/components/feature/form/dashboard/edit-form/edit-project-form"));
 
 export default function ProjectsEdit() {
-  const { projects, loading, error } = useProjects();
+  const { projects, loading, error, updateProject, deleteProject } = useProjects();
   const [componentsLoaded, setComponentsLoaded] = useState(false);
+
+  const handleDelete = async (id: number, title: string) => {
+    try {
+      await deleteProject(id);
+      console.log(`Project "${title}" deleted successfully`);
+      toast.success(`Project "${title}" deleted successfully`);
+    } catch (error) {
+      console.error("Error deleting project:", error);
+      toast.error("Error deleting project");
+    }
+  };
 
   // Preload components when section is accessed
   useEffect(() => {
@@ -105,9 +117,18 @@ export default function ProjectsEdit() {
                       link: project.link,
                       color: project.color,
                     }}
+                    onUpdate={async (updatedData) => {
+                      try {
+                        await updateProject(project.id, updatedData);
+                        console.log("Project updated successfully");
+                      } catch (error) {
+                        console.error("Error updating project:", error);
+                      }
+                    }}
                   />
                   <DeleteButton 
                     title={project.name}
+                    onDelete={() => handleDelete(project.id, project.name)}
                   />
                 </div>
               </td>

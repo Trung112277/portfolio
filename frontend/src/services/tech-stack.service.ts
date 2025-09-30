@@ -1,5 +1,5 @@
 // frontend/src/services/tech-stack.service.ts
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase-client'
 import { Database } from '@/types/database'
 
 type TechStack = Database['public']['Tables']['tech_stack']['Row']

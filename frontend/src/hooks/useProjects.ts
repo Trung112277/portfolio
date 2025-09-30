@@ -1,67 +1,69 @@
-// frontend/src/hooks/useProjects.ts
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { ProjectsService } from '@/services/projects.service'
 import { Database } from '@/types/database'
+import { useProjectsDbStore } from '@/stores/projects-db-store'
+import { supabase } from '@/lib/supabase-client'
 
 type Project = Database['public']['Tables']['projects']['Row']
 
 export function useProjects() {
-  const [projects, setProjects] = useState<Project[]>([])
+  const { projects, setProjects, addProject, updateProject: applyUpdate, removeProject } = useProjectsDbStore()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    loadProjects()
-  }, [])
+    ;(async () => {
+      try {
+        setLoading(true)
+        const data = await ProjectsService.getAll()
+        setProjects(data)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load projects')
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [setProjects])
 
-  const loadProjects = async () => {
-    try {
-      setLoading(true)
-      const data = await ProjectsService.getAll()
-      setProjects(data)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load projects')
-    } finally {
-      setLoading(false)
-    }
-  }
+  // Realtime (enable bảng `projects` trong Realtime trên Supabase)
+  useEffect(() => {
+    const channel = supabase
+      .channel('projects-changes')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'projects' }, (payload) => {
+        addProject(payload.new as Project)
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'projects' }, (payload) => {
+        applyUpdate((payload.new as Project).id, payload.new as Partial<Project>)
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'projects' }, (payload) => {
+        removeProject((payload.old as Project).id)
+      })
+      .subscribe()
 
-  const createProject = async (project: Database['public']['Tables']['projects']['Insert']) => {
-    try {
-      const newProject = await ProjectsService.create(project)
-      setProjects(prev => [newProject, ...prev])
-      return newProject
-    } catch (err) {
-      throw err
+    return () => {
+      supabase.removeChannel(channel)
     }
+  }, [addProject, applyUpdate, removeProject])
+
+  const createProject = async (input: Database['public']['Tables']['projects']['Insert']) => {
+    const created = await ProjectsService.create(input)
+    addProject(created) // optimistic: đã có SELECT trả record nên thêm ngay
+    return created
   }
 
   const updateProject = async (id: number, updates: Database['public']['Tables']['projects']['Update']) => {
-    try {
-      const updatedProject = await ProjectsService.update(id, updates)
-      setProjects(prev => prev.map(p => p.id === id ? updatedProject : p))
-      return updatedProject
-    } catch (err) {
-      throw err
-    }
+    const updated = await ProjectsService.update(id, updates)
+    applyUpdate(id, updated)
+    return updated
   }
 
   const deleteProject = async (id: number) => {
-    try {
-      await ProjectsService.delete(id)
-      setProjects(prev => prev.filter(p => p.id !== id))
-    } catch (err) {
-      throw err
-    }
+    await ProjectsService.delete(id)
+    removeProject(id)
   }
 
-  return {
-    projects,
-    loading,
-    error,
-    createProject,
-    updateProject,
-    deleteProject,
-    refetch: loadProjects
-  }
+  return { projects, loading, error, createProject, updateProject, deleteProject, refetch: async () => {
+    const data = await ProjectsService.getAll()
+    setProjects(data)
+  }}
 }
