@@ -1,44 +1,26 @@
+"use client";
 import { memo } from "react";
 import { LinkingFloatingButton } from "@/components/button/linking-floating-button";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import { PROJECTS_DATA } from "@/data/projects";
 import { PROJECT_POSITIONS } from "@/types/project";
 import { getPositionStyles, resolveResponsivePosition, type Breakpoint } from "@/lib/position-utils";
 
-interface EmptySlotProps {
-  index: number;
-  position: React.CSSProperties;
-}
+type ResponsivePosition = import("@/lib/position-utils").ResponsivePosition;
 
-const EmptySlot = memo(({ index, position }: EmptySlotProps) => (
-  <div style={position} className="z-10">
-    <div className="w-[150px] h-[50px] rounded-2xl border-2 border-dashed border-gray-600 flex items-center justify-center text-gray-500 text-sm bg-gray-900/50">
-      Empty Slot {index + 1}
-    </div>
-  </div>
-));
+export type FloatingItem = {
+  id: string;
+  name: string;
+  description: string;
+  link: string;
+  color: string;
+  position?: ResponsivePosition;
+  isActive?: boolean;
+};
 
-EmptySlot.displayName = "EmptySlot";
-
-interface ProjectSlotProps {
-  project: typeof PROJECTS_DATA[number];
-  position: React.CSSProperties;
-  positionId: string;
-}
-
-const ProjectSlot = memo(({ project, position, positionId }: ProjectSlotProps) => (
-  <div key={positionId} style={position} className="z-10">
-    <LinkingFloatingButton
-      to={project.link}
-      content={project.title}
-      color={project.color}
-    >
-      {project.title}
-    </LinkingFloatingButton>
-  </div>
-));
-
-ProjectSlot.displayName = "ProjectSlot";
+export type LinkingFloatingListProps = {
+  items: FloatingItem[];
+  positions?: typeof PROJECT_POSITIONS; // optional override
+};
 
 function useBreakpoint(): Breakpoint {
   if (typeof window === 'undefined') return 'base';
@@ -50,34 +32,34 @@ function useBreakpoint(): Breakpoint {
   return 'base';
 }
 
-export const LinkingFloatingList = memo(() => {
+export const LinkingFloatingList = memo(({ items, positions = PROJECT_POSITIONS }: LinkingFloatingListProps) => {
   const breakpoint = useBreakpoint();
+
   return (
     <TooltipProvider>
       <div className="relative w-full min-h-[800px]">
-        {PROJECT_POSITIONS.map((pos, index) => {
-          const project = PROJECTS_DATA[index];
-          const responsivePosition = (project?.position ?? pos.position) as import("@/lib/position-utils").ResponsivePosition;
+        {positions.map((pos, index) => {
+          const project = items[index];
+          const responsivePosition = (project?.position ?? pos.position) as ResponsivePosition;
           const resolved = resolveResponsivePosition(responsivePosition, breakpoint);
           const positionStyles = getPositionStyles(resolved);
-          
-          if (!project || !project.isActive) {
+
+          if (!project || project.isActive === false) {
             return (
-              <EmptySlot
-                key={pos.id}
-                index={index}
-                position={positionStyles}
-              />
+              <div key={pos.id} style={positionStyles} className="z-10">
+                <div className="w-[150px] h-[50px] rounded-2xl border-2 border-dashed border-gray-600 flex items-center justify-center text-gray-500 text-sm bg-gray-900/50">
+                  Empty Slot {index + 1}
+                </div>
+              </div>
             );
           }
 
           return (
-            <ProjectSlot
-              key={pos.id}
-              project={project}
-              position={positionStyles}
-              positionId={pos.id}
-            />
+            <div key={pos.id} style={positionStyles} className="z-10">
+              <LinkingFloatingButton to={project.link} content={project.description} color={project.color}>
+                {project.name}
+              </LinkingFloatingButton>
+            </div>
           );
         })}
       </div>

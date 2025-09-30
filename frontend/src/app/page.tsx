@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { FloatingButton } from "@/components/button/floating-button";
 import Intro from "@/components/common/intro";
 import { FrontendGlowBow } from "@/components/feature/glow-bow/frontend-glow-bow";
-import { LinkingFloatingList } from "@/components/feature/linking-floating/linking-floating-list";
+import ProjectsFloatingList from "@/components/feature/linking-floating/projects-floating-list";
 import TechList from "@/components/feature/tech/tech-list";
 import TimelineList from "@/components/feature/timeline/timeline-list";
 import { MainHeader } from "@/components/heading/main-header";
@@ -101,7 +101,7 @@ export default function Home() {
           </Suspense>
         </div>
         <div className="container mx-auto px-4 flex items-center">
-          <LinkingFloatingList />
+          <ProjectsFloatingList />
         </div>
       </section>
     </main>
