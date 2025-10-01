@@ -4,6 +4,7 @@ import { toast } from "sonner";
 export interface FormConfig {
   defaultValues: Record<string, unknown>;
   successMessage: string;
+  rememberMe?: boolean;
   errorMessage?: string;
   onSubmit: (data: Record<string, unknown>) => Promise<void>;
 }

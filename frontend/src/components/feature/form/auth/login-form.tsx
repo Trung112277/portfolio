@@ -1,41 +1,62 @@
 "use client";
-import { PasswordField } from "@/components/feature/form/field-form/password-field";
+import { useEffect } from "react";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
+import { PasswordField } from "@/components/feature/form/field-form/password-field";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { useFormHandler } from "@/hooks/useFormHandler";
-import { useRouter } from "next/navigation";
 import { getFieldValidation } from "@/lib/form-validation";
+import { AuthService } from "@/services/auth.service";
+import { CheckboxField } from "@/components/feature/form/field-form/checkbox-field";
+import { useRouter } from "next/navigation";
 
-export default function LoginForm() {
+interface LoginFormProps {
+  onSuccess?: () => void;
+}
+
+export default function LoginForm({ onSuccess }: LoginFormProps) {
   const router = useRouter();
-
   const { form, isSubmitting, handleFormSubmit } = useFormHandler({
-    defaultValues: {
-      email: "",
-      password: "",
-      rememberMe: false,
+    defaultValues: { 
+      email: "", 
+      password: "", 
+      rememberMe: false 
     },
-    successMessage: "Login successfully",
-    errorMessage: "An error occurred while login",
-    onSubmit: async (data) => {
-      console.log("Login, data:", data);
-      // TODO: Replace with actual API call
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Login successfully");
-
-      // Redirect to dashboard after successful login
-      router.push("/dashboard");
-    },
+    successMessage: "Logged in successfully",
+    errorMessage: "Login failed",
+      onSubmit: async (data) => {
+        await AuthService.signIn({
+          email: data.email as string,
+          password: data.password as string,
+          rememberMe: data.rememberMe as boolean,
+        });
+        
+        // Dispatch custom event to notify other components
+        window.dispatchEvent(new CustomEvent('auth-changed'));
+        
+        onSuccess?.();
+        router.push("/dashboard");
+      },
   });
 
   const {
     register,
     formState: { errors },
+    setValue,
   } = form;
+
+  // Tự động điền email và rememberMe nếu user đã chọn remember me trước đó
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('userEmail');
+    const rememberMe = localStorage.getItem('rememberMe') === 'true';
+    
+    if (savedEmail) {
+      setValue('email', savedEmail);
+    }
+    if (rememberMe) {
+      setValue('rememberMe', true);
+    }
+  }, [setValue]);
 
   return (
     <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
@@ -55,17 +76,13 @@ export default function LoginForm() {
         placeholder="Enter your password"
         validation={getFieldValidation("password")}
       />
-      <div className="flex flex-row gap-2 items-center">
-        <Checkbox
-          {...register("rememberMe")}
-          id="rememberMe"
-          disabled={isSubmitting}
-          className="w-4 h-4"
-        />
-        <Label htmlFor="rememberMe" className="text-sm text-primary">
-          Remember me
-        </Label>
-      </div>
+      <CheckboxField
+        label="Remember me"
+        name="rememberMe"
+        errors={errors}
+        register={register}
+        validation={getFieldValidation("rememberMe")}
+      />
       <Button type="submit" disabled={isSubmitting}>
         Login {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
       </Button>

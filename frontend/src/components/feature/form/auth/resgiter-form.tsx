@@ -6,32 +6,29 @@ import { Loader2 } from "lucide-react";
 import { useFormHandler } from "@/hooks/useFormHandler";
 import type { RegisterForm } from "@/types/resgiter-form";
 import { getFieldValidation } from "@/lib/form-validation";
+import { AuthService } from "@/services/auth.service";
 
 interface RegisterFormProps {
-  onSuccess?: () => void;
+  onSuccess?: () => void; 
 }
 
 export default function RegisterForm({ onSuccess }: RegisterFormProps) {
-  
-  const { form, isSubmitting, handleFormSubmit } = useFormHandler({
+  const { form, isSubmitting, handleFormSubmit } = useFormHandler({ 
     defaultValues: {
       name: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
-    successMessage: "Registration successful! Please login.",
-    errorMessage: "An error occurred while registering",
+    successMessage: "Registration successful!",
+    errorMessage: "Registration failed",
     onSubmit: async (data) => {
-      console.log("Register, data:", data);
-      
-      // TODO: Replace with actual API call
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Registration successful");
-      
-      // Switch to login tab after successful registration
-      onSuccess?.();
+      await AuthService.signUp({
+        email: data.email as string,
+        password: data.password as string,
+        name: data.name as string,
+      })
+      onSuccess?.()
     },
   });
 

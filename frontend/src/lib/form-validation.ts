@@ -230,6 +230,10 @@ export const validationRules = {
     maxLength: validationPatterns.password.maxLength,
   },
 
+  rememberMe: {
+    // Checkbox không cần validation phức tạp, chỉ cần boolean
+  },
+
   image: {
     validate: (value: unknown) => {
       if (value instanceof File) {

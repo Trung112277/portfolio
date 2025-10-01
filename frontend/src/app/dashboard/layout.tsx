@@ -4,7 +4,10 @@ import { ArrowLeftIcon } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/feature/sidebar/app-sidebar";
 import { DashboardLoadingProvider } from "@/components/feature/loading/dashboard-loading-context";
-
+import AuthButton from "@/components/feature/auth/auth-button";
+import OAuthCallbackHandler from "@/components/feature/auth/oauth-callback-handler";
+import AuthGuard from "@/components/feature/auth/auth-guard";
+import SessionManager from "@/components/feature/auth/session-manager";
 export const metadata: Metadata = {
   title: "Dashboard | Nhat Trung Portfolio",
   description: "Dashboard for managing portfolio content and analytics",
@@ -16,7 +19,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <AuthGuard requireAuth={true} redirectTo="/login">
       <SidebarProvider>
         <AppSidebar />
         <div className="flex flex-col w-full min-h-screen bg-gray-900">
@@ -33,22 +36,19 @@ export default function DashboardLayout({
             </div>
             <div>
               <nav className="flex items-center gap-4">
-                <Link
-                  href="/login"
-                  className="hover:text-primary text-xl font-bold transition-colors"
-                >
-                  Login
-                </Link>
+                <AuthButton />
               </nav>
             </div>
           </header>
           <main className="p-4 w-full">
+            <SessionManager />
+            <OAuthCallbackHandler />
             <DashboardLoadingProvider>
               {children}
             </DashboardLoadingProvider>
           </main>
         </div>
       </SidebarProvider>
-    </>
+    </AuthGuard>
   );
 }
