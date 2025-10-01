@@ -21,7 +21,7 @@ export default function GoogleLoginButton() {
       
       // Note: OAuth will redirect to provider, so we don't need to dispatch event here
       // The event will be handled when user returns from OAuth provider
-      toast.success("Redirecting to Google...");
+      toast.success("Redirecting to Google... (Auto Remember enabled)");
     } catch (error) {
       console.error("Google login error:", error);
       toast.error("Failed to login with Google");

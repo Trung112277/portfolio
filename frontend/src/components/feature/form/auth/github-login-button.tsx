@@ -21,7 +21,7 @@ export default function GithubLoginButton() {
       
       // Note: OAuth will redirect to provider, so we don't need to dispatch event here
       // The event will be handled when user returns from OAuth provider
-      toast.success("Redirecting to GitHub...");
+      toast.success("Redirecting to GitHub... (Auto Remember enabled)");
     } catch (error) {
       console.error("GitHub login error:", error);
       toast.error("Failed to login with GitHub");

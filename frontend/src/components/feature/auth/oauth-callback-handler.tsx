@@ -24,6 +24,11 @@ export default function OAuthCallbackHandler() {
         const sessionData = await AuthService.handleAuthCallback();
         
         if (sessionData.session) {
+          // OAuth login mặc định có Remember me
+          localStorage.setItem('rememberMe', 'true');
+          localStorage.setItem('userEmail', sessionData.session.user?.email || '');
+          sessionStorage.removeItem('supabase-temporary-session');
+          
           // Only show toast for fresh OAuth redirects
           const hasShownOAuthToast = sessionStorage.getItem('oauth-toast-shown');
           if (!hasShownOAuthToast) {

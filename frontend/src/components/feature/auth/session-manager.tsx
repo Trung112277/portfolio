@@ -9,6 +9,11 @@ export default function SessionManager() {
       const rememberMe = localStorage.getItem('rememberMe') === 'true';
       const isTemporarySession = sessionStorage.getItem('supabase-temporary-session') === 'true';
       
+      // OAuth login mặc định có Remember me
+      if (rememberMe) {
+        console.log('Remember me enabled - session will persist');
+      }
+      
       // Nếu không có remember me và có temporary session flag
       if (!rememberMe && isTemporarySession) {
         // Đánh dấu rằng đây là session tạm thời
