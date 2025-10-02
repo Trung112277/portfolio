@@ -77,15 +77,8 @@ export function WorkExperienceEditItem() {
         </div>
       </div>
       <div className="flex justify-center items-center gap-2 w-full py-4">
-        <EditWorkExperienceForm
-          workExperienceId="1"
-          initialData={{}}
-          onUpdate={async () => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            console.log("Work experience updated successfully");
-          }}
-        />
-        <DeleteButton title="Work Experience" />
+        <EditWorkExperienceForm workExperienceId="1" initialData={{}} />
+        <DeleteButton title="Work Experience" onDelete={() => {}} />
       </div>
     </div>
   );

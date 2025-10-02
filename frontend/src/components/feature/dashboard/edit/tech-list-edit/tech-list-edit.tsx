@@ -37,12 +37,9 @@ export default function TechListEdit({ category }: { category: string }) {
                   <EditTechListForm
                     techListId="1"
                     initialData={{}}
-                    onUpdate={async () => {
-                      await new Promise((resolve) => setTimeout(resolve, 1000));
-                      console.log("Tech list updated successfully");
-                    }}
+                
                   />
-                  <DeleteButton title="Tech List" />
+                  <DeleteButton title="Tech List" onDelete={() => {}} />
                 </div>
               </td>
             </tr>
@@ -62,12 +59,8 @@ export default function TechListEdit({ category }: { category: string }) {
                   <EditTechListForm
                     techListId="2"
                     initialData={{}}
-                    onUpdate={async () => {
-                      await new Promise((resolve) => setTimeout(resolve, 1000));
-                      console.log("Tech list updated successfully");
-                    }}
                   />
-                  <DeleteButton title="Tech List" />
+                  <DeleteButton title="Tech List" onDelete={() => {}} />
                 </div>
               </td>
             </tr>

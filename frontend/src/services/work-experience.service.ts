@@ -1,5 +1,5 @@
 // frontend/src/services/work-experience.service.ts
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase-client'
 import { Database } from '@/types/database'
 
 type WorkExperience = Database['public']['Tables']['work_experience']['Row']

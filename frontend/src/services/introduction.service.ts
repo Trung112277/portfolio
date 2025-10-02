@@ -1,5 +1,5 @@
 // frontend/src/services/introduction.service.ts
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase-client'
 import { Database } from '@/types/database'
 
 type Introduction = Database['public']['Tables']['introduction']['Row']

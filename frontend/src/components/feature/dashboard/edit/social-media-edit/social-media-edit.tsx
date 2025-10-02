@@ -35,12 +35,9 @@ export default function SocialMediaEdit() {
                 <EditSocialMediaForm
                   socialMediaId="1"
                   initialData={{}}
-                  onUpdate={async () => {
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                    console.log("Social media updated successfully");
-                  }}
+             
                 />
-                <DeleteButton title="Social Media" />
+                <DeleteButton title="Social Media" onDelete={() => {}} />
               </div>
             </td>
           </tr>
@@ -63,12 +60,8 @@ export default function SocialMediaEdit() {
                 <EditSocialMediaForm
                   socialMediaId="2"
                   initialData={{}}
-                  onUpdate={async () => {
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                    console.log("Social media updated successfully");
-                  }}
                 />
-                <DeleteButton title="Social Media" />
+                <DeleteButton title="Social Media" onDelete={() => {}} />
               </div>
             </td>
           </tr>

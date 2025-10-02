@@ -1,5 +1,5 @@
 // frontend/src/services/social-media.service.ts
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase-client'
 import { Database } from '@/types/database'
 
 type SocialMedia = Database['public']['Tables']['social_media']['Row']
