@@ -15,7 +15,6 @@ export default function AuthGuard({
   redirectTo = "/dashboard", 
   requireAuth = false 
 }: AuthGuardProps) {
-  const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
@@ -45,22 +44,11 @@ export default function AuthGuard({
         if (requireAuth === true) {
           router.push('/login');
         }
-      } finally {
-        setIsLoading(false);
       }
     };
 
     checkAuth();
   }, [router, redirectTo, requireAuth]);
-
-  // Show loading while checking auth
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
 
   // If user is authenticated and we're on login page, don't render children
   if (isAuthenticated && requireAuth === false && window.location.pathname === '/login') {

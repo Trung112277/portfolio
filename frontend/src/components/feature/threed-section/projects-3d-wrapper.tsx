@@ -1,12 +1,12 @@
 'use client';
 
 import { memo } from 'react';
-import LazyThreeDSection from '@/components/feature/threed-section/lazy-threed-section';
+import ThreeDSection from '@/components/feature/threed-section/threed-section';
 
 const Projects3DWrapper = memo(() => {
   return (
     <div className="w-full h-full">
-      <LazyThreeDSection />
+      <ThreeDSection />
     </div>
   );
 });

@@ -7,7 +7,6 @@ import AvatarUser from "./avatar-user";
 
 export default function AuthButton() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   const checkAuth = async () => {
     try {
@@ -29,8 +28,6 @@ export default function AuthButton() {
         // For other errors (including session missing), treat as not authenticated
         setIsAuthenticated(false);
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -53,12 +50,6 @@ export default function AuthButton() {
       window.removeEventListener('auth-changed', handleAuthChange);
     };
   }, []);
-
-  if (isLoading) {
-    return (
-      <div className="w-8 h-8 rounded-full bg-gray-300 animate-pulse" />
-    );
-  }
 
   if (isAuthenticated) {
     return <AvatarUser />;

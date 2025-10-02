@@ -1,4 +1,3 @@
-import { Suspense, lazy } from "react";
 import { Metadata } from "next";
 import { FloatingButton } from "@/components/button/floating-button";
 import Intro from "@/components/common/intro";
@@ -10,9 +9,7 @@ import { MainHeader } from "@/components/heading/main-header";
 import { Title } from "@/components/heading/title";
 import { BUTTON_COLORS } from "@/constant/theme-colors";
 import { generateSEOMetadata } from "@/components/seo/page-head";
-
-// Lazy load heavy 3D components
-const Projects3DWrapper = lazy(() => import("@/components/feature/threed-section/projects-3d-wrapper"));
+import Projects3DWrapper from "@/components/feature/threed-section/projects-3d-wrapper";
 
 // Generate metadata for home page (this overrides the default from layout.tsx)
 export const metadata: Metadata = generateSEOMetadata({
@@ -89,16 +86,7 @@ export default function Home() {
 
       <section id="projects" className="relative">
         <div className="absolute top-0 left-0 right-0 bottom-0 -z-10">
-          <Suspense fallback={
-            <div className="w-full h-full bg-gradient-to-br from-purple-900 to-blue-900 flex items-center justify-center">
-              <div className="text-center text-white">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white mx-auto mb-4"></div>
-                <p className="text-lg font-semibold">Loading 3D Projects...</p>
-              </div>
-            </div>
-          }>
-            <Projects3DWrapper />
-          </Suspense>
+          <Projects3DWrapper />
         </div>
         <div className="container mx-auto px-4 flex items-center">
           <ProjectsFloatingList />

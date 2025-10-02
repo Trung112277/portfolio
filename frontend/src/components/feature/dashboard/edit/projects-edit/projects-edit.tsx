@@ -1,16 +1,11 @@
 "use client";
-import { lazy, useEffect, useState } from "react";
 import { useProjects } from "@/hooks/useProjects";
-import { DashboardSkeleton } from "@/components/feature/loading/dashboard-skeleton";
 import { toast } from "sonner";
-
-// Lazy load components
-const DeleteButton = lazy(() => import("@/components/button/delete-button"));
-const EditProjectsForm = lazy(() => import("@/components/feature/form/dashboard/edit-form/edit-project-form"));
+import DeleteButton from "@/components/button/delete-button";
+import EditProjectsForm from "@/components/feature/form/dashboard/edit-form/edit-project-form";
 
 export default function ProjectsEdit() {
   const { projects, loading, error, updateProject, deleteProject } = useProjects();
-  const [componentsLoaded, setComponentsLoaded] = useState(false);
 
   const handleDelete = async (id: number, title: string) => {
     try {
@@ -23,28 +18,9 @@ export default function ProjectsEdit() {
     }
   };
 
-  // Preload components when section is accessed
-  useEffect(() => {
-    const preloadComponents = async () => {
-      try {
-        // Preload both components
-        await Promise.all([
-          import("@/components/button/delete-button"),
-          import("@/components/feature/form/dashboard/edit-form/edit-project-form")
-        ]);
-        setComponentsLoaded(true);
-      } catch (error) {
-        console.error("Error preloading components:", error);
-        setComponentsLoaded(true); // Still show content even if preload fails
-      }
-    };
-
-    preloadComponents();
-  }, []);
-
-  // Show skeleton while loading or components not ready
-  if (loading || !componentsLoaded) {
-    return <DashboardSkeleton />;
+  // Show simple loading text while loading
+  if (loading) {
+    return <div className="text-center p-8">Loading projects...</div>;
   }
 
   // Show error state

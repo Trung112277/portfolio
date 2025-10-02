@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/feature/sidebar/app-sidebar";
-import { DashboardLoadingProvider } from "@/components/feature/loading/dashboard-loading-context";
 import AuthButton from "@/components/feature/auth/auth-button";
 import OAuthCallbackHandler from "@/components/feature/auth/oauth-callback-handler";
 import AuthGuard from "@/components/feature/auth/auth-guard";
@@ -43,9 +42,7 @@ export default function DashboardLayout({
           <main className="p-4 w-full">
             <SessionManager />
             <OAuthCallbackHandler />
-            <DashboardLoadingProvider>
-              {children}
-            </DashboardLoadingProvider>
+            {children}
           </main>
         </div>
       </SidebarProvider>

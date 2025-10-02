@@ -3,8 +3,6 @@
  * Provides throttling, debouncing, and other performance helpers
  */
 
-import * as React from 'react';
-
 /**
  * Throttle function - limits function calls to once per specified time
  * @param func - Function to throttle
@@ -216,27 +214,6 @@ export function preloadResources(
   });
 }
 
-/**
- * Lazy load component with intersection observer
- * @param component - Component to lazy load
- * @param fallback - Fallback component while loading
- */
-export function createLazyComponent<T extends React.ComponentType<unknown>>(
-  importFn: () => Promise<{ default: T }>,
-  fallback?: React.ComponentType
-): React.LazyExoticComponent<T> {
-  const LazyComponent = React.lazy(importFn);
-  
-  if (fallback) {
-    return React.lazy(async () => {
-      // Add artificial delay for better UX
-      await new Promise(resolve => setTimeout(resolve, 100));
-      return importFn();
-    });
-  }
-  
-  return LazyComponent;
-}
 
 /**
  * Bundle size analyzer helper
@@ -269,7 +246,6 @@ const performanceUtils = {
   isMobileDevice,
   getConnectionInfo,
   preloadResources,
-  createLazyComponent,
   logBundleInfo,
 };
 

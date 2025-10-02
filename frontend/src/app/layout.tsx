@@ -4,8 +4,6 @@ import Script from "next/script";
 import "./globals.css";
 import { CustomCursor } from "@/components/feature/cursor/custom-cursor";
 import { ScrollToTop } from "@/components/common/scroll-to-top";
-import { StoreProvider } from "@/components/feature/loading/store-provider";
-import { LoadingProvider } from "@/components/feature/loading/loading-provider";
 import ErrorBoundary from "@/components/common/error-boundary";
 import { initEnhancedPerformanceMonitoring } from "@/lib/analytics";
 import { initResourceHints } from "@/lib/resource-hints";
@@ -189,13 +187,9 @@ export default function RootLayout({
         <SkipLink />
         <CustomCursor />
         <ErrorBoundary>
-          <LoadingProvider>
-            <StoreProvider>
-              <ScrollToTop />
-              <div id="main-content">{children}</div>
-              <Toaster />
-            </StoreProvider>
-          </LoadingProvider>
+            <ScrollToTop />
+            <div id="main-content">{children}</div>
+            <Toaster />
         </ErrorBoundary>
       </body>
     </html>
