@@ -1,3 +1,5 @@
+"use client";
+
 import { DashboardEditContainer } from "../dashboard-edit-container";
 import TechListAddForm from "../../form/dashboard/add-form/tech-list-form";
 import TechListEdit from "../edit/tech-list-edit/tech-list-edit";

@@ -118,31 +118,28 @@ export interface Database {
           updated_at?: string;
         };
       };
-      users: {
+      profiles: {
         Row: {
-          id: number;
-          name: string;
+          id: string;
           email: string;
-          password: string;
-          role: string;
+          display_name: string;
+          user_role: string;
           created_at: string;
           updated_at: string;
         };
         Insert: {
-          id?: number;
-          name: string;
+          id: string;
           email: string;
-          password: string;
-          role: string;
+          display_name: string;
+          user_role: string;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
-          id?: number;
-          name?: string;
+          id?: string;
           email?: string;
-          password?: string;
-          role?: string;
+          display_name?: string;
+          user_role?: string;
           updated_at?: string;
         };
       };

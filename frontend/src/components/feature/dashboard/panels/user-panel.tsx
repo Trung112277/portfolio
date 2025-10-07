@@ -1,3 +1,5 @@
+"use client";
+
 import { DashboardEditContainer } from "@/components/feature/dashboard/dashboard-edit-container";
 import UserEdit from "../edit/user-edit/user-edit";
 

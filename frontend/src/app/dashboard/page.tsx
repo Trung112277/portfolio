@@ -1,14 +1,16 @@
-import { Metadata } from "next";
+"use client"
 import { DashboardContent } from "@/components/feature/dashboard/dashboard-content";
-import { generateSEOMetadata } from "@/components/seo/page-head";
+import { supabase } from "@/lib/supabase-client";
+import { useEffect } from "react";
 
-// Generate metadata for this page
-export const metadata: Metadata = generateSEOMetadata({
-  page: "dashboard",
-  description: "Admin dashboard for managing portfolio content, projects, and analytics.",
-  keywords: ["dashboard", "admin", "portfolio management", "content management"],
-});
 
 export default function Dashboard() {
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data, error } = await supabase.auth.getUser()
+      console.log('User session check:', { data, error })
+    }
+    checkUser()
+  }, [])
   return <DashboardContent />;
 }

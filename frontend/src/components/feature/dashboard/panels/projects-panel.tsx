@@ -1,3 +1,5 @@
+"use client";
+
 import { DashboardEditContainer } from "../dashboard-edit-container";
 import ProjectsAddForm from "../../form/dashboard/add-form/projects-form";
 import ProjectsEdit from "../edit/projects-edit/projects-edit";

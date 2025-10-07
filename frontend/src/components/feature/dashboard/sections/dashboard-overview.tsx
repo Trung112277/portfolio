@@ -1,3 +1,5 @@
+"use client";
+
 import { DashboardTitle } from "@/components/heading/dashboar-title";
 import { WelcomePanel } from "@/components/feature/dashboard/panels/welcome-panel";
 import { QuickStatsPanel } from "@/components/feature/dashboard/panels/quick-stats-panel";

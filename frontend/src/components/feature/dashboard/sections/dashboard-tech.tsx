@@ -1,3 +1,5 @@
+"use client";
+
 import { DashboardTitle } from "@/components/heading/dashboar-title";
 import { TechListPanel } from "../panels/tech-list-panel";
 

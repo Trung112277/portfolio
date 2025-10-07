@@ -1,3 +1,5 @@
+"use client";
+
 import { DashboardTitle } from "@/components/heading/dashboar-title";
 import UserPanel from "@/components/feature/dashboard/panels/user-panel";
 

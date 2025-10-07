@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -7,10 +8,6 @@ import AuthButton from "@/components/feature/auth/auth-button";
 import OAuthCallbackHandler from "@/components/feature/auth/oauth-callback-handler";
 import AuthGuard from "@/components/feature/auth/auth-guard";
 import SessionManager from "@/components/feature/auth/session-manager";
-export const metadata: Metadata = {
-  title: "Dashboard | Nhat Trung Portfolio",
-  description: "Dashboard for managing portfolio content and analytics",
-};
 
 export default function DashboardLayout({
   children,
