@@ -18,6 +18,7 @@ import {
 import { SocialMediaFormInputs } from "@/types/social-media-form";
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
+import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 
 export default function SocialMediaAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
@@ -105,6 +106,7 @@ export default function SocialMediaAddForm() {
         aria-describedby={undefined}
         className="overflow-y-auto max-h-[90vh]"
       >
+        <LoadingOverlay isLoading={isSubmitting} />
         <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
           <DialogHeader>
             <DialogTitle>Add Social Media</DialogTitle>

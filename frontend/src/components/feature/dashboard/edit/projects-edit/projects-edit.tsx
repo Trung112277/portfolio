@@ -15,6 +15,7 @@ export default function ProjectsEdit() {
     } catch (error) {
       console.error("Error deleting project:", error);
       toast.error("Error deleting project");
+      throw error; // Re-throw để DeleteButton có thể handle
     }
   };
 

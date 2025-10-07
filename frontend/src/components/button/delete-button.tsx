@@ -11,13 +11,28 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
+import { useState } from "react";
 
 interface DeleteButtonProps {
   title: string;
-  onDelete: () => void;
+  onDelete: () => Promise<void> | void;
 }
 
 export default function DeleteButton({ title, onDelete }: DeleteButtonProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true);
+      await onDelete();
+    } catch (error) {
+      console.error("Error in delete operation:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -29,6 +44,7 @@ export default function DeleteButton({ title, onDelete }: DeleteButtonProps) {
         </IconButton>
       </AlertDialogTrigger>
       <AlertDialogContent>
+        <LoadingOverlay isLoading={isDeleting} />
         <AlertDialogHeader>
           <AlertDialogTitle className="text-primary text-lg font-bold">
             Delete {title}
@@ -38,14 +54,18 @@ export default function DeleteButton({ title, onDelete }: DeleteButtonProps) {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="bg-primary/10 border-primary/10 hover:bg-primary/20 text-primary hover:border-primary/20 hover:text-primary">
+          <AlertDialogCancel 
+            className="bg-primary/10 border-primary/10 hover:bg-primary/20 text-primary hover:border-primary/20 hover:text-primary"
+            disabled={isDeleting}
+          >
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction 
-            onClick={onDelete}
-            className="bg-red-500/10 border-red-500/10 hover:bg-red-500/20 border hover:border-red-500/20 hover:text-red-500 text-white"
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="bg-red-500/10 border-red-500/10 hover:bg-red-500/20 border hover:border-red-500/20 hover:text-red-500 text-white disabled:opacity-50"
           >
-            Delete
+            {isDeleting ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

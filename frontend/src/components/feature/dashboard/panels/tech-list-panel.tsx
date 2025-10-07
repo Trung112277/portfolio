@@ -6,7 +6,7 @@ import TechListEdit from "../edit/tech-list-edit/tech-list-edit";
 
 export function TechListPanel() {
   return (
-    <DashboardEditContainer title="Tech List">
+    <DashboardEditContainer title="Tech Stack">
       <div className="flex flex-col gap-4">
         <TechListAddForm />
         <TechListEdit category="Frontend" />

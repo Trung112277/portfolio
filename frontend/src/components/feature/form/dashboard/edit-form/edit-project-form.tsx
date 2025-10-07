@@ -18,6 +18,7 @@ import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
 import { ProjectsFormInputs } from "@/types/projects-form";
 import { ProjectsService } from "@/services/projects.service";
+import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 
 interface ProjectsEditFormProps {
   socialMediaId: string;
@@ -106,6 +107,7 @@ export default function ProjectsEditForm({
         aria-describedby={undefined}
         className="overflow-y-auto max-h-[90vh]"
       >
+        <LoadingOverlay isLoading={isSubmitting} />
         <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
           <DialogHeader>
             <DialogTitle>Edit Project</DialogTitle>

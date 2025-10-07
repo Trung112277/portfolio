@@ -19,12 +19,14 @@ import { TechListFormInputs } from "@/types/tech-list-form";
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
 import { SelectField } from "@/components/feature/form/field-form/select-field";
-import { TECH_LIST } from "@/constant/tech-list";
+import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
+import { useTechStack } from "@/hooks/useTechStack";
 
 export default function TechListAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const { createTech } = useTechStack();
 
   const {
     register,
@@ -52,13 +54,18 @@ export default function TechListAddForm() {
   };
 
   const handleFormSubmit: SubmitHandler<TechListFormInputs> = async (data) => {
-    // Thay đổi type
     console.log("Adding tech list, data:", data);
     console.log("Selected image:", selectedImage);
 
     try {
-      // TODO: Replace with actual API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Create tech stack item in database
+      await createTech({
+        image_url: selectedImage ? URL.createObjectURL(selectedImage) : "/placeholder-tech.png",
+        description: data.name,
+        link: "#", // Default link since form doesn't have link field
+        color: data.color,
+        category: data.category,
+      });
 
       // Reset form and states
       reset();
@@ -94,6 +101,7 @@ export default function TechListAddForm() {
         aria-describedby={undefined}
         className="overflow-y-auto max-h-[90vh]"
       >
+        <LoadingOverlay isLoading={isSubmitting} />
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
           className="flex flex-col gap-4"
@@ -128,10 +136,12 @@ export default function TechListAddForm() {
             name="category"
             errors={errors}
             control={control}
-            options={TECH_LIST.map((tech) => ({
-              value: tech.category,
-              label: tech.name,
-            }))}
+            options={[
+              { value: "frontend", label: "Frontend" },
+              { value: "backend", label: "Backend" },
+              { value: "database", label: "Database" },
+              { value: "devops", label: "DevOps" },
+            ]}
             validation={getFieldValidation("category")}
             isSubmitting={isSubmitting}
             placeholder="Select category"

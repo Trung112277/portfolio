@@ -18,6 +18,7 @@ import { TextareaField } from "@/components/feature/form/field-form/textarea-fie
 import { SelectField } from "@/components/feature/form/field-form/select-field";
 import YearField from "@/components/feature/form/field-form/year-field";
 import { WORK_ARRANGEMENT_OPTIONS } from "@/constant/work-arrangement-options";
+import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 
 export default function WorkExperienceAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
@@ -67,6 +68,7 @@ export default function WorkExperienceAddForm() {
         aria-describedby={undefined}
         className="overflow-y-auto max-h-[90vh]"
       >
+        <LoadingOverlay isLoading={isSubmitting} />
         <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
           <DialogHeader>
             <DialogTitle>Add Work Experience</DialogTitle>

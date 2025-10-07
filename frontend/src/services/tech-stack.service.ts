@@ -17,6 +17,17 @@ export class TechStackService {
     return data
   }
 
+  static async getByCategory(category: string): Promise<TechStack[]> {
+    const { data, error } = await supabase
+      .from('tech_stack')
+      .select('*')
+      .eq('category', category)
+      .order('created_at', { ascending: false })
+    
+    if (error) throw error
+    return data
+  }
+
   static async create(tech: TechStackInsert): Promise<TechStack> {
     const { data, error } = await supabase
       .from('tech_stack')

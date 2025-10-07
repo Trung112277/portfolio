@@ -18,17 +18,19 @@ import {
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
 import { TechListFormInputs } from "@/types/tech-list-form";
-import { TECH_LIST } from "@/constant/tech-list";
 import { SelectField } from "../../field-form/select-field";
+import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 
 interface TechListEditFormProps {
   techListId: string;
   initialData: Partial<TechListFormInputs>;
+  onUpdate?: (updatedData: TechListFormInputs) => Promise<void>;
 }
 
 export default function TechListEditForm({
   techListId,
   initialData,
+  onUpdate,
 }: TechListEditFormProps) {
   const { isOpen, setIsOpen } = useDialogState();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -74,10 +76,14 @@ export default function TechListEditForm({
     console.log("Selected image:", selectedImage);
 
     try {
-      // TODO: Replace with actual API call
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    
+      // Call the onUpdate callback if provided
+      if (onUpdate) {
+        await onUpdate(data);
+      } else {
+        // TODO: Replace with actual API call
+        // Simulate API call delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
 
       // Reset form and states
       reset(initialData);
@@ -96,15 +102,6 @@ export default function TechListEditForm({
     }
   };
 
-  // Helper function to convert file to base64
-  const convertFileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
-    });
-  };
 
   const handleDialogClose = (open: boolean) => {
     setIsOpen(open);
@@ -124,6 +121,7 @@ export default function TechListEditForm({
         aria-describedby={undefined}
         className="overflow-y-auto max-h-[90vh]"
       >
+        <LoadingOverlay isLoading={isSubmitting} />
         <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
           <DialogHeader>
             <DialogTitle>Edit Tech List</DialogTitle>
@@ -153,10 +151,12 @@ export default function TechListEditForm({
             name="category"
             errors={errors}
             control={control}
-            options={TECH_LIST.map((tech) => ({
-              value: tech.category,
-              label: tech.name,
-            }))}
+            options={[
+              { value: "frontend", label: "Frontend" },
+              { value: "backend", label: "Backend" },
+              { value: "database", label: "Database" },
+              { value: "devops", label: "DevOps" },
+            ]}
             validation={getFieldValidation("category")}
             isSubmitting={isSubmitting}
             placeholder="Select category"

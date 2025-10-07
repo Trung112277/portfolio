@@ -17,6 +17,7 @@ import { ProjectsFormInputs } from "@/types/projects-form";
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
 import { useProjects } from "@/hooks/useProjects";
+import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 
 export default function ProjectsAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
@@ -75,6 +76,7 @@ export default function ProjectsAddForm() {
         aria-describedby={undefined}
         className="overflow-y-auto max-h-[90vh]"
       >
+        <LoadingOverlay isLoading={isSubmitting} />
         <form
           onSubmit={handleSubmitForm(handleSubmit)}
           className="flex flex-col gap-4"

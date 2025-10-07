@@ -1,9 +1,8 @@
 import { Metadata } from "next";
 import { FloatingButton } from "@/components/button/floating-button";
 import Intro from "@/components/common/intro";
-import { FrontendGlowBow } from "@/components/feature/glow-bow/frontend-glow-bow";
-import ProjectsFloatingList from "@/components/feature/linking-floating/projects-floating-list";
 import TechList from "@/components/feature/tech/tech-list";
+import ProjectsFloatingList from "@/components/feature/linking-floating/projects-floating-list";
 import TimelineList from "@/components/feature/timeline/timeline-list";
 import { MainHeader } from "@/components/heading/main-header";
 import { Title } from "@/components/heading/title";
@@ -28,7 +27,7 @@ export default function Home() {
           <MainHeader />
         </div>
         <div className="flex-1 flex justify-center pb-1 md:pb-8 mt-[100px]">
-          <FrontendGlowBow />
+          <TechList />
         </div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <span className="w-[300px] h-[300px] bg-primary/40 rounded-full block blur-3xl"></span>
