@@ -94,8 +94,7 @@ export interface Database {
         Row: {
           id: number;
           image_url: string;
-          description: string;
-          link: string;
+          name: string;
           color: string;
           category: string;
           created_at: string;
@@ -104,8 +103,7 @@ export interface Database {
         Insert: {
           id?: number;
           image_url: string;
-          description: string;
-          link: string;
+          name: string;
           color: string;
           category: string;
           created_at?: string;
@@ -114,8 +112,7 @@ export interface Database {
         Update: {
           id?: number;
           image_url?: string;
-          description?: string;
-          link?: string;
+          name?: string;
           color?: string;
           category?: string;
           updated_at?: string;

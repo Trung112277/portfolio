@@ -148,8 +148,7 @@ export const useTechStore = create<TechState>()(
       searchTech: (query) => {
         const allTech = get().getAllTech();
         return allTech.filter(tech =>
-          tech.name.toLowerCase().includes(query.toLowerCase()) ||
-          tech.description.toLowerCase().includes(query.toLowerCase())
+          tech.name.toLowerCase().includes(query.toLowerCase())
         );
       },
     }),

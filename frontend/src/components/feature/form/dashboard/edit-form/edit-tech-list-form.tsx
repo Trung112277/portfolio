@@ -57,7 +57,8 @@ export default function TechListEditForm({
     if (initialData) {
       reset(initialData);
       setSelectedImage(null);
-      setImagePreview(null);
+      // Set image preview to current image if available
+      setImagePreview(initialData.image_url || null);
     }
   }, [initialData, reset]);
 
@@ -71,14 +72,33 @@ export default function TechListEditForm({
     setImagePreview(null);
   };
 
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
   const handleFormSubmit: SubmitHandler<TechListFormInputs> = async (data) => {
     console.log("Updating tech list:", techListId, data);
     console.log("Selected image:", selectedImage);
 
     try {
+      let imageUrl = data.image_url || "/placeholder-tech.png";
+      
+      if (selectedImage) {
+        // Convert new image to base64
+        imageUrl = await convertFileToBase64(selectedImage);
+      } else if (data.image_url) {
+        // Keep current image if no new image selected
+        imageUrl = data.image_url;
+      }
+
       // Call the onUpdate callback if provided
       if (onUpdate) {
-        await onUpdate(data);
+        await onUpdate({ ...data, image_url: imageUrl });
       } else {
         // TODO: Replace with actual API call
         // Simulate API call delay
@@ -109,7 +129,7 @@ export default function TechListEditForm({
       // Reset form to initial data when dialog is closed
       reset(initialData);
       setSelectedImage(null);
-      setImagePreview(null);
+      setImagePreview(initialData.image_url || null);
     }
   };
 

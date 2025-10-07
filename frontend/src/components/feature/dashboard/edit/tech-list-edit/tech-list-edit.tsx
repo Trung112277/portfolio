@@ -82,13 +82,13 @@ export default function TechListEdit({ category }: { category: string }) {
                 <td className="flex justify-center items-center p-2 border ">
                   <SafeImage
                     src={tech.image_url}
-                    alt={tech.description}
+                    alt={tech.name}
                     width={50}
                     height={50}
                     className="h-[50px] w-[50px] object-cover"
                   />
                 </td>
-                <td className="p-2 border">{tech.description}</td>
+                <td className="p-2 border">{tech.name}</td>
                 <td className="p-2 border">
                 <div className="flex items-center justify-center gap-2">
                   <div 
@@ -104,16 +104,18 @@ export default function TechListEdit({ category }: { category: string }) {
                     <EditTechListForm
                       techListId={tech.id.toString()}
                       initialData={{
-                        name: tech.description,
+                        name: tech.name,
                         category: category.toLowerCase(),
                         color: tech.color,
+                        image_url: tech.image_url,
                       }}
                       onUpdate={async (updatedData: TechListFormInputs) => {
                         try {
                           await updateTech(tech.id, {
-                            description: updatedData.name,
+                            name: updatedData.name,
                             color: updatedData.color,
                             category: updatedData.category,
+                            image_url: updatedData.image_url || tech.image_url,
                           });
                           console.log("Tech stack updated successfully");
                         } catch (error) {
@@ -122,8 +124,8 @@ export default function TechListEdit({ category }: { category: string }) {
                       }}
                     />
                     <DeleteButton 
-                      title={tech.description}
-                      onDelete={() => handleDelete(tech.id, tech.description)}
+                      title={tech.name}
+                      onDelete={() => handleDelete(tech.id, tech.name)}
                     />
                   </div>
                 </td>

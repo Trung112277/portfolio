@@ -53,16 +53,31 @@ export default function TechListAddForm() {
     setImagePreview(null);
   };
 
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
   const handleFormSubmit: SubmitHandler<TechListFormInputs> = async (data) => {
     console.log("Adding tech list, data:", data);
     console.log("Selected image:", selectedImage);
 
     try {
+      let imageUrl = "/placeholder-tech.png";
+      
+      if (selectedImage) {
+        // Convert image to base64
+        imageUrl = await convertFileToBase64(selectedImage);
+      }
+
       // Create tech stack item in database
       await createTech({
-        image_url: selectedImage ? URL.createObjectURL(selectedImage) : "/placeholder-tech.png",
-        description: data.name,
-        link: "#", // Default link since form doesn't have link field
+        image_url: imageUrl,
+        name: data.name,
         color: data.color,
         category: data.category,
       });

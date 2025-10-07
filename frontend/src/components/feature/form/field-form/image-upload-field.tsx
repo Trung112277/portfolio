@@ -27,6 +27,25 @@ const truncateFileName = (fileName: string, maxLength: number = 25) => {
   return `${truncatedName}...${extension ? `.${extension}` : ""}`;
 };
 
+const getImageNameFromPreview = (imagePreview: string | null): string => {
+  if (!imagePreview) return "Select image";
+  
+  // If it's a data URL (base64), generate a name
+  if (imagePreview.startsWith('data:image/')) {
+    const mimeType = imagePreview.split(';')[0].split('/')[1];
+    return `current-image.${mimeType}`;
+  }
+  
+  // If it's a URL, try to extract filename
+  if (imagePreview.startsWith('http') || imagePreview.startsWith('/')) {
+    const urlParts = imagePreview.split('/');
+    const filename = urlParts[urlParts.length - 1];
+    return filename || "current-image.jpg";
+  }
+  
+  return "current-image.jpg";
+};
+
 export function ImageUploadField<T extends FieldValues>({
   register,
   errors,
@@ -51,7 +70,7 @@ export function ImageUploadField<T extends FieldValues>({
     <div className="flex flex-col gap-2">
       <Label className="text-lg text-primary">Image</Label>
 
-      {selectedImage && imagePreview && (
+      {imagePreview && (
         <div className="flex justify-center items-center relative w-fit mx-auto">
           <IconButton
             onClick={onRemoveImage}
@@ -77,6 +96,11 @@ export function ImageUploadField<T extends FieldValues>({
           {...register("image" as Path<T>, {
             onChange: handleImageChange,
             validate: (value: FileList) => {
+              // If there's a selected image or an existing image preview, it's valid
+              if (selectedImage || imagePreview) {
+                return true;
+              }
+              // Only require selection if there's no existing image
               return value && value.length > 0
                 ? true
                 : "Please select an image";
@@ -90,11 +114,11 @@ export function ImageUploadField<T extends FieldValues>({
         >
           <span
             className="truncate"
-            title={selectedImage?.name || "Select image"}
+            title={selectedImage?.name || getImageNameFromPreview(imagePreview)}
           >
             {selectedImage
               ? truncateFileName(selectedImage.name)
-              : "Select image"}
+              : truncateFileName(getImageNameFromPreview(imagePreview))}
           </span>
         </div>
       </div>

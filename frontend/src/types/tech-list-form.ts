@@ -3,6 +3,7 @@ export type TechListFormInputs = {
   name: string;
   category: string;
   color: string;
+  image_url?: string;
 };
 
 export interface TechListFormProps {

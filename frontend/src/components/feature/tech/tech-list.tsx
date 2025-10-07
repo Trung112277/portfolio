@@ -1,3 +1,4 @@
+"use client";
 import TechItem from "@/components/feature/tech/tech-item";
 
 export default function TechList() {
@@ -11,8 +12,13 @@ export default function TechList() {
 
   return (
     <div className="flex flex-col gap-5 md:gap-10">
+  
       {categories.map((tech) => (
-        <TechItem key={tech.category} title={tech.name} category={tech.category} />
+        <TechItem
+          key={tech.category}
+          title={tech.name}
+          category={tech.category}
+        />
       ))}
     </div>
   );
