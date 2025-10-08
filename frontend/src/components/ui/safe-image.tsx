@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, memo } from "react";
 import Image, { ImageProps } from "next/image";
 import { cn } from "@/lib/utils";
-import { LoadingSpinner } from "@/components/feature/loading/loading-spinner";
 
 interface SafeImageProps extends Omit<ImageProps, 'onError' | 'onLoad'> {
   fallbackSrc?: string;

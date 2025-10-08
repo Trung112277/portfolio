@@ -19,7 +19,7 @@ export function GlowBoxList({ techStack }: GlowBoxListProps) {
               loading="lazy"
               sizes="50px"
               fallbackSrc="/file.svg"
-              className="h-[50px] w-[50px] object-cover"
+              className="h-[50px] w-[50px] object-contain"
             />
         </GlowBoxItem>
       ))}

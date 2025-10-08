@@ -9,28 +9,31 @@ interface SocialsGlowBoxListProps {
 
 export function SocialsGlowBoxList({ socials }: SocialsGlowBoxListProps) {
   return (
-    <nav>
-      <ul className="flex gap-4 flex-wrap justify-center">
-        {socials.map((item) => (
-          <GlowBoxItem
-            key={item.id}
-            color={item.color}
-            content={item.description}
-          >
-            <Link href={item.link} target="_blank">
-              <SafeImage
-                src={item.logo}
-                alt={item.name}
-                width={50}
-                height={50}
-                loading="lazy"
-                sizes="50px"
-                fallbackSrc="/file.svg"
-              />
-            </Link>
-          </GlowBoxItem>
-        ))}
-      </ul>
-    </nav>
+    <div className="flex flex-col gap-3 text-foreground justify-center items-center">
+      <h3 className="text-2xl font-bold text-primary uppercase">Socials</h3>
+      <nav>
+        <ul className="flex gap-4 flex-wrap justify-center">
+          {socials.map((item) => (
+            <GlowBoxItem
+              key={item.id}
+              color={item.color}
+              content={item.description}
+            >
+              <Link href={item.link} target="_blank">
+                <SafeImage
+                  src={item.logo}
+                  alt={item.name}
+                  width={50}
+                  height={50}
+                  loading="lazy"
+                  sizes="50px"
+                  fallbackSrc="/file.svg"
+                />
+              </Link>
+            </GlowBoxItem>
+          ))}
+        </ul>
+      </nav>
+    </div>
   );
 }

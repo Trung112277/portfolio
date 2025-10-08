@@ -9,6 +9,7 @@ import { Title } from "@/components/heading/title";
 import { BUTTON_COLORS } from "@/constant/theme-colors";
 import { generateSEOMetadata } from "@/components/seo/page-head";
 import Projects3DWrapper from "@/components/feature/threed-section/projects-3d-wrapper";
+import { SocialsGlowBoxList } from "@/components/feature/glow-bow/socials-glow-box-list";
 
 // Generate metadata for home page (this overrides the default from layout.tsx)
 export const metadata: Metadata = generateSEOMetadata({
@@ -27,7 +28,7 @@ export default function Home() {
           <MainHeader />
         </div>
         <div className="flex-1 flex justify-center pb-1 md:pb-8 mt-[100px]">
-          <TechList />
+          <SocialsGlowBoxList socials={[]} />
         </div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <span className="w-[300px] h-[300px] bg-primary/40 rounded-full block blur-3xl"></span>

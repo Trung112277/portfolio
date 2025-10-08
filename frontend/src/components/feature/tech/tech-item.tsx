@@ -91,7 +91,7 @@ export default function TechItem({ title, category }: TechItemProps) {
 
   return (
     <div className="flex flex-col gap-3 text-foreground justify-center items-center">
-      <h3 className="text-2xl capitalize">{title}</h3>
+      <h3 className="text-2xl font-bold text-primary uppercase">{title}</h3>
       <GlowBoxList techStack={categoryTech} />
     </div>
   );
