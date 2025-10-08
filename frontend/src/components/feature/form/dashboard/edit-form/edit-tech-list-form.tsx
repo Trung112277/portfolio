@@ -110,13 +110,15 @@ export default function TechListEditForm({
         imageUrl = data.image_url;
       }
 
+      // Add delay for testing LoadingOverlay
+      await new Promise(resolve => setTimeout(resolve, 5000));
+
       // Call the onUpdate callback if provided
       if (onUpdate) {
         await onUpdate({ ...data, image_url: imageUrl });
       } else {
         // TODO: Replace with actual API call
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        console.log("Simulating API call...");
       }
 
       // Reset form and states
@@ -136,6 +138,9 @@ export default function TechListEditForm({
 
 
   const handleDialogClose = (open: boolean) => {
+    if (isSubmitting) {
+      return;
+    }
     setIsOpen(open);
     if (!open) {
       // Reset form to initial data when dialog is closed

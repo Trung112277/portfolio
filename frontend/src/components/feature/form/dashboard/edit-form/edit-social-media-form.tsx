@@ -18,6 +18,7 @@ import {
 import { SocialMediaFormInputs } from "@/types/social-media-form";
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
+import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 
 interface SocialMediaEditFormProps {
   socialMediaId: string;
@@ -104,6 +105,9 @@ export default function SocialMediaEditForm({
   };
 
   const handleDialogClose = (open: boolean) => {
+    if (isSubmitting) {
+      return;
+    }
     setIsOpen(open);
     if (!open) {
       // Reset form to initial data when dialog is closed
@@ -121,6 +125,7 @@ export default function SocialMediaEditForm({
         aria-describedby={undefined}
         className="overflow-y-auto max-h-[90vh]"
       >
+        <LoadingOverlay isLoading={isSubmitting} />
         <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
           <DialogHeader>
             <DialogTitle>Edit Social Media</DialogTitle>

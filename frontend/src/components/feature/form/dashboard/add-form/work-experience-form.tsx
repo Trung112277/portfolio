@@ -57,8 +57,18 @@ export default function WorkExperienceAddForm() {
     }
   };
 
+  const handleDialogClose = (open: boolean) => {
+    if (isSubmitting) {
+      return;
+    }
+    setIsOpen(open);
+    if (!open) {
+      reset();
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleDialogClose}>
       <AddItemButton
         onClick={() => setIsOpen(true)}
         label="Add Work Experience"

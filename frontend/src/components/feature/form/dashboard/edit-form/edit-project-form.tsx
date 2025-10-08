@@ -92,6 +92,9 @@ export default function ProjectsEditForm({
 
 
   const handleDialogClose = (open: boolean) => {
+    if (isSubmitting) {
+      return;
+    }
     setIsOpen(open);
     if (!open) {
       // Reset form to initial data when dialog is closed
