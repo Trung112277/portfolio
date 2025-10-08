@@ -1,7 +1,9 @@
 "use client";
-import { useTechStack } from "@/hooks/useTechStack";
+import { useTechDbStore } from "@/stores/tech-db-store";
 import { GlowBoxList } from "@/components/feature/glow-bow/glow-box-list";
 import { BaseTechStack } from "@/types/tech-stack";
+import { useEffect, useState } from "react";
+import { TechStackService } from "@/services/tech-stack.service";
 
 interface TechItemProps {
   title: string;
@@ -9,7 +11,59 @@ interface TechItemProps {
 }
 
 export default function TechItem({ title, category }: TechItemProps) {
-  const { techStack, loading, error } = useTechStack(category.toLowerCase());
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  const { 
+    frontendTech, 
+    backendTech, 
+    databaseTech, 
+    devopsTech,
+    setTechByCategory
+  } = useTechDbStore();
+
+  // Get tech stack based on category
+  const techStack = category === 'frontend' ? frontendTech :
+                   category === 'backend' ? backendTech :
+                   category === 'database' ? databaseTech :
+                   category === 'devops' ? devopsTech : [];
+
+  // Load data when component mounts
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Check if we already have data in store
+        if (techStack.length > 0) {
+          setLoading(false);
+          return;
+        }
+        
+        // Load data from database
+        const data = await TechStackService.getByCategory(category);
+        setTechByCategory(category, data);
+        setLoading(false);
+      } catch (err) {
+        console.error(`Error loading ${category} tech:`, err);
+        setError(err instanceof Error ? err.message : 'Failed to load tech stack');
+        setLoading(false);
+      }
+    };
+    
+    loadData();
+  }, [category, techStack.length, setTechByCategory]);
+
+  // Set loading to false when we have data
+  useEffect(() => {
+    if (techStack.length > 0) {
+      setLoading(false);
+      setError(null);
+    }
+  }, [techStack.length]);
+
+  // Realtime is now handled globally by GlobalRealtimeProvider
 
   // Don't render if loading, error, or no data
   if (loading)

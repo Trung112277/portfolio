@@ -20,6 +20,7 @@ import { TextInputField } from "@/components/feature/form/field-form/text-input-
 import { TechListFormInputs } from "@/types/tech-list-form";
 import { SelectField } from "../../field-form/select-field";
 import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
+import { ImageUploadService } from "@/services/image-upload.service";
 
 interface TechListEditFormProps {
   techListId: string;
@@ -82,15 +83,28 @@ export default function TechListEditForm({
   };
 
   const handleFormSubmit: SubmitHandler<TechListFormInputs> = async (data) => {
-    console.log("Updating tech list:", techListId, data);
-    console.log("Selected image:", selectedImage);
-
     try {
       let imageUrl = data.image_url || "/placeholder-tech.png";
       
       if (selectedImage) {
-        // Convert new image to base64
-        imageUrl = await convertFileToBase64(selectedImage);
+        try {
+          // Validate file first
+          const validation = ImageUploadService.validateFileDetailed(selectedImage);
+          if (!validation.isValid) {
+            throw new Error(validation.error);
+          }
+
+          // Try to upload to Supabase Storage first
+          const uploadResult = await ImageUploadService.uploadImage(selectedImage, {
+            folder: 'tech-stack',
+            compress: true
+          });
+          imageUrl = uploadResult.url;
+        } catch (storageError) {
+          console.warn('Storage upload failed, falling back to base64:', storageError);
+          // Fallback to base64 if storage fails
+          imageUrl = await convertFileToBase64(selectedImage);
+        }
       } else if (data.image_url) {
         // Keep current image if no new image selected
         imageUrl = data.image_url;
@@ -110,10 +124,8 @@ export default function TechListEditForm({
       setSelectedImage(null);
       setImagePreview(null);
       setIsOpen(false);
-      console.log("Tech list updated successfully");
       toast.success("Tech list updated successfully");
     } catch (error) {
-      console.error("Error updating tech list:", error);
       if (error instanceof Error) {
         toast.error(`Error: ${error.message}`);
       } else {

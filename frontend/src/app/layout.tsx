@@ -12,6 +12,7 @@ import { serviceWorkerManager } from "@/lib/service-worker";
 import { SkipLink } from "@/components/common/skip-link";
 import { Toaster } from "@/components/ui/sonner";
 import { baseSEO, generatePersonStructuredData, generateWebsiteStructuredData } from "@/lib/seo";
+import { GlobalRealtimeProvider } from "@/components/providers/global-realtime-provider";
 
 
 const openSans = Open_Sans({
@@ -187,9 +188,11 @@ export default function RootLayout({
         <SkipLink />
         <CustomCursor />
         <ErrorBoundary>
+          <GlobalRealtimeProvider>
             <ScrollToTop />
             <div id="main-content">{children}</div>
             <Toaster />
+          </GlobalRealtimeProvider>
         </ErrorBoundary>
       </body>
     </html>

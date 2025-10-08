@@ -21,12 +21,14 @@ import { TextInputField } from "@/components/feature/form/field-form/text-input-
 import { SelectField } from "@/components/feature/form/field-form/select-field";
 import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 import { useTechStack } from "@/hooks/useTechStack";
+import { useImageUpload } from "@/hooks/useImageUpload";
 
 export default function TechListAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { createTech } = useTechStack();
+  const { uploadImage, isUploading, error: uploadError, clearError } = useImageUpload();
 
   const {
     register,
@@ -53,46 +55,80 @@ export default function TechListAddForm() {
     setImagePreview(null);
   };
 
-  const convertFileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+  // Clear upload error when dialog opens
+  const handleDialogOpen = (open: boolean) => {
+    if (open) {
+      clearError();
+    }
+    setIsOpen(open);
   };
 
   const handleFormSubmit: SubmitHandler<TechListFormInputs> = async (data) => {
-    console.log("Adding tech list, data:", data);
-    console.log("Selected image:", selectedImage);
-
     try {
+      console.log('Starting form submission with data:', data);
+      
       let imageUrl = "/placeholder-tech.png";
       
       if (selectedImage) {
-        // Convert image to base64
-        imageUrl = await convertFileToBase64(selectedImage);
+        console.log('Processing image upload...', {
+          fileName: selectedImage.name,
+          fileSize: selectedImage.size,
+          fileType: selectedImage.type
+        });
+
+        // Upload image to Supabase Storage
+        const uploadResult = await uploadImage(selectedImage, {
+          folder: 'tech-stack',
+          compress: true
+        });
+        
+        if (!uploadResult) {
+          throw new Error(uploadError || 'Image upload failed');
+        }
+        
+        console.log('Image upload successful:', uploadResult);
+        imageUrl = uploadResult.url;
       }
 
-      // Create tech stack item in database
-      await createTech({
+      console.log('Creating tech stack item with:', {
         image_url: imageUrl,
         name: data.name,
         color: data.color,
         category: data.category,
       });
 
+      // Create tech stack item in database
+      const createdTech = await createTech({
+        image_url: imageUrl,
+        name: data.name,
+        color: data.color,
+        category: data.category,
+      });
+
+      console.log('Tech stack item created successfully:', createdTech);
+
       // Reset form and states
       reset();
       setSelectedImage(null);
       setImagePreview(null);
       setIsOpen(false);
-      console.log("Tech list added successfully");
       toast.success("Tech list added successfully");
     } catch (error) {
-      console.error("Error adding tech list:", error);
+      console.error('Form submission error:', error);
+      
       if (error instanceof Error) {
-        toast.error(`Error: ${error.message}`);
+        // More specific error messages
+        if (error.message.includes('Authentication required')) {
+          toast.error("Please log in to add tech stack items");
+        } else if (error.message.includes('row-level security policy')) {
+          toast.error("Permission denied. Please check your account permissions.");
+        } else if (error.message.includes('duplicate key')) {
+          toast.error("A tech stack item with this name already exists.");
+        } else if (error.message.includes('Image upload failed')) {
+          toast.error("Failed to upload image. Please try again.");
+        } else {
+          toast.error(`Error: ${error.message}`);
+        }
       } else {
         toast.error("An error occurred while adding tech list");
       }
@@ -100,7 +136,7 @@ export default function TechListAddForm() {
   };
 
   const handleDialogClose = (open: boolean) => {
-    setIsOpen(open);
+    handleDialogOpen(open);
     if (!open) {
       reset();
       setSelectedImage(null);
@@ -110,13 +146,13 @@ export default function TechListAddForm() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogClose}>
-      <AddItemButton onClick={() => setIsOpen(true)} label="Add Tech List" />
+      <AddItemButton onClick={() => setIsOpen(true)} label="Add Tech" />
 
       <DialogContent
         aria-describedby={undefined}
         className="overflow-y-auto max-h-[90vh]"
       >
-        <LoadingOverlay isLoading={isSubmitting} />
+        <LoadingOverlay isLoading={isSubmitting || isUploading} />
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
           className="flex flex-col gap-4"
@@ -132,7 +168,7 @@ export default function TechListAddForm() {
             imagePreview={imagePreview}
             onImageChange={handleImageChange}
             onRemoveImage={handleRemoveImage}
-            isSubmitting={isSubmitting}
+            isSubmitting={isSubmitting || isUploading}
           />
 
           <TextInputField
@@ -142,7 +178,7 @@ export default function TechListAddForm() {
             errors={errors}
             placeholder="Enter tech name"
             validation={getFieldValidation("name")}
-            isSubmitting={isSubmitting}
+            isSubmitting={isSubmitting || isUploading}
             type="text"
           />
 
@@ -158,7 +194,7 @@ export default function TechListAddForm() {
               { value: "devops", label: "DevOps" },
             ]}
             validation={getFieldValidation("category")}
-            isSubmitting={isSubmitting}
+            isSubmitting={isSubmitting || isUploading}
             placeholder="Select category"
           />
 
@@ -170,11 +206,11 @@ export default function TechListAddForm() {
             onColorChange={handleColorChange}
             onColorTextChange={handleColorTextChange}
             validation={getFieldValidation("color")}
-            isSubmitting={isSubmitting}
+            isSubmitting={isSubmitting || isUploading}
           />
 
-          <PrimaryButton type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Adding..." : "Add Tech List"}
+          <PrimaryButton type="submit" disabled={isSubmitting || isUploading}>
+            {isSubmitting || isUploading ? (isUploading ? "Uploading..." : "Adding...") : "Add Tech List"}
           </PrimaryButton>
         </form>
       </DialogContent>
