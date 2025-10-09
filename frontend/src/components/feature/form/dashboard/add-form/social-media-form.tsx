@@ -89,6 +89,9 @@ export default function SocialMediaAddForm() {
   };
 
   const handleDialogClose = (open: boolean) => {
+    if (isSubmitting) {
+      return;
+    }
     setIsOpen(open);
     if (!open) {
       // Reset form when dialog is closed

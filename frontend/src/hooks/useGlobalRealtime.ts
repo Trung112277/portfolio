@@ -4,8 +4,6 @@ import { useTechDbStore } from '@/stores/tech-db-store';
 import { Database } from '@/types/database';
 
 export function useGlobalRealtime() {
-  const { addTech, updateTech: updateTechInStore, deleteTech: deleteTechFromStore } = useTechDbStore();
-
   useEffect(() => {
     console.log('Setting up global realtime subscription');
     
@@ -17,6 +15,9 @@ export function useGlobalRealtime() {
         table: 'tech_stack' 
       }, (payload) => {
         console.log('Global realtime event:', payload);
+        
+        // Get fresh store functions inside the callback
+        const { addTech, updateTech: updateTechInStore, deleteTech: deleteTechFromStore } = useTechDbStore.getState();
         
         if (payload.eventType === 'INSERT') {
           const newTech = payload.new as Database['public']['Tables']['tech_stack']['Row'];
@@ -43,5 +44,5 @@ export function useGlobalRealtime() {
       console.log('Cleaning up global realtime');
       supabase.removeChannel(channel);
     };
-  }, [addTech, updateTechInStore, deleteTechFromStore]);
+  }, []); // Empty dependency array to run only once
 }

@@ -7,6 +7,7 @@ import { useFormHandler } from "@/hooks/useFormHandler";
 import type { RegisterForm } from "@/types/resgiter-form";
 import { getFieldValidation } from "@/lib/form-validation";
 import { AuthService } from "@/services/auth.service";
+import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 
 interface RegisterFormProps {
   onSuccess?: () => void; 
@@ -38,7 +39,9 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
   } = form;
 
   return (
-    <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
+    <div className="relative">
+      <LoadingOverlay isLoading={isSubmitting} />
+      <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
       <TextInputField
         label="Full Name"
         name="name"
@@ -80,6 +83,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       <Button type="submit" disabled={isSubmitting}>
         Register {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
       </Button>
-    </form>
+      </form>
+    </div>
   );
 }

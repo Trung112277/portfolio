@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { DashboardOverview } from "@/components/feature/dashboard/sections/dashboard-overview";
 import { DashboardAboutMe } from "@/components/feature/dashboard/sections/dashboard-about-me";
@@ -21,33 +21,33 @@ export function DashboardContent() {
 
   const [currentSection, setCurrentSection] = useState(getInitialSection);
 
-  // Handle section change
-  const handleSectionChange = useCallback(
-    (newSection: string) => {
-      if (newSection === currentSection) return;
-      setCurrentSection(newSection);
-    },
-    [currentSection]
-  );
 
-  // Handle initial load and redirect
+  // Handle pathname changes and navigation
+  const prevPathname = useRef(pathname);
+  const currentSectionRef = useRef(currentSection);
+  currentSectionRef.current = currentSection;
+  
   useEffect(() => {
+    // Handle initial redirect from /dashboard to /dashboard/overview
     if (pathname === "/dashboard") {
       router.replace("/dashboard/overview");
       setCurrentSection("overview");
+      prevPathname.current = "/dashboard/overview";
+      return;
+    }
+
+    // Handle other pathname changes
+    if (pathname !== prevPathname.current) {
+      const pathParts = pathname.split("/").filter(Boolean);
+      const section = pathParts[1] || "overview";
+
+      // Only update if section is different
+      if (section !== currentSectionRef.current) {
+        setCurrentSection(section);
+      }
+      prevPathname.current = pathname;
     }
   }, [pathname, router]);
-
-  // Handle pathname changes for navigation (separate effect)
-  useEffect(() => {
-    const pathParts = pathname.split("/").filter(Boolean);
-    const section = pathParts[1] || "overview";
-
-    // Only update if section is different
-    if (section !== currentSection) {
-      handleSectionChange(section);
-    }
-  }, [pathname, currentSection, handleSectionChange]);
 
   const navigateToSection = useCallback(
     (section: string) => {
@@ -59,36 +59,29 @@ export function DashboardContent() {
         window.history.replaceState(null, "", newPath);
 
         // Handle section change with loading
-        handleSectionChange(section);
+        setCurrentSection(section);
       } else {
         // Force update even if section is the same
         setCurrentSection(section);
       }
     },
-    [currentSection, router, handleSectionChange]
+    [currentSection, router]
   );
 
   // Make navigation available globally for sidebar
+  const navigateToSectionRef = useRef(navigateToSection);
+  navigateToSectionRef.current = navigateToSection;
+  
   useEffect(() => {
     window.dashboardNavigation = {
-      navigateToSection,
+      navigateToSection: navigateToSectionRef.current,
       currentSection,
       setCurrentSection,
     };
-  }, [currentSection, navigateToSection]);
+  }, [currentSection]);
 
-  // Fallback: Force update section if URL doesn't match current section
-  useEffect(() => {
-    const pathParts = pathname.split("/").filter(Boolean);
-    const urlSection = pathParts[1] || "overview";
 
-    // If URL section doesn't match current section, force update
-    if (urlSection !== currentSection) {
-      handleSectionChange(urlSection);
-    }
-  }, [pathname, currentSection, handleSectionChange]);
-
-  const renderContent = () => {
+  const renderContent = useMemo(() => {
     switch (currentSection) {
       case "overview":
         return <DashboardOverview />;
@@ -103,9 +96,9 @@ export function DashboardContent() {
       default:
         return <DashboardOverview />;
     }
-  };
+  }, [currentSection]);
 
-  return <div className="dashboard-content">{renderContent()}</div>;
+  return <div className="dashboard-content">{renderContent}</div>;
 }
 
 // Global interface for navigation

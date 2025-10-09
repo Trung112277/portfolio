@@ -136,6 +136,9 @@ export default function TechListAddForm() {
   };
 
   const handleDialogClose = (open: boolean) => {
+    if (isSubmitting || isUploading) {
+      return;
+    }
     handleDialogOpen(open);
     if (!open) {
       reset();

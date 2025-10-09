@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Select,
   SelectContent,
@@ -19,11 +19,43 @@ export default function UserEdit() {
   const [users, setUsers] = useState<ProfileUser[]>([]);
 
   useEffect(() => {
-    fetchUsers();
+    console.log('UserEdit component mounted, fetching users...');
+    fetchUsersRef.current = fetchUsers();
+    
+    // Cleanup function to prevent memory leaks
+    return () => {
+      console.log('UserEdit component unmounted');
+      fetchUsersRef.current = null;
+    };
   }, []);
+
+  // Add a ref to track if component is mounted
+  const isMountedRef = useRef(true);
+  
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  // Add a ref to prevent duplicate API calls
+  const fetchUsersRef = useRef<Promise<void> | null>(null);
 
   const fetchUsers = async () => {
     try {
+      console.log('fetchUsers called, isMounted:', isMountedRef.current);
+      if (!isMountedRef.current) {
+        console.log('Component unmounted, skipping fetch');
+        return;
+      }
+
+      // Prevent duplicate API calls
+      if (fetchUsersRef.current) {
+        console.log('API call already in progress, skipping duplicate');
+        return;
+      }
+      
       setLoading(true);
       setError(null);
       
@@ -34,12 +66,19 @@ export default function UserEdit() {
         throw new Error(data.error || 'Failed to fetch users');
       }
       
-      setUsers(data.users || []);
+      if (isMountedRef.current) {
+        setUsers(data.users || []);
+      }
     } catch (err) {
       console.error('Error in fetchUsers:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch users');
+      if (isMountedRef.current) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch users');
+      }
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
+      fetchUsersRef.current = null;
     }
   };
 

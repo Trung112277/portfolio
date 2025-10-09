@@ -9,6 +9,7 @@ import { getFieldValidation } from "@/lib/form-validation";
 import { AuthService } from "@/services/auth.service";
 import { CheckboxField } from "@/components/feature/form/field-form/checkbox-field";
 import { useRouter } from "next/navigation";
+import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -59,7 +60,9 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
   }, [setValue]);
 
   return (
-    <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
+    <div className="relative">
+      <LoadingOverlay isLoading={isSubmitting} />
+      <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
       <TextInputField
         label="Email"
         name="email"
@@ -86,6 +89,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
       <Button type="submit" disabled={isSubmitting}>
         Login {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
       </Button>
-    </form>
+      </form>
+    </div>
   );
 }
