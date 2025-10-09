@@ -2,8 +2,6 @@
 import { useTechDbStore } from "@/stores/tech-db-store";
 import { GlowBoxList } from "@/components/feature/glow-bow/glow-box-list";
 import { BaseTechStack } from "@/types/tech-stack";
-import { useEffect, useState } from "react";
-import { TechStackService } from "@/services/tech-stack.service";
 
 interface TechItemProps {
   title: string;
@@ -11,15 +9,13 @@ interface TechItemProps {
 }
 
 export default function TechItem({ title, category }: TechItemProps) {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  
   const { 
     frontendTech, 
     backendTech, 
     databaseTech, 
     devopsTech,
-    setTechByCategory
+    loading,
+    error
   } = useTechDbStore();
 
   // Get tech stack based on category
@@ -28,56 +24,25 @@ export default function TechItem({ title, category }: TechItemProps) {
                    category === 'database' ? databaseTech :
                    category === 'devops' ? devopsTech : [];
 
-  // Load data when component mounts
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        // Check if we already have data in store
-        if (techStack.length > 0) {
-          setLoading(false);
-          return;
-        }
-        
-        // Load data from database
-        const data = await TechStackService.getByCategory(category);
-        setTechByCategory(category, data);
-        setLoading(false);
-      } catch (err) {
-        console.error(`Error loading ${category} tech:`, err);
-        setError(err instanceof Error ? err.message : 'Failed to load tech stack');
-        setLoading(false);
-      }
-    };
-    
-    loadData();
-  }, [category, techStack.length, setTechByCategory]);
-
-  // Set loading to false when we have data
-  useEffect(() => {
-    if (techStack.length > 0) {
-      setLoading(false);
-      setError(null);
-    }
-  }, [techStack.length]);
-
-  // Realtime is now handled globally by GlobalRealtimeProvider
-
-  // Don't render if loading, error, or no data
+  // Don't render if loading or error
   if (loading)
     return (
       <div className="flex flex-col gap-3 text-foreground justify-center items-center">
-        Loading {category.toLowerCase()}...
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div>Loading {category.toLowerCase()}...</div>
       </div>
     );
   if (error) return (
-      <div className="flex flex-col gap-3 text-foreground justify-center items-center">
-        Error loading {category.toLowerCase()}...
-      </div>
-    );
-  if (techStack.length === 0) return null;
+    <div className="flex flex-col gap-3 text-foreground justify-center items-center">
+      <div className="text-red-500">Error loading {category.toLowerCase()}...</div>
+      <div className="text-sm text-gray-500">{error}</div>
+    </div>
+  );
+  
+  // Show empty state if no data
+  if (techStack.length === 0) {
+    return null;
+  }
 
   // Convert database format to BaseTechStack format
   const categoryTech: BaseTechStack[] = techStack.map((tech) => ({

@@ -36,7 +36,7 @@ export const useTechDbStore = create<TechDbState>((set, get) => ({
   databaseTech: [],
   devopsTech: [],
   allTech: [],
-  loading: false,
+  loading: true, // Start with loading = true
   error: null,
   
   // Actions

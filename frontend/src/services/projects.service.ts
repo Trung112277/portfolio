@@ -1,5 +1,4 @@
 // frontend/src/services/projects.service.ts
-import { supabase } from '@/lib/supabase-client'
 import { Database } from '@/types/database'
 
 type Project = Database['public']['Tables']['projects']['Row']
@@ -8,55 +7,74 @@ type ProjectUpdate = Database['public']['Tables']['projects']['Update']
 
 export class ProjectsService {
   static async getAll(): Promise<Project[]> {
-    const { data, error } = await supabase
-      .from('projects')
-      .select('*')
-      .order('created_at', { ascending: false })
+    const response = await fetch('/api/projects')
+    const data = await response.json()
     
-    if (error) throw error
-    return data
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to fetch projects')
+    }
+    
+    return data.projects
   }
 
   static async getById(id: number): Promise<Project | null> {
-    const { data, error } = await supabase
-      .from('projects')
-      .select('*')
-      .eq('id', id)
-      .single()
+    const response = await fetch(`/api/projects/${id}`)
+    const data = await response.json()
     
-    if (error) throw error
-    return data
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null
+      }
+      throw new Error(data.error || 'Failed to fetch project')
+    }
+    
+    return data.project
   }
 
   static async create(project: ProjectInsert): Promise<Project> {
-    const { data, error } = await supabase
-      .from('projects')
-      .insert(project)
-      .select()
-      .single()
+    const response = await fetch('/api/projects', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(project),
+    })
     
-    if (error) throw error
-    return data
+    const data = await response.json()
+    
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to create project')
+    }
+    
+    return data.project
   }
 
   static async update(id: number, updates: ProjectUpdate): Promise<Project> {
-    const { data, error } = await supabase
-      .from('projects')
-      .update({ ...updates, updated_at: new Date().toISOString() })
-      .eq('id', id)
-      .select()
-      .single()
+    const response = await fetch(`/api/projects/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updates),
+    })
     
-    if (error) throw error
-    return data
+    const data = await response.json()
+    
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to update project')
+    }
+    
+    return data.project
   }
 
   static async delete(id: number): Promise<void> {
-    const { error } = await supabase
-      .from('projects')
-      .delete()
-      .eq('id', id)
+    const response = await fetch(`/api/projects/${id}`, {
+      method: 'DELETE',
+    })
     
-    if (error) throw error
+    if (!response.ok) {
+      const data = await response.json()
+      throw new Error(data.error || 'Failed to delete project')
+    }
   }
 }

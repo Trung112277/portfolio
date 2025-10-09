@@ -3,17 +3,24 @@ import { useProjects } from "@/hooks/useProjects";
 import { toast } from "sonner";
 import DeleteButton from "@/components/button/delete-button";
 import EditProjectsForm from "@/components/feature/form/dashboard/edit-form/edit-project-form";
+import { useEffect, useRef } from "react";
 
 export default function ProjectsEdit() {
   const { projects, loading, error, updateProject, deleteProject } = useProjects();
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const handleDelete = async (id: number, title: string) => {
     try {
       await deleteProject(id);
-      console.log(`Project "${title}" deleted successfully`);
       toast.success(`Project "${title}" deleted successfully`);
     } catch (error) {
-      console.error("Error deleting project:", error);
       toast.error("Error deleting project");
       throw error; // Re-throw để DeleteButton có thể handle
     }
@@ -21,7 +28,11 @@ export default function ProjectsEdit() {
 
   // Show simple loading text while loading
   if (loading) {
-    return <div className="text-center p-8">Loading projects...</div>;
+    return (
+      <div className="text-center p-8">
+        <div className="mb-4">Loading projects...</div>
+      </div>
+    );
   }
 
   // Show error state
@@ -29,7 +40,19 @@ export default function ProjectsEdit() {
     return (
       <div className="w-full table-scroll overflow-x-auto">
         <div className="flex justify-center items-center p-8 text-red-500">
-          <span>Error: {error}</span>
+          <div className="text-center">
+            <div className="text-lg font-semibold mb-2">Error Loading Projects</div>
+            <div className="text-sm mb-4">{error}</div>
+            {error.includes('Supabase configuration missing') && (
+              <div className="text-xs text-gray-600 max-w-md">
+                Please check your environment variables. Make sure you have created a `.env.local` file 
+                with `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+                <br />
+                <br />
+                See `ENVIRONMENT_SETUP.md` for detailed instructions.
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );

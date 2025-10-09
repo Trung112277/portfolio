@@ -1,3 +1,5 @@
+// Import React Three Fiber patch first
+import "@/lib/react-three-fiber-patch";
 import type { Metadata, Viewport } from "next";
 import { Open_Sans } from "next/font/google";
 import Script from "next/script";

@@ -1,13 +1,20 @@
 // frontend/src/hooks/useTechStack.ts
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { TechStackService } from "@/services/tech-stack.service";
 import { Database } from "@/types/database";
 import { useTechDbStore } from "@/stores/tech-db-store";
-import { supabase } from "@/lib/supabase-client";
+
+// Global flags to prevent duplicate API calls
+let isTechLoading = false
+
+// Function to reset global flags
+export function resetTechFlags() {
+  isTechLoading = false
+}
 
 export function useTechStack(category?: string) {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const isMountedRef = useRef(true);
+  const hasLoadedRef = useRef(false);
   
   const {
     frontendTech,
@@ -15,11 +22,15 @@ export function useTechStack(category?: string) {
     databaseTech,
     devopsTech,
     allTech,
+    loading,
+    error,
     addTech,
     updateTech: updateTechInStore,
     deleteTech: deleteTechFromStore,
     setTechByCategory,
     setAllTech,
+    setLoading,
+    setError,
   } = useTechDbStore();
 
   // Get tech stack based on category
@@ -30,45 +41,61 @@ export function useTechStack(category?: string) {
        category === 'devops' ? devopsTech : [])
     : allTech;
 
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const loadTechStack = useCallback(async () => {
+    // Prevent duplicate API calls
+    if (isTechLoading || hasLoadedRef.current) {
+      return;
+    }
+
+    isTechLoading = true;
+    hasLoadedRef.current = true;
+
     try {
-      setLoading(true);
-      setError(null);
+      if (isMountedRef.current) {
+        setLoading(true);
+        setError(null);
+      }
       
       const data = category
         ? await TechStackService.getByCategory(category)
         : await TechStackService.getAll();
       
-      if (category) {
-        setTechByCategory(category, data);
-      } else {
-        setAllTech(data);
+      if (isMountedRef.current) {
+        if (category) {
+          setTechByCategory(category, data);
+        } else {
+          setAllTech(data);
+        }
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to load tech stack";
-      setError(errorMessage);
+      if (isMountedRef.current) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to load tech stack";
+        setError(errorMessage);
+      }
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
+      isTechLoading = false;
     }
-  }, [category, setTechByCategory, setAllTech]);
+  }, [category, setTechByCategory, setAllTech, setLoading, setError]);
 
   useEffect(() => {
-    // Load data when component mounts or category changes
     loadTechStack();
-  }, [category, loadTechStack]);
-
-  // Realtime subscription (similar to projects pattern)
-  // Realtime subscription is now handled by individual components
-  // to avoid conflicts and ensure proper category filtering
-
+  }, [loadTechStack]);
 
   const createTech = async (
     tech: Database["public"]["Tables"]["tech_stack"]["Insert"]
   ) => {
     try {
       const newTech = await TechStackService.create(tech);
-      // Optimistic update: add to store immediately for responsive UI
       addTech(newTech);
       return newTech;
     } catch (err) {
@@ -82,7 +109,6 @@ export function useTechStack(category?: string) {
   ) => {
     try {
       const updatedTech = await TechStackService.update(id, updates);
-      // Optimistic update: update store immediately for responsive UI
       updateTechInStore(id, updatedTech);
       return updatedTech;
     } catch (err) {
@@ -93,7 +119,6 @@ export function useTechStack(category?: string) {
   const deleteTech = async (id: number) => {
     try {
       await TechStackService.delete(id);
-      // Optimistic update: delete from store immediately for responsive UI
       deleteTechFromStore(id);
     } catch (err) {
       throw err;

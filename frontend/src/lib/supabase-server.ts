@@ -11,3 +11,8 @@ if (!url || !serviceKey) {
 export const supabaseAdmin = createClient(url, serviceKey, {
   auth: { autoRefreshToken: false, persistSession: false },
 })
+
+// For API routes, we can use the service role key
+export const supabase = createClient(url, serviceKey, {
+  auth: { autoRefreshToken: false, persistSession: false },
+})

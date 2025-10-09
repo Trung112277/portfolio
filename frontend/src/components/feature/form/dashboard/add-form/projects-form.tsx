@@ -18,10 +18,19 @@ import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
 import { useProjects } from "@/hooks/useProjects";
 import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
+import { useEffect, useRef } from "react";
 
 export default function ProjectsAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
   const { createProject } = useProjects();
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const {
     register,

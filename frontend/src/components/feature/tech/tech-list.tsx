@@ -1,5 +1,6 @@
 "use client";
 import TechItem from "@/components/feature/tech/tech-item";
+import TechDataLoader from "@/components/feature/tech/tech-data-loader";
 
 export default function TechList() {
   // Define the categories we want to display
@@ -12,7 +13,9 @@ export default function TechList() {
 
   return (
     <div className="flex flex-col gap-5 md:gap-10">
-  
+      {/* Load all tech data once */}
+      <TechDataLoader />
+      
       {categories.map((tech) => (
         <TechItem
           key={tech.category}
