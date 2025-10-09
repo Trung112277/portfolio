@@ -43,7 +43,7 @@ const Projects3DWrapper = memo(() => {
           <div className="text-center text-white">
             <LoadingSpinner size="xl" color="white" className="mx-auto mb-4" />
             <p className="text-lg font-semibold">Loading 3D Experience...</p>
-            <p className="text-sm opacity-75 mt-2">Please wait while we load the interactive elements</p>
+            <p className="text-sm opacity-75 mt-2">Preparing interactive 3D visualization</p>
           </div>
         </div>
       ) : (

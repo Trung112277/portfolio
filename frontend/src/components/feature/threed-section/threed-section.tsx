@@ -6,14 +6,7 @@ import { ThreeDErrorBoundary } from "@/components/common/three-d-error-boundary"
 // Dynamic import để tránh SSR issues
 const ThreeDCanvas = dynamic(() => import('./three-d-canvas'), {
   ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center h-[800px] bg-gray-100 rounded-lg">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-        <p className="text-gray-600">Loading 3D Scene...</p>
-      </div>
-    </div>
-  )
+  loading: () => null // Không hiển thị loading vì đã có loading ở wrapper
 });
 
 export default function ThreeDSection() {

@@ -1,4 +1,3 @@
-// frontend/src/services/social-media.service.ts
 import { supabase } from '@/lib/supabase-client'
 import { Database } from '@/types/database'
 
