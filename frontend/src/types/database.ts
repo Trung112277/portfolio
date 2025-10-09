@@ -1,7 +1,7 @@
 export interface Database {
   public: {
     Tables: {
-      auth_name: {
+      author_name: {
         Row: {
           name: string;
           created_at?: string;
