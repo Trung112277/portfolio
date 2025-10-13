@@ -37,10 +37,12 @@ export default function EditAuthorForm() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-[300px] gap-4">
+      <div className="flex justify-center items-center p-8">
+      <div className="flex items-center justify-center gap-2">
         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-        <div className="text-muted-foreground">Loading author name...</div>
+        <div className="text-lg">Loading author name...</div>
       </div>
+    </div>
     );
   }
 

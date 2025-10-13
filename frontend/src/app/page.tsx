@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { FloatingButton } from "@/components/button/floating-button";
-import Intro from "@/components/common/intro";
+import Introduction from "@/components/common/introduction";
 import TechList from "@/components/feature/tech/tech-list";
 import ProjectsFloatingList from "@/components/feature/linking-floating/projects-floating-list";
 import TimelineList from "@/components/feature/timeline/timeline-list";
@@ -105,7 +105,7 @@ export default function Home() {
           </div>
         </div>
         <div className="w-full lg:w-1/2 p-0 lg:p-5 flex flex-col gap-12">
-          <Intro />
+          <Introduction />
           <TimelineList />
         </div>
       </section>

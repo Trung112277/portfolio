@@ -9,7 +9,8 @@ import { useEffect, useRef } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 export default function EditIntroductionForm() {
-  const { introduction, loadIntroduction, updateIntroduction, isLoading } = useIntroductionStore();
+  const { introduction, loadIntroduction, updateIntroduction, isLoading } =
+    useIntroductionStore();
   const formRef = useRef<UseFormReturn<Record<string, unknown>> | null>(null);
 
   useEffect(() => {
@@ -20,7 +21,7 @@ export default function EditIntroductionForm() {
   useEffect(() => {
     if (formRef.current && introduction) {
       formRef.current.reset({
-        introduction: introduction
+        introduction: introduction,
       });
     }
   }, [introduction]);
@@ -41,9 +42,11 @@ export default function EditIntroductionForm() {
   // Show loading state while data is being fetched
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-[300px] gap-4">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-        <div className="text-muted-foreground">Loading introduction...</div>
+      <div className="flex justify-center items-center p-8">
+        <div className="flex items-center justify-center gap-2">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+          <div className="text-lg">Loading introduction...</div>
+        </div>
       </div>
     );
   }
@@ -53,7 +56,7 @@ export default function EditIntroductionForm() {
       {(form, isSubmitting) => {
         // Store form reference for reset functionality
         formRef.current = form;
-        
+
         return (
           <div>
             <Textarea
