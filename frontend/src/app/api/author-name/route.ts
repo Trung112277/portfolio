@@ -39,6 +39,7 @@ export async function POST(request: Request) {
   try {
     const authorData = await request.json()
     
+    
     const { data: authorName, error } = await supabase
       .from('author_name')
       .upsert(authorData)

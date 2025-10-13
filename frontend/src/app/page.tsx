@@ -7,17 +7,57 @@ import TimelineList from "@/components/feature/timeline/timeline-list";
 import { MainHeader } from "@/components/heading/main-header";
 import { Title } from "@/components/heading/title";
 import { BUTTON_COLORS } from "@/constant/theme-colors";
-import { generateSEOMetadata } from "@/components/seo/page-head";
 import Projects3DWrapper from "@/components/feature/threed-section/projects-3d-wrapper";
 import { SocialsGlowBoxList } from "@/components/feature/glow-bow/socials-glow-box-list";
+import { getAuthorNameServerSide } from "@/lib/author-name-server";
+import { generateBaseSEO } from "@/lib/seo";
 
-// Generate metadata for home page (this overrides the default from layout.tsx)
-export const metadata: Metadata = generateSEOMetadata({
-  page: "home",
-  title: "Nhat Trung | Developer Portfolio",
-  description: "Professional portfolio showcasing frontend development skills, React, Next.js, TypeScript projects, and modern web technologies.",
-  keywords: ["portfolio", "frontend developer", "react", "nextjs", "typescript", "web developer"],
-});
+// Force dynamic rendering to ensure fresh data on every request
+export const dynamic = 'force-dynamic';
+
+// Generate metadata for home page
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const authorName = await getAuthorNameServerSide();
+    const seoConfig = generateBaseSEO(authorName);
+    
+    return {
+      title: `${authorName} | Portfolio`,
+      description: seoConfig.description,
+      keywords: seoConfig.keywords,
+      openGraph: {
+        title: `${authorName} | Portfolio`,
+        description: seoConfig.description,
+        url: seoConfig.url,
+        type: seoConfig.type,
+        images: [
+          {
+            url: `${seoConfig.url}${seoConfig.image}`,
+            width: 1200,
+            height: 630,
+            alt: `${authorName} | Portfolio`,
+          },
+        ],
+        siteName: seoConfig.siteName,
+        locale: seoConfig.locale,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${authorName} | Portfolio`,
+        description: seoConfig.description,
+        images: [`${seoConfig.url}${seoConfig.image}`],
+        creator: seoConfig.twitterHandle,
+      },
+    };
+  } catch (error) {
+    console.error("Error generating home metadata:", error);
+    return {
+      title: "Developer | Portfolio",
+      description: "Professional portfolio showcasing development skills, React, Next.js, TypeScript projects, and modern web technologies.",
+      keywords: ["portfolio", "developer", "react", "nextjs", "typescript"],
+    };
+  }
+}
 
 export default function Home() {
   return (

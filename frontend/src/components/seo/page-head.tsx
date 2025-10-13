@@ -8,7 +8,7 @@ import { generatePageMetadata, generateBreadcrumbStructuredData } from "@/lib/se
 
 interface SEOProps {
   page: string;
-  title?: string;
+  authorName?: string;
   description?: string;
   keywords?: string[];
   image?: string;
@@ -21,26 +21,23 @@ interface SEOProps {
  */
 export function generateSEOMetadata({
   page,
-  title,
+  authorName,
   description,
   keywords,
   image,
   noindex = false,
 }: SEOProps): Metadata {
-  const seoConfig = generatePageMetadata(page, {
-    title,
+  const seoConfig = generatePageMetadata(page, authorName, {
     description,
     keywords,
     image
   });
 
   return {
-    title: seoConfig.title,
     description: seoConfig.description,
     keywords: seoConfig.keywords,
     authors: [{ name: seoConfig.author }],
     openGraph: {
-      title: seoConfig.title,
       description: seoConfig.description,
       url: seoConfig.url,
       type: seoConfig.type,
@@ -49,7 +46,7 @@ export function generateSEOMetadata({
           url: `${seoConfig.url}${seoConfig.image}`,
           width: 1200,
           height: 630,
-          alt: seoConfig.title,
+          alt: seoConfig.description,
         },
       ],
       siteName: seoConfig.siteName,
@@ -57,7 +54,6 @@ export function generateSEOMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: seoConfig.title,
       description: seoConfig.description,
       images: [`${seoConfig.url}${seoConfig.image}`],
       creator: seoConfig.twitterHandle,

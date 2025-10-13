@@ -1,8 +1,12 @@
+"use client";
+
 import { Fugaz_One } from "next/font/google";
 import { AuroraText } from "@/components/ui/aura-text";
 import { BouncyText } from "@/components/ui/bouncy-text";
 import ResizeHandle from "@/components/ui/resize-handle";
 import { THEME_COLORS } from "@/constant/theme-colors";
+import { useAuthorName } from "@/hooks/useAuthorName";
+import { useEffect } from "react";
 
 const fugazOne = Fugaz_One({
   weight: "400",
@@ -10,18 +14,24 @@ const fugazOne = Fugaz_One({
 });
 
 export function MainHeader() {
+  const { authorName, loading } = useAuthorName();
+  
+  
   return (
-    <h1 className={` font-bold text-center inline-block italic ${fugazOne.className}`}>
-      <BouncyText 
+    <h1
+      className={` font-bold text-center inline-block italic ${fugazOne.className}`}
+    >
+      <BouncyText
         text="Hello, I'm"
         className="text-3xl md:text-5xl font-bold text-center"
       />
       <AuroraText
+        key={authorName} // Force re-render when authorName changes
         speed={1}
         colors={THEME_COLORS.gradients.mainHeader}
         className="text-5xl md:text-8xl lg:text-9xl font-black uppercase my-5"
       >
-        Nhat Trung
+        {loading ? "Loading..." : authorName}
       </AuroraText>
       <ResizeHandle />
     </h1>

@@ -1,7 +1,34 @@
+import { Metadata } from "next";
 import Auth from "@/components/feature/auth/auth";
 import AuthGuard from "@/components/feature/auth/auth-guard";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { getAuthorNameServerSide } from "@/lib/author-name-server";
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const authorName = await getAuthorNameServerSide();
+    
+    return {
+      title: `Login | ${authorName} Portfolio`,
+      description: "Login to access the admin dashboard for managing portfolio content.",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  } catch (error) {
+    console.error("Error generating login metadata:", error);
+    return {
+      title: "Login | Portfolio",
+      description: "Login to access the admin dashboard for managing portfolio content.",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+}
 
 export default function Login() {
   const Image = dynamic(() => import("next/image"));

@@ -4,11 +4,19 @@ import { Textarea } from "@/components/ui/textarea";
 import BaseEditForm from "@/components/feature/form/dashboard/edit-form/base-edit-form";
 import { validationRules } from "@/lib/form-validation";
 import { FormConfig } from "@/hooks/useFormHandler";
+import { useAuthorStore } from "@/stores/author-store";
+import { useEffect } from "react";
 
 export default function EditIntroductionForm() {
+  const { authorName, loadAuthorName } = useAuthorStore();
+
+  useEffect(() => {
+    loadAuthorName();
+  }, [loadAuthorName]);
+
   const config: FormConfig = {
     defaultValues: {
-      introduction: `👋 Hey, I'm Nhat Trung, a Frontend Developer.
+      introduction: `👋 Hey, I'm ${authorName}, a Frontend Developer.
 
 I've been working with React and Node for the past one year, building web applications that are fast, scalable and user-friendly.
 

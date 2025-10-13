@@ -1,6 +1,6 @@
 // Import React Three Fiber patch first
 import "@/lib/react-three-fiber-patch";
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -13,7 +13,8 @@ import { initCriticalCSS, getCriticalCSS } from "@/lib/critical-css";
 import { serviceWorkerManager } from "@/lib/service-worker";
 import { SkipLink } from "@/components/common/skip-link";
 import { Toaster } from "@/components/ui/sonner";
-import { baseSEO, generatePersonStructuredData, generateWebsiteStructuredData } from "@/lib/seo";
+import { generatePersonStructuredData, generateWebsiteStructuredData, generateBaseSEO } from "@/lib/seo";
+import { getAuthorNameServerSide } from "@/lib/author-name-server";
 import { GlobalRealtimeProvider } from "@/components/providers/global-realtime-provider";
 
 
@@ -23,86 +24,97 @@ const openSans = Open_Sans({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(baseSEO.url),
-  title: {
-    default: baseSEO.title,
-    template: `%s | ${baseSEO.siteName}`
-  },
-  description: baseSEO.description,
-  keywords: baseSEO.keywords,
-  authors: [{ name: baseSEO.author }],
-  creator: baseSEO.author,
-  publisher: baseSEO.author,
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  icons: {
-    icon: [
-      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-    ],
-    shortcut: "/favicon.png",
-    apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
-    ],
-  },
-  manifest: "/site.webmanifest",
-  openGraph: {
-    type: baseSEO.type,
-    locale: baseSEO.locale,
-    url: baseSEO.url,
-    title: baseSEO.title,
-    description: baseSEO.description,
-    siteName: baseSEO.siteName,
-    images: [
-      {
-        url: `${baseSEO.url}${baseSEO.image}`,
-        width: 1200,
-        height: 630,
-        alt: baseSEO.title,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: baseSEO.title,
-    description: baseSEO.description,
-    images: [`${baseSEO.url}${baseSEO.image}`],
-    creator: baseSEO.twitterHandle,
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+// Force dynamic rendering to ensure fresh data on every request
+export const dynamic = 'force-dynamic';
+
+/**
+ * Generate metadata for the root layout
+ * This function runs on every request to ensure fresh data
+ * Only sets common metadata - each page manages its own title
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  // Always fetch fresh author name on every request
+  let authorName = "Developer";
+  
+  try {
+    authorName = await getAuthorNameServerSide();
+  } catch (error) {
+    console.error("Error fetching author name in generateMetadata:", error);
+    // Continue with fallback
+  }
+  
+  const seoConfig = generateBaseSEO(authorName);
+  
+  return {
+    metadataBase: new URL(seoConfig.url),
+    // Always set title immediately to prevent flash
+    title: `${authorName} | Portfolio`,
+    description: seoConfig.description,
+    keywords: seoConfig.keywords,
+    authors: [{ name: seoConfig.author }],
+    creator: seoConfig.author,
+    publisher: seoConfig.author,
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    icons: {
+      icon: [
+        { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+        { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      ],
+      shortcut: "/favicon.png",
+      apple: [
+        { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      ],
+    },
+    manifest: "/site.webmanifest",
+    openGraph: {
+      type: seoConfig.type,
+      locale: seoConfig.locale,
+      url: seoConfig.url,
+      title: `${authorName} | Portfolio`,
+      description: seoConfig.description,
+      siteName: seoConfig.siteName,
+      images: [
+        {
+          url: `${seoConfig.url}${seoConfig.image}`,
+          width: 1200,
+          height: 630,
+          alt: seoConfig.description,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${authorName} | Portfolio`,
+      description: seoConfig.description,
+      images: [`${seoConfig.url}${seoConfig.image}`],
+      creator: seoConfig.twitterHandle,
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
-  },
-  verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-    yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
-    yahoo: process.env.NEXT_PUBLIC_YAHOO_VERIFICATION,
-  },
-};
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+      yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+      yahoo: process.env.NEXT_PUBLIC_YAHOO_VERIFICATION,
+    },
+  };
+}
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 5,
-  userScalable: true,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#000000" },
-  ],
-};
 
-export default function RootLayout({
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -128,13 +140,25 @@ export default function RootLayout({
     }
   }
 
-  // Generate structured data
-  const personStructuredData = generatePersonStructuredData(baseSEO);
-  const websiteStructuredData = generateWebsiteStructuredData(baseSEO);
+  // Generate structured data with dynamic author name
+  // Reuse the same author name fetching logic to ensure consistency
+  let personStructuredData, websiteStructuredData, authorName;
+  try {
+    authorName = await getAuthorNameServerSide();
+    personStructuredData = generatePersonStructuredData(authorName);
+    websiteStructuredData = generateWebsiteStructuredData(authorName);
+  } catch (error) {
+    console.error("Error generating structured data:", error);
+    // Fallback to static structured data with consistent author name
+    authorName = "Developer";
+    personStructuredData = generatePersonStructuredData(authorName);
+    websiteStructuredData = generateWebsiteStructuredData(authorName);
+  }
 
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
+        
         {/* Google Analytics */}
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
           <>
@@ -148,7 +172,6 @@ export default function RootLayout({
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
-                  page_title: document.title,
                   page_location: window.location.href,
                   send_page_view: false
                 });
@@ -182,6 +205,11 @@ export default function RootLayout({
         {/* DNS Prefetch */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//www.google-analytics.com" />
+        
+        {/* Preload author name data */}
+        <link rel="preload" href="/api/author-name" as="fetch" crossOrigin="anonymous" />
+
+    
       </head>
       <body
         className={`${openSans.variable} font-open-sans antialiased`}

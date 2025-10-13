@@ -4,7 +4,6 @@
  */
 
 export interface SEOConfig {
-  title: string;
   description: string;
   keywords: string[];
   author: string;
@@ -23,92 +22,118 @@ export interface StructuredData {
   [key: string]: unknown;
 }
 
-// Base SEO configuration
-export const baseSEO: SEOConfig = {
-  title: "Nhat Trung | Developer Portfolio",
-  description: "Professional portfolio showcasing development skills, React, Next.js, TypeScript projects, and modern web technologies. Experienced developer with expertise in creating responsive, performant web applications.",
-  keywords: [
-    "developer",
-    "fullstack developer",
-    "backend developer",
-    "frontend developer",
-    "react developer",
-    "nextjs developer", 
-    "typescript developer",
-    "portfolio",
-    "javascript",
-    "html",
-    "css",
-    "tailwind css",
-    "three.js",
-    "web performance",
-    "responsive design",
-    "modern web development"
-  ],
-  author: "Nhat Trung",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://nhattrung.dev",
-  image: "/open-graph/open-graph-1.png",
-  type: "website",
-  locale: "en_US",
-  siteName: "Nhat Trung Portfolio",
-  twitterHandle: "@nhattrung_dev",
-  facebookAppId: "your-facebook-app-id"
-};
+/**
+ * Generate base SEO configuration with dynamic author name
+ */
+export function generateBaseSEO(authorName: string = "Developer"): SEOConfig {
+  // Ensure authorName is a string and has a fallback
+  const safeAuthorName = typeof authorName === 'string' && authorName.trim() ? authorName : "Developer";
+  const socialHandle = safeAuthorName.toLowerCase().replace(/\s+/g, '');
+  
+  return {
+    description: `Professional portfolio showcasing ${safeAuthorName}'s development skills, React, Next.js, TypeScript projects, and modern web technologies. Experienced developer with expertise in creating responsive, performant web applications.`,
+    keywords: [
+      "developer",
+      "fullstack developer",
+      "backend developer",
+      "frontend developer",
+      "react developer",
+      "nextjs developer", 
+      "typescript developer",
+      "portfolio",
+      "javascript",
+      "html",
+      "css",
+      "tailwind css",
+      "three.js",
+      "web performance",
+      "responsive design",
+      "modern web development"
+    ],
+    author: safeAuthorName,
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://portfolio.dev",
+    image: "/open-graph/open-graph-1.png",
+    type: "website",
+    locale: "en_US",
+    siteName: `${safeAuthorName} Portfolio`,
+    twitterHandle: `@${socialHandle}`,
+    facebookAppId: "your-facebook-app-id"
+  };
+}
 
-// Page-specific SEO configurations
-export const pageSEO: Record<string, Partial<SEOConfig>> = {
-  home: {
-    title: "Nhat Trung | Developer Portfolio",
-    description: "Professional portfolio showcasing development skills, React, Next.js, TypeScript projects, and modern web technologies.",
-    keywords: ["portfolio", "developer", "react", "nextjs", "typescript"]
-  },
-  dashboard: {
-    title: "Dashboard | Nhat Trung Portfolio",
-    description: "Admin dashboard for managing portfolio content, projects, and analytics.",
-    keywords: ["dashboard", "admin", "portfolio management"]
-  },
-  about: {
-    title: "About Me | Nhat Trung Portfolio", 
-    description: "Learn more about Nhat Trung's background, skills, and experience in development.",
-    keywords: ["about", "developer", "experience", "skills"]
-  },
-  projects: {
-    title: "Projects | Nhat Trung Portfolio",
-    description: "Explore Nhat Trung's portfolio of web development projects built with modern technologies.",
-    keywords: ["projects", "web development", "portfolio", "case studies"]
-  },
-  tech: {
-    title: "Tech Stack | Nhat Trung Portfolio",
-    description: "Technologies and tools used by Nhat Trung in development projects.",
-    keywords: ["tech stack", "technologies", "tools", "skills"]
-  }
-};
+// Default base SEO configuration (fallback)
+export const baseSEO: SEOConfig = generateBaseSEO();
 
 /**
- * Generate page metadata
+ * Generate page-specific SEO configurations with dynamic author name
+ */
+export function generatePageSEO(authorName: string = "Developer"): Record<string, Partial<SEOConfig>> {
+  // Ensure authorName is a string and has a fallback
+  const safeAuthorName = typeof authorName === 'string' && authorName.trim() ? authorName : "Developer";
+  
+  return {
+    home: {
+      description: `Professional portfolio showcasing ${safeAuthorName}'s development skills, React, Next.js, TypeScript projects, and modern web technologies.`,
+      keywords: ["portfolio", "developer", "react", "nextjs", "typescript"]
+    },
+    dashboard: {
+      description: "Admin dashboard for managing portfolio content, projects, and analytics.",
+      keywords: ["dashboard", "admin", "portfolio management"]
+    },
+    about: {
+      description: `Learn more about ${safeAuthorName}'s background, skills, and experience in development.`,
+      keywords: ["about", "developer", "experience", "skills"]
+    },
+    projects: {
+      description: `Explore ${safeAuthorName}'s portfolio of web development projects built with modern technologies.`,
+      keywords: ["projects", "web development", "portfolio", "case studies"]
+    },
+    tech: {
+      description: `Technologies and tools used by ${safeAuthorName} in development projects.`,
+      keywords: ["tech stack", "technologies", "tools", "skills"]
+    }
+  };
+}
+
+// Default page-specific SEO configurations (fallback)
+export const pageSEO: Record<string, Partial<SEOConfig>> = generatePageSEO();
+
+/**
+ * Generate page metadata with dynamic author name
  */
 export function generatePageMetadata(
   page: string, 
+  authorName: string = "Developer",
   customConfig?: Partial<SEOConfig>
 ): SEOConfig {
-  const pageConfig = pageSEO[page] || {};
+  // Ensure authorName is a string and has a fallback
+  const safeAuthorName = typeof authorName === 'string' && authorName.trim() ? authorName : "Developer";
+  
+  const dynamicBaseSEO = generateBaseSEO(safeAuthorName);
+  const dynamicPageSEO = generatePageSEO(safeAuthorName);
+  const pageConfig = dynamicPageSEO[page] || {};
+  
   return {
-    ...baseSEO,
+    ...dynamicBaseSEO,
     ...pageConfig,
     ...customConfig,
-    title: customConfig?.title || pageConfig.title || baseSEO.title,
-    description: customConfig?.description || pageConfig.description || baseSEO.description
+    description: customConfig?.description || pageConfig.description || dynamicBaseSEO.description
   };
 }
 
 /**
- * Generate structured data for Person/Profile
+ * Generate structured data for Person/Profile with dynamic author name
  */
-export function generatePersonStructuredData(config: SEOConfig): StructuredData {
+export function generatePersonStructuredData(authorName: string = "Developer"): StructuredData {
+  // Ensure authorName is a string and has a fallback
+  const safeAuthorName = typeof authorName === 'string' && authorName.trim() ? authorName : "Developer";
+  const config = generateBaseSEO(safeAuthorName);
+  const socialHandle = safeAuthorName.toLowerCase().replace(/\s+/g, '');
+  
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: config.author,
+    name: safeAuthorName,
     url: config.url,
     description: config.description,
     image: `${config.url}${config.image}`,
@@ -116,20 +141,25 @@ export function generatePersonStructuredData(config: SEOConfig): StructuredData 
     worksFor: {
       '@type': 'Organization',
       name: 'Freelance'
+      
     },
     knowsAbout: config.keywords,
     sameAs: [
-      'https://github.com/nhattrung',
-      'https://linkedin.com/in/nhattrung',
-      'https://twitter.com/nhattrung_dev'
+      `https://github.com/${socialHandle}`,
+      `https://linkedin.com/in/${socialHandle}`,
+      `https://twitter.com/${socialHandle}`
     ]
   };
 }
 
 /**
- * Generate structured data for Website
+ * Generate structured data for Website with dynamic author name
  */
-export function generateWebsiteStructuredData(config: SEOConfig): StructuredData {
+export function generateWebsiteStructuredData(authorName: string = "Developer"): StructuredData {
+  // Ensure authorName is a string and has a fallback
+  const safeAuthorName = typeof authorName === 'string' && authorName.trim() ? authorName : "Developer";
+  const config = generateBaseSEO(safeAuthorName);
+  
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -138,7 +168,7 @@ export function generateWebsiteStructuredData(config: SEOConfig): StructuredData
     description: config.description,
     author: {
       '@type': 'Person',
-      name: config.author
+      name: safeAuthorName
     },
     potentialAction: {
       '@type': 'SearchAction',
@@ -149,18 +179,22 @@ export function generateWebsiteStructuredData(config: SEOConfig): StructuredData
 }
 
 /**
- * Generate structured data for Portfolio/Collection
+ * Generate structured data for Portfolio/Collection with dynamic author name
  */
-export function generatePortfolioStructuredData(config: SEOConfig): StructuredData {
+export function generatePortfolioStructuredData(authorName: string = "Developer"): StructuredData {
+  // Ensure authorName is a string and has a fallback
+  const safeAuthorName = typeof authorName === 'string' && authorName.trim() ? authorName : "Developer";
+  const config = generateBaseSEO(safeAuthorName);
+  
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `${config.author} Portfolio`,
+    name: `${safeAuthorName} Portfolio`,
     description: config.description,
     url: config.url,
     author: {
       '@type': 'Person',
-      name: config.author
+      name: safeAuthorName
     },
     mainEntity: {
       '@type': 'ItemList',
@@ -209,10 +243,24 @@ export function generateFAQStructuredData(
 }
 
 /**
+ * Generate all structured data with dynamic author name
+ */
+export function generateAllStructuredData(authorName: string = "Developer") {
+  // Ensure authorName is a string and has a fallback
+  const safeAuthorName = typeof authorName === 'string' && authorName.trim() ? authorName : "Developer";
+  
+  return {
+    person: generatePersonStructuredData(safeAuthorName),
+    website: generateWebsiteStructuredData(safeAuthorName),
+    portfolio: generatePortfolioStructuredData(safeAuthorName),
+  };
+}
+
+/**
  * Generate robots.txt content
  */
 export function generateRobotsTxt(): string {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://nhattrung.dev';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://portfolio.dev';
   
   return `User-agent: *
 Allow: /
@@ -238,7 +286,7 @@ Allow: /contact`;
  * Generate sitemap.xml content
  */
 export function generateSitemap(): string {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://nhattrung.dev';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://portfolio.dev';
   const currentDate = new Date().toISOString();
   
   const pages = [
