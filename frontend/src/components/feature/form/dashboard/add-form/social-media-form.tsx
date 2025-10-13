@@ -55,9 +55,46 @@ export default function SocialMediaAddForm() {
     console.log("Selected image:", selectedImage);
 
     try {
-      // TODO: Replace with actual API call
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      let imageUrl = "";
+      
+      // Upload image if selected
+      if (selectedImage) {
+        const formData = new FormData();
+        formData.append('file', selectedImage);
+        formData.append('bucket', 'social-media');
+        formData.append('folder', 'social-media-images');
+        
+        const uploadResponse = await fetch('/api/upload-image', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (!uploadResponse.ok) {
+          throw new Error('Failed to upload image');
+        }
+        
+        const uploadResult = await uploadResponse.json();
+        imageUrl = uploadResult.url;
+      }
+
+      // Create social media entry
+      const response = await fetch('/api/social-media', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          image_url: imageUrl,
+          description: data.description,
+          link: data.link,
+          color: data.color,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create social media');
+      }
      
       // Reset form and states
       reset();
@@ -78,15 +115,6 @@ export default function SocialMediaAddForm() {
     }
   };
 
-  // Helper function to convert file to base64
-  const convertFileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
-    });
-  };
 
   const handleDialogClose = (open: boolean) => {
     if (isSubmitting) {

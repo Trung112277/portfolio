@@ -23,11 +23,13 @@ import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 interface SocialMediaEditFormProps {
   socialMediaId: string;
   initialData: Partial<SocialMediaFormInputs>;
+  existingImageUrl?: string;
 }
 
 export default function SocialMediaEditForm({
   socialMediaId,
   initialData,
+  existingImageUrl,
 }: SocialMediaEditFormProps) {
   const { isOpen, setIsOpen } = useDialogState();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -57,6 +59,13 @@ export default function SocialMediaEditForm({
     }
   }, [initialData, reset]);
 
+  // Set initial image preview if existing image URL is provided
+  useEffect(() => {
+    if (existingImageUrl && !imagePreview) {
+      setImagePreview(existingImageUrl);
+    }
+  }, [existingImageUrl, imagePreview]);
+
   const handleImageChange = (file: File | null, preview: string | null) => {
     setSelectedImage(file);
     setImagePreview(preview);
@@ -72,10 +81,46 @@ export default function SocialMediaEditForm({
     console.log("Selected image:", selectedImage);
 
     try {
-      // TODO: Replace with actual API call
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    
+      let imageUrl = existingImageUrl || "";
+      
+      // Upload new image if selected
+      if (selectedImage) {
+        const formData = new FormData();
+        formData.append('file', selectedImage);
+        formData.append('bucket', 'social-media');
+        formData.append('folder', 'social-media-images');
+        
+        const uploadResponse = await fetch('/api/upload-image', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (!uploadResponse.ok) {
+          throw new Error('Failed to upload image');
+        }
+        
+        const uploadResult = await uploadResponse.json();
+        imageUrl = uploadResult.url;
+      }
+
+      // Update social media entry
+      const response = await fetch(`/api/social-media/${socialMediaId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          image_url: imageUrl,
+          description: data.description,
+          link: data.link,
+          color: data.color,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update social media');
+      }
 
       // Reset form and states
       reset(initialData);
@@ -94,15 +139,6 @@ export default function SocialMediaEditForm({
     }
   };
 
-  // Helper function to convert file to base64
-  const convertFileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
-    });
-  };
 
   const handleDialogClose = (open: boolean) => {
     if (isSubmitting) {

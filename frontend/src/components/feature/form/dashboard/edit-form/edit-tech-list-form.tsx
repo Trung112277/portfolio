@@ -29,7 +29,6 @@ interface TechListEditFormProps {
 }
 
 export default function TechListEditForm({
-  techListId,
   initialData,
   onUpdate,
 }: TechListEditFormProps) {
@@ -97,6 +96,7 @@ export default function TechListEditForm({
           // Try to upload to Supabase Storage first
           const uploadResult = await ImageUploadService.uploadImage(selectedImage, {
             folder: 'tech-stack',
+            bucket: 'tech-images',
             compress: true
           });
           imageUrl = uploadResult.url;

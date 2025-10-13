@@ -68,7 +68,7 @@ export default function Home() {
           <MainHeader />
         </div>
         <div className="flex-1 flex justify-center pb-1 md:pb-8 mt-[100px]">
-          <SocialsGlowBoxList socials={[]} />
+          <SocialsGlowBoxList />
         </div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <span className="w-[300px] h-[300px] bg-primary/40 rounded-full block blur-3xl"></span>

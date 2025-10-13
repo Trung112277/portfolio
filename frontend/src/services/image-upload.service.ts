@@ -12,6 +12,7 @@ export interface UploadOptions {
   compress?: boolean;
   maxWidth?: number;
   quality?: number;
+  bucket?: string;
 }
 
 export class ImageUploadService {
@@ -28,7 +29,7 @@ export class ImageUploadService {
    */
   static async uploadImage(file: File, options: UploadOptions = {}): Promise<UploadResult> {
     try {
-      const { folder = 'tech-stack', compress = true, maxWidth, quality } = options;
+      const { folder = 'tech-stack', compress = true, maxWidth, quality, bucket = 'tech-images' } = options;
       
       // Validate file
       this.validateFile(file);
@@ -50,6 +51,7 @@ export class ImageUploadService {
       const formData = new FormData();
       formData.append('file', fileToUpload);
       formData.append('folder', folder);
+      formData.append('bucket', bucket);
 
       const response = await fetch('/api/upload-image', {
         method: 'POST',
@@ -184,6 +186,7 @@ export class ImageUploadService {
 
     // For Supabase Storage URLs, we can add transformation parameters
     // This is a placeholder - actual implementation depends on your Supabase setup
+    // Parameters _width and _height are reserved for future use
     return imageUrl;
   }
 

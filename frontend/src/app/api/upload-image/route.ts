@@ -11,6 +11,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const folder = formData.get('folder') as string || 'tech-stack';
+    const bucket = formData.get('bucket') as string || 'tech-images';
 
     if (!file) {
       return NextResponse.json(
@@ -37,6 +38,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate bucket name
+    const allowedBuckets = ['tech-images', 'social-media'];
+    if (!allowedBuckets.includes(bucket)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid bucket. Allowed buckets: tech-images, social-media' },
+        { status: 400 }
+      );
+    }
+
     // Generate unique filename
     const timestamp = Date.now();
     const randomString = Math.random().toString(36).substring(2, 15);
@@ -48,8 +58,8 @@ export async function POST(request: NextRequest) {
     const fileBuffer = await file.arrayBuffer();
 
     // Upload to Supabase Storage
-    const { data, error } = await supabase.storage
-      .from('tech-images')
+    const { error } = await supabase.storage
+      .from(bucket)
       .upload(filePath, fileBuffer, {
         contentType: file.type,
         upsert: false
@@ -65,7 +75,7 @@ export async function POST(request: NextRequest) {
 
     // Get public URL
     const { data: urlData } = supabase.storage
-      .from('tech-images')
+      .from(bucket)
       .getPublicUrl(filePath);
 
     return NextResponse.json({
@@ -73,7 +83,8 @@ export async function POST(request: NextRequest) {
       url: urlData.publicUrl,
       path: filePath,
       size: file.size,
-      fileName: fileName
+      fileName: fileName,
+      bucket: bucket
     });
 
   } catch (error) {

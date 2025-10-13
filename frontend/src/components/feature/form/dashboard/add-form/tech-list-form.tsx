@@ -79,6 +79,7 @@ export default function TechListAddForm() {
         // Upload image to Supabase Storage
         const uploadResult = await uploadImage(selectedImage, {
           folder: 'tech-stack',
+          bucket: 'tech-images',
           compress: true
         });
         

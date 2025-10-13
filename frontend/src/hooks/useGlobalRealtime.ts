@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { supabase } from '@/lib/supabase-client';
 import { useTechDbStore } from '@/stores/tech-db-store';
+import { useSocialMediaDbStore } from '@/stores/social-media-db-store';
 import { Database } from '@/types/database';
 
 export function useGlobalRealtime() {
   useEffect(() => {
     const channel = supabase
-      .channel('tech-stack-global')
+      .channel('global-realtime')
       .on('postgres_changes', { 
         event: '*', 
         schema: 'public', 
@@ -24,6 +25,25 @@ export function useGlobalRealtime() {
         } else if (payload.eventType === 'DELETE') {
           const deletedTech = payload.old as Database['public']['Tables']['tech_stack']['Row'];
           deleteTechFromStore(deletedTech.id);
+        }
+      })
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'social_media' 
+      }, (payload) => {
+        // Get fresh store functions inside the callback
+        const { addSocialMedia, updateSocialMedia, deleteSocialMedia } = useSocialMediaDbStore.getState();
+        
+        if (payload.eventType === 'INSERT') {
+          const newSocial = payload.new as Database['public']['Tables']['social_media']['Row'];
+          addSocialMedia(newSocial);
+        } else if (payload.eventType === 'UPDATE') {
+          const updatedSocial = payload.new as Database['public']['Tables']['social_media']['Row'];
+          updateSocialMedia(updatedSocial.id, updatedSocial);
+        } else if (payload.eventType === 'DELETE') {
+          const deletedSocial = payload.old as Database['public']['Tables']['social_media']['Row'];
+          deleteSocialMedia(deletedSocial.id);
         }
       })
       .subscribe();

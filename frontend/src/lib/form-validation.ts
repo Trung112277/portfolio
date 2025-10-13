@@ -45,11 +45,11 @@ export const validationPatterns = {
       "Name must contain only letters, digits, commas, hyphens, and equal signs",
   },
 
-  // Pattern cho introduction
+  // Pattern cho introduction -
   introduction: {
-    value: /^(?=.*[a-zA-Z])[\p{Emoji}0-9a-zA-Z\s,.=\-+!?'"()\[\]{}:;]+$/u,
+    value: /^[\s\S]{1,}$/,
     message:
-      "Introduction must contain only letters, digits, commas, hyphens, and equal signs",
+      "Introduction must contain at least one character",
   },
 
   // Pattern cho URL
@@ -134,12 +134,12 @@ export const validationRules = {
     required: "Introduction is required",
     pattern: validationPatterns.introduction,
     minLength: {
-      value: 20,
-      message: "Introduction must be at least 20 characters",
+      value: 1,
+      message: "Introduction must contain at least one character",
     },
     maxLength: {
-      value: 500,
-      message: "Introduction must be less than 500 characters",
+      value: 2000,
+      message: "Introduction must be less than 2000 characters",
     },
   },
 
