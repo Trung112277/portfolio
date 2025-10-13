@@ -107,19 +107,19 @@ export function useProjects() {
 
   const createProject = async (input: Database['public']['Tables']['projects']['Insert']) => {
     const created = await ProjectsService.create(input)
-    addProject(created) // optimistic: đã có SELECT trả record nên thêm ngay
+    // Note: Project will be added via realtime subscription, no need for optimistic update
     return created
   }
 
   const updateProject = async (id: number, updates: Database['public']['Tables']['projects']['Update']) => {
     const updated = await ProjectsService.update(id, updates)
-    applyUpdate(id, updated)
+    // Note: Project will be updated via realtime subscription, no need for optimistic update
     return updated
   }
 
   const deleteProject = async (id: number) => {
     await ProjectsService.delete(id)
-    removeProject(id)
+    // Note: Project will be removed via realtime subscription, no need for optimistic update
   }
 
   return { 

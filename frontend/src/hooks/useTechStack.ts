@@ -24,9 +24,6 @@ export function useTechStack(category?: string) {
     allTech,
     loading,
     error,
-    addTech,
-    updateTech: updateTechInStore,
-    deleteTech: deleteTechFromStore,
     setTechByCategory,
     setAllTech,
     setLoading,
@@ -96,7 +93,7 @@ export function useTechStack(category?: string) {
   ) => {
     try {
       const newTech = await TechStackService.create(tech);
-      addTech(newTech);
+      // Note: Tech will be added via realtime subscription, no need for optimistic update
       return newTech;
     } catch (err) {
       throw err;
@@ -109,7 +106,7 @@ export function useTechStack(category?: string) {
   ) => {
     try {
       const updatedTech = await TechStackService.update(id, updates);
-      updateTechInStore(id, updatedTech);
+      // Note: Tech will be updated via realtime subscription, no need for optimistic update
       return updatedTech;
     } catch (err) {
       throw err;
@@ -119,7 +116,7 @@ export function useTechStack(category?: string) {
   const deleteTech = async (id: number) => {
     try {
       await TechStackService.delete(id);
-      deleteTechFromStore(id);
+      // Note: Tech will be removed via realtime subscription, no need for optimistic update
     } catch (err) {
       throw err;
     }
