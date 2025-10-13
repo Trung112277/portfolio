@@ -18,7 +18,7 @@ export function resetProjectsFlags() {
 }
 
 export function useProjects() {
-  const { projects, setProjects, addProject, updateProject: applyUpdate, removeProject } = useProjectsDbStore()
+  const { projects, setProjects } = useProjectsDbStore()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const isMountedRef = useRef(true)
@@ -28,18 +28,27 @@ export function useProjects() {
 
   useEffect(() => {
     isMountedRef.current = true
+    // Always show loading when component mounts
+    setLoading(true)
     return () => {
       isMountedRef.current = false
     }
   }, [])
 
   useEffect(() => {
-    // Prevent duplicate API calls
-    if (isProjectsLoading || hasLoadedRef.current) {
-      // If we already have data, set loading to false
-      if (projects.length > 0) {
-        setLoading(false)
-      }
+    // If we already have data, show it immediately but still show loading briefly
+    if (projects.length > 0 && !isProjectsLoading) {
+      // Show loading for a brief moment to indicate component is mounting
+      const timer = setTimeout(() => {
+        if (isMountedRef.current) {
+          setLoading(false)
+        }
+      }, 100) // Brief loading state
+      return () => clearTimeout(timer)
+    }
+
+    // Prevent duplicate API calls only if already loading
+    if (isProjectsLoading) {
       return
     }
 
