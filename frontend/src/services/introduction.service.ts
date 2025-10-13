@@ -31,7 +31,7 @@ export class IntroductionService {
   static async update(updates: IntroductionUpdate): Promise<Introduction> {
     const { data, error } = await supabase
       .from('introduction')
-      .update({ ...updates, updated_at: new Date().toISOString() })
+      .upsert({ ...updates, updated_at: new Date().toISOString() })
       .select()
       .single()
     

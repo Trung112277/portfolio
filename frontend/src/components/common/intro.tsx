@@ -1,22 +1,68 @@
 "use client";
 
-import { useAuthorName } from "@/hooks/useAuthorName";
+import { useIntroductionStore } from "@/stores/introduction-store";
+import { useEffect } from "react";
+import { supabase } from "@/lib/supabase-client";
 
 export default function Intro() {
-  const { authorName } = useAuthorName();
+  const { introduction, loadIntroduction, isLoading, syncWithRealtime, isInitialized } = useIntroductionStore();
+
+  useEffect(() => {
+    // Only load if not already initialized
+    if (!isInitialized) {
+      loadIntroduction();
+    }
+
+    // Set up realtime subscription
+    const channel = supabase
+      .channel('introduction-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+          schema: 'public',
+          table: 'introduction'
+        },
+        (payload) => {
+          console.log('Introduction changed:', payload);
+          
+          // Handle different event types
+          if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
+            const newData = payload.new as { content: string };
+            if (newData?.content) {
+              syncWithRealtime(newData.content);
+            }
+          } else if (payload.eventType === 'DELETE') {
+            // If introduction is deleted, reload to get current state
+            loadIntroduction();
+          }
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription on unmount
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadIntroduction, syncWithRealtime, isInitialized]);
+
+  // Show loading state while data is being fetched
+  if (isLoading) {
+    return (
+      <div className="text-center text-xl py-5 md:py-10 px-5 md:px-15 bg-primary/10 rounded-lg flex flex-col gap-3">
+        <div className="text-muted-foreground">Loading introduction...</div>
+      </div>
+    );
+  }
+
+  // Split the introduction text into paragraphs for better formatting
+  const paragraphs = introduction.split('\n').filter(paragraph => paragraph.trim() !== '');
 
   return (
     <div className="text-center text-xl py-5 md:py-10 px-5 md:px-15 bg-primary/10 rounded-lg flex flex-col gap-3">
-      <p>👋 Hey, I&apos;m {authorName}, a Frontend Developer.</p>
-      <p>
-        I&apos;ve been working with <strong>React</strong> and <strong>Node</strong> for the past one year,
-        building web applications that are fast, scalable and user-friendly.
-      </p>
-      <p>
-        I like solving problems, learning new things, and experimenting with
-        different technologies. When I&apos;m not coding, I&apos;m probably
-        working on a side project or exploring something new.
-      </p>
+      {paragraphs.map((paragraph, index) => (
+        <p key={index} dangerouslySetInnerHTML={{ __html: paragraph }} />
+      ))}
     </div>
   );
 }

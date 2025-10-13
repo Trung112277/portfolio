@@ -20,17 +20,17 @@ export interface Database {
       };
       introduction: {
         Row: {
-          introduction: string;
+          content: string;
           created_at?: string;
           updated_at?: string;
         };
         Insert: {
-          introduction: string;
+          content: string;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
-          introduction?: string;
+          content?: string;
           updated_at?: string;
         };
       };

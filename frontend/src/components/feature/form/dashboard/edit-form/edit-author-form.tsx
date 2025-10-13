@@ -35,6 +35,14 @@ export default function EditAuthorForm() {
     },
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[300px]">
+        <div className="text-muted-foreground">Loading author name...</div>
+      </div>
+    );
+  }
+
   return (
     <BaseEditForm config={config}>
       {(form, isSubmitting) => {
