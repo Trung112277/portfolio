@@ -6,7 +6,8 @@ import EditProjectsForm from "@/components/feature/form/dashboard/edit-form/edit
 import { useEffect, useRef } from "react";
 
 export default function ProjectsEdit() {
-  const { projects, loading, error, updateProject, deleteProject } = useProjects();
+  const { projects, loading, error, updateProject, deleteProject } =
+    useProjects();
   const isMountedRef = useRef(true);
 
   useEffect(() => {
@@ -29,8 +30,11 @@ export default function ProjectsEdit() {
   // Show simple loading text while loading
   if (loading) {
     return (
-      <div className="text-center p-8">
-        <div className="mb-4">Loading projects...</div>
+      <div className="flex justify-center items-center p-8">
+        <div className="flex items-center justify-center gap-2">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+          <div className="text-lg">Loading projects...</div>
+        </div>
       </div>
     );
   }
@@ -41,12 +45,15 @@ export default function ProjectsEdit() {
       <div className="w-full table-scroll overflow-x-auto">
         <div className="flex justify-center items-center p-8 text-red-500">
           <div className="text-center">
-            <div className="text-lg font-semibold mb-2">Error Loading Projects</div>
+            <div className="text-lg font-semibold mb-2">
+              Error Loading Projects
+            </div>
             <div className="text-sm mb-4">{error}</div>
-            {error.includes('Supabase configuration missing') && (
+            {error.includes("Supabase configuration missing") && (
               <div className="text-xs text-gray-600 max-w-md">
-                Please check your environment variables. Make sure you have created a `.env.local` file 
-                with `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+                Please check your environment variables. Make sure you have
+                created a `.env.local` file with `NEXT_PUBLIC_SUPABASE_URL` and
+                `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
                 <br />
                 <br />
                 See `ENVIRONMENT_SETUP.md` for detailed instructions.
@@ -87,9 +94,9 @@ export default function ProjectsEdit() {
               <td className="p-2 border">{project.name}</td>
               <td className="p-2 border">{project.description}</td>
               <td className="p-2 border text-center max-w-[500px]">
-                <a 
-                  href={project.link} 
-                  target="_blank" 
+                <a
+                  href={project.link}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline truncate block"
                   title={project.link}
@@ -99,7 +106,7 @@ export default function ProjectsEdit() {
               </td>
               <td className="p-2 border">
                 <div className="flex items-center justify-center gap-2">
-                  <div 
+                  <div
                     className="w-6 h-6 rounded border"
                     style={{ backgroundColor: project.color }}
                     title={project.color}
@@ -126,7 +133,7 @@ export default function ProjectsEdit() {
                       }
                     }}
                   />
-                  <DeleteButton 
+                  <DeleteButton
                     title={project.name}
                     onDelete={() => handleDelete(project.id, project.name)}
                   />

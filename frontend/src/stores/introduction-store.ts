@@ -20,11 +20,12 @@ export interface IntroductionState {
   // Realtime sync
   syncWithRealtime: (introduction: string) => void;
   resetInitialization: () => void;
+  forceReload: () => Promise<void>;
 }
 
 export const useIntroductionStore = create<IntroductionState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       // Initial state
       introduction: '',
       isLoading: false,
@@ -33,13 +34,6 @@ export const useIntroductionStore = create<IntroductionState>()(
       
       // Actions
       loadIntroduction: async () => {
-        const { isInitialized } = get();
-        
-        // Skip loading if already initialized and not in error state
-        if (isInitialized && !get().error) {
-          return;
-        }
-        
         set({ isLoading: true, error: null });
         
          try {
@@ -98,6 +92,30 @@ export const useIntroductionStore = create<IntroductionState>()(
           error: null, 
           isInitialized: true 
         });
+      },
+      
+      // Force reload with loading state
+      forceReload: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          const introductionData = await IntroductionService.get();
+          if (introductionData?.content) {
+            set({ 
+              introduction: introductionData.content, 
+              isLoading: false, 
+              isInitialized: true 
+            });
+          } else {
+            set({ isLoading: false, isInitialized: true });
+          }
+        } catch (error) {
+          console.error('Error loading introduction:', error);
+          set({ 
+            error: 'Failed to load introduction', 
+            isLoading: false,
+            isInitialized: true
+          });
+        }
       },
       
       // Reset initialization state

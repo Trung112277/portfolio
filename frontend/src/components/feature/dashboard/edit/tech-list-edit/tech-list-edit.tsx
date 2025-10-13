@@ -8,7 +8,9 @@ import SubTitle from "@/components/heading/sub-title";
 import { TechListFormInputs } from "@/types/tech-list-form";
 
 export default function TechListEdit({ category }: { category: string }) {
-  const { techStack, loading, error, updateTech, deleteTech } = useTechStack(category.toLowerCase());
+  const { techStack, loading, error, updateTech, deleteTech } = useTechStack(
+    category.toLowerCase()
+  );
 
   const handleDelete = async (id: number, name: string) => {
     try {
@@ -32,7 +34,13 @@ export default function TechListEdit({ category }: { category: string }) {
         <div className="mb-4">
           <SubTitle>{category} Tech List</SubTitle>
         </div>
-        <div className="text-center p-4">Loading {category.toLowerCase()} tech...</div>
+        <div className="flex items-center justify-center gap-2">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+          <div className="text-center p-4">
+            Loading {category.toLowerCase()}
+            tech...
+          </div>
+        </div>
       </div>
     );
   }
@@ -56,7 +64,9 @@ export default function TechListEdit({ category }: { category: string }) {
         <div className="mb-4">
           <SubTitle>{category} Tech List</SubTitle>
         </div>
-        <div className="text-center p-4 text-gray-500">No {category.toLowerCase()} tech found.</div>
+        <div className="text-center p-4 text-gray-500">
+          No {category.toLowerCase()} tech found.
+        </div>
       </div>
     );
   }
@@ -90,15 +100,15 @@ export default function TechListEdit({ category }: { category: string }) {
                 </td>
                 <td className="p-2 border">{tech.name}</td>
                 <td className="p-2 border">
-                <div className="flex items-center justify-center gap-2">
-                  <div 
-                    className="w-6 h-6 rounded border"
-                    style={{ backgroundColor: tech.color }}
-                    title={tech.color}
-                  ></div>
-                  <span className="text-xs">{tech.color}</span>
-                </div>
-              </td>
+                  <div className="flex items-center justify-center gap-2">
+                    <div
+                      className="w-6 h-6 rounded border"
+                      style={{ backgroundColor: tech.color }}
+                      title={tech.color}
+                    ></div>
+                    <span className="text-xs">{tech.color}</span>
+                  </div>
+                </td>
                 <td className="p-2 border">
                   <div className="flex justify-center items-center gap-2">
                     <EditTechListForm
@@ -123,7 +133,7 @@ export default function TechListEdit({ category }: { category: string }) {
                         }
                       }}
                     />
-                    <DeleteButton 
+                    <DeleteButton
                       title={tech.name}
                       onDelete={() => handleDelete(tech.id, tech.name)}
                     />

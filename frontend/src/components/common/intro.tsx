@@ -5,13 +5,11 @@ import { useEffect } from "react";
 import { supabase } from "@/lib/supabase-client";
 
 export default function Intro() {
-  const { introduction, loadIntroduction, isLoading, syncWithRealtime, isInitialized } = useIntroductionStore();
+  const { introduction, loadIntroduction, isLoading, syncWithRealtime } = useIntroductionStore();
 
   useEffect(() => {
-    // Only load if not already initialized
-    if (!isInitialized) {
-      loadIntroduction();
-    }
+    // Always load introduction data
+    loadIntroduction();
 
     // Set up realtime subscription
     const channel = supabase
@@ -44,13 +42,16 @@ export default function Intro() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [loadIntroduction, syncWithRealtime, isInitialized]);
+  }, [loadIntroduction, syncWithRealtime]);
 
   // Show loading state while data is being fetched
   if (isLoading) {
     return (
       <div className="text-center text-xl py-5 md:py-10 px-5 md:px-15 bg-primary/10 rounded-lg flex flex-col gap-3">
-        <div className="text-muted-foreground">Loading introduction...</div>
+        <div className="flex items-center justify-center gap-2">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+          <div className="text-muted-foreground">Loading introduction...</div>
+        </div>
       </div>
     );
   }

@@ -9,7 +9,7 @@ import React, { useEffect, useRef } from "react";
 
 export default function EditAuthorForm() {
   const { authorName, loading, updateAuthorName } = useAuthorName();
-  const formRef = useRef<UseFormHandlerReturn['form'] | null>(null);
+  const formRef = useRef<UseFormHandlerReturn["form"] | null>(null);
 
   // Reset form when data is loaded
   useEffect(() => {
@@ -37,7 +37,8 @@ export default function EditAuthorForm() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-[300px]">
+      <div className="flex items-center justify-center h-[300px] gap-4">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
         <div className="text-muted-foreground">Loading author name...</div>
       </div>
     );
@@ -56,7 +57,9 @@ export default function EditAuthorForm() {
               {...form.register("name", validationRules.authorName)}
               placeholder={loading ? "Loading..." : "Enter author name"}
               autoComplete="off"
-              className={`w-full ${form.formState.errors.name ? "border-red-500" : ""}`}
+              className={`w-full ${
+                form.formState.errors.name ? "border-red-500" : ""
+              }`}
               name="name"
               type="text"
               disabled={isSubmitting || loading}

@@ -41,7 +41,8 @@ export default function EditIntroductionForm() {
   // Show loading state while data is being fetched
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-[300px]">
+      <div className="flex items-center justify-center h-[300px] gap-4">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
         <div className="text-muted-foreground">Loading introduction...</div>
       </div>
     );

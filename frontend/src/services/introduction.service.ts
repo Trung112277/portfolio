@@ -8,6 +8,9 @@ type IntroductionUpdate = Database['public']['Tables']['introduction']['Update']
 
 export class IntroductionService {
   static async get(): Promise<Introduction | null> {
+    // Add artificial delay to test loading state
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    
     const { data, error } = await supabase
       .from('introduction')
       .select('*')

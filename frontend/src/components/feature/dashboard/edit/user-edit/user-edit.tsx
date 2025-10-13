@@ -123,7 +123,10 @@ export default function UserEdit() {
   if (loading) {
     return (
       <div className="flex justify-center items-center p-8">
-        <div className="text-lg">Loading users...</div>
+        <div className="flex items-center justify-center gap-2">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+          <div className="text-lg">Loading users...</div>
+        </div>
       </div>
     );
   }
