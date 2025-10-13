@@ -1,9 +1,29 @@
 import { NextResponse } from 'next/server'
-import { IntroductionService } from '@/services/introduction.service'
+import { createClient } from '@supabase/supabase-js'
+
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+if (!url || !anonKey) {
+  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY')
+}
+
+const supabase = createClient(url, anonKey)
 
 export async function GET() {
   try {
-    const introduction = await IntroductionService.get()
+    const { data: introduction, error } = await supabase
+      .from('introduction')
+      .select('*')
+      .single()
+    
+    if (error) {
+      console.error('Supabase error:', error)
+      return NextResponse.json(
+        { error: 'Database error: ' + error.message },
+        { status: 500 }
+      )
+    }
     
     return NextResponse.json({ introduction })
   } catch (error) {
@@ -19,13 +39,25 @@ export async function POST(request: Request) {
   try {
     const introductionData = await request.json()
     
-    const introduction = await IntroductionService.create(introductionData)
+    const { data: introduction, error } = await supabase
+      .from('introduction')
+      .insert(introductionData)
+      .select()
+      .single()
+    
+    if (error) {
+      console.error('Supabase error:', error)
+      return NextResponse.json(
+        { error: 'Database error: ' + error.message },
+        { status: 500 }
+      )
+    }
     
     return NextResponse.json({ introduction })
   } catch (error) {
-    console.error('Error creating/updating introduction:', error)
+    console.error('Error creating introduction:', error)
     return NextResponse.json(
-      { error: 'Failed to create/update introduction' },
+      { error: 'Failed to create introduction' },
       { status: 500 }
     )
   }
@@ -35,7 +67,19 @@ export async function PUT(request: Request) {
   try {
     const introductionData = await request.json()
     
-    const introduction = await IntroductionService.update(introductionData)
+    const { data: introduction, error } = await supabase
+      .from('introduction')
+      .upsert({ ...introductionData, updated_at: new Date().toISOString() })
+      .select()
+      .single()
+    
+    if (error) {
+      console.error('Supabase error:', error)
+      return NextResponse.json(
+        { error: 'Database error: ' + error.message },
+        { status: 500 }
+      )
+    }
     
     return NextResponse.json({ introduction })
   } catch (error) {

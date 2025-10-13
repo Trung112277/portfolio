@@ -5,26 +5,40 @@ import BaseEditForm from "@/components/feature/form/dashboard/edit-form/base-edi
 import { validationRules } from "@/lib/form-validation";
 import { FormConfig } from "@/hooks/useFormHandler";
 import { useIntroductionStore } from "@/stores/introduction-store";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 export default function EditIntroductionForm() {
-  const { introduction, loadIntroduction, updateIntroduction, isLoading } =
+  const { introduction, loadIntroduction, updateIntroduction, isLoading, isInitialized, isCurrentlyLoading } =
     useIntroductionStore();
   const formRef = useRef<UseFormReturn<Record<string, unknown>> | null>(null);
+  const [isComponentLoading, setIsComponentLoading] = useState(true);
 
-  useEffect(() => {
+  // Memoize loadIntroduction to prevent unnecessary re-renders
+  const loadIntroductionMemo = useCallback(() => {
     loadIntroduction();
   }, [loadIntroduction]);
 
-  // Reset form when introduction data changes
   useEffect(() => {
-    if (formRef.current && introduction) {
+    // Only load introduction data on component mount
+    loadIntroductionMemo();
+    
+    // Set component loading to false after a brief delay to show loading state
+    const timer = setTimeout(() => {
+      setIsComponentLoading(false);
+    }, 1000); // Show loading for 1 second minimum
+    
+    return () => clearTimeout(timer);
+  }, [loadIntroductionMemo]); // Only depend on memoized function
+
+  // Reset form only when introduction data is first loaded (not on every change)
+  useEffect(() => {
+    if (formRef.current && introduction && !isComponentLoading) {
       formRef.current.reset({
         introduction: introduction,
       });
     }
-  }, [introduction]);
+  }, [introduction, isComponentLoading]);
 
   const config: FormConfig = {
     defaultValues: {},
@@ -40,7 +54,7 @@ export default function EditIntroductionForm() {
   };
 
   // Show loading state while data is being fetched
-  if (isLoading) {
+  if (isComponentLoading || isLoading || isCurrentlyLoading || (!isInitialized && !introduction)) {
     return (
       <div className="flex justify-center items-center p-8">
         <div className="flex items-center justify-center gap-2">

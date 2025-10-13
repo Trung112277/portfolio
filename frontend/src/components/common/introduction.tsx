@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { supabase } from "@/lib/supabase-client";
 
 export default function Introduction() {
-  const { introduction, loadIntroduction, isLoading, syncWithRealtime } =
+  const { introduction, loadIntroduction, isLoading, syncWithRealtime, isInitialized } =
     useIntroductionStore();
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function Introduction() {
   }, [loadIntroduction, syncWithRealtime]);
 
   // Show loading state while data is being fetched
-  if (isLoading) {
+  if (isLoading || (!isInitialized && !introduction)) {
     return (
       <div className="text-center text-xl py-5 md:py-10 px-5 md:px-15 bg-primary/10 rounded-lg flex flex-col gap-3">
         <div className="flex items-center justify-center gap-2">
@@ -58,6 +58,15 @@ export default function Introduction() {
             <div className="text-lg">Loading introduction...</div>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  // Show empty state if no introduction data
+  if (!introduction || introduction.trim() === "") {
+    return (
+      <div className="text-center text-xl py-5 md:py-10 px-5 md:px-15 bg-primary/10 rounded-lg flex flex-col gap-3">
+        <p className="text-gray-500">No introduction available</p>
       </div>
     );
   }

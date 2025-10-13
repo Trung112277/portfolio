@@ -95,7 +95,7 @@ export default function TechListEdit({ category }: { category: string }) {
                     alt={tech.name}
                     width={50}
                     height={50}
-                    className="h-[50px] w-[50px] object-cover"
+                    className="h-[50px] w-[50px] object-contain rounded-md"
                   />
                 </td>
                 <td className="p-2 border">{tech.name}</td>

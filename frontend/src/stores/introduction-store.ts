@@ -10,6 +10,7 @@ export interface IntroductionState {
   isLoading: boolean;
   error: string | null;
   isInitialized: boolean; // Track if data has been loaded at least once
+  isCurrentlyLoading: boolean; // Track if currently loading to prevent duplicate calls
   
   // Actions
   loadIntroduction: () => Promise<void>;
@@ -21,6 +22,7 @@ export interface IntroductionState {
   syncWithRealtime: (introduction: string) => void;
   resetInitialization: () => void;
   forceReload: () => Promise<void>;
+  forceLoadIntroduction: () => Promise<void>;
 }
 
 export const useIntroductionStore = create<IntroductionState>()(
@@ -31,28 +33,44 @@ export const useIntroductionStore = create<IntroductionState>()(
       isLoading: false,
       error: null,
       isInitialized: false,
+      isCurrentlyLoading: false,
       
       // Actions
       loadIntroduction: async () => {
-        set({ isLoading: true, error: null });
+        // Prevent duplicate calls only if currently loading
+        const state = useIntroductionStore.getState();
+        
+        if (state.isCurrentlyLoading) {
+          return;
+        }
+
+        // If already initialized and has data, don't reload unless forced
+        if (state.isInitialized && state.introduction && state.introduction.trim() !== '') {
+          return;
+        }
+
+        set({ isLoading: true, error: null, isCurrentlyLoading: true });
         
          try {
            const introductionData = await IntroductionService.get();
+           
            if (introductionData?.content) {
              set({ 
                introduction: introductionData.content, 
                isLoading: false, 
-               isInitialized: true 
+               isInitialized: true,
+               isCurrentlyLoading: false
              });
            } else {
-             set({ isLoading: false, isInitialized: true });
+             set({ isLoading: false, isInitialized: true, isCurrentlyLoading: false });
            }
          } catch (error) {
            console.error('Error loading introduction:', error);
            set({ 
              error: 'Failed to load introduction', 
              isLoading: false,
-             isInitialized: true
+             isInitialized: true,
+             isCurrentlyLoading: false
            });
          }
       },
@@ -96,31 +114,60 @@ export const useIntroductionStore = create<IntroductionState>()(
       
       // Force reload with loading state
       forceReload: async () => {
-        set({ isLoading: true, error: null });
+        set({ isLoading: true, error: null, isCurrentlyLoading: true });
         try {
           const introductionData = await IntroductionService.get();
           if (introductionData?.content) {
             set({ 
               introduction: introductionData.content, 
               isLoading: false, 
-              isInitialized: true 
+              isInitialized: true,
+              isCurrentlyLoading: false
             });
           } else {
-            set({ isLoading: false, isInitialized: true });
+            set({ isLoading: false, isInitialized: true, isCurrentlyLoading: false });
           }
         } catch (error) {
           console.error('Error loading introduction:', error);
           set({ 
             error: 'Failed to load introduction', 
             isLoading: false,
-            isInitialized: true
+            isInitialized: true,
+            isCurrentlyLoading: false
           });
         }
       },
       
       // Reset initialization state
       resetInitialization: () => {
-        set({ isInitialized: false });
+        set({ isInitialized: false, isCurrentlyLoading: false });
+      },
+
+      // Force load introduction (bypass cache)
+      forceLoadIntroduction: async () => {
+        set({ isLoading: true, error: null, isCurrentlyLoading: true });
+        
+        try {
+          const introductionData = await IntroductionService.get();
+          if (introductionData?.content) {
+            set({ 
+              introduction: introductionData.content, 
+              isLoading: false, 
+              isInitialized: true,
+              isCurrentlyLoading: false
+            });
+          } else {
+            set({ isLoading: false, isInitialized: true, isCurrentlyLoading: false });
+          }
+        } catch (error) {
+          console.error('Error loading introduction:', error);
+          set({ 
+            error: 'Failed to load introduction', 
+            isLoading: false,
+            isInitialized: true,
+            isCurrentlyLoading: false
+          });
+        }
       },
     }),
     {

@@ -1,5 +1,4 @@
 // frontend/src/services/introduction.service.ts
-import { supabase } from '@/lib/supabase-client'
 import { Database } from '@/types/database'
 
 type Introduction = Database['public']['Tables']['introduction']['Row']
@@ -8,37 +7,67 @@ type IntroductionUpdate = Database['public']['Tables']['introduction']['Update']
 
 export class IntroductionService {
   static async get(): Promise<Introduction | null> {
-    // Add artificial delay to test loading state
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    const { data, error } = await supabase
-      .from('introduction')
-      .select('*')
-      .single()
-    
-    if (error) throw error
-    return data
+    try {
+      const response = await fetch('/api/introduction', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+      return result.introduction
+    } catch (error) {
+      console.error('Error fetching introduction:', error)
+      throw error
+    }
   }
 
   static async create(intro: IntroductionInsert): Promise<Introduction> {
-    const { data, error } = await supabase
-      .from('introduction')
-      .insert(intro)
-      .select()
-      .single()
-    
-    if (error) throw error
-    return data
+    try {
+      const response = await fetch('/api/introduction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(intro),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+      return result.introduction
+    } catch (error) {
+      console.error('Error creating introduction:', error)
+      throw error
+    }
   }
 
   static async update(updates: IntroductionUpdate): Promise<Introduction> {
-    const { data, error } = await supabase
-      .from('introduction')
-      .upsert({ ...updates, updated_at: new Date().toISOString() })
-      .select()
-      .single()
-    
-    if (error) throw error
-    return data
+    try {
+      const response = await fetch('/api/introduction', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+      return result.introduction
+    } catch (error) {
+      console.error('Error updating introduction:', error)
+      throw error
+    }
   }
 }
