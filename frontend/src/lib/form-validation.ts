@@ -202,6 +202,16 @@ export const validationRules = {
     pattern: validationPatterns.year,
   },
 
+  startYear: {
+    required: "Start year is required",
+    pattern: validationPatterns.year,
+  },
+
+  endYear: {
+    required: "End year is required",
+    pattern: validationPatterns.year,
+  },
+
   workArrangement: {
     required: "Work arrangement is required",
     pattern: validationPatterns.workArrangement,

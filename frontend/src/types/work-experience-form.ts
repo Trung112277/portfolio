@@ -1,7 +1,8 @@
 export interface WorkExperienceFormInputs {
     position: string;
     companyName: string;
-    year: string;
+    startYear: string;
+    endYear: string;
     workArrangement: string;
     techStack: string;
     description: string;

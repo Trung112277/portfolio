@@ -28,7 +28,7 @@ export class WorkExperienceService {
     return data
   }
 
-  static async update(id: number, updates: WorkExperienceUpdate): Promise<WorkExperience> {
+  static async update(id: string, updates: WorkExperienceUpdate): Promise<WorkExperience> {
     const { data, error } = await supabase
       .from('work_experience')
       .update({ ...updates, updated_at: new Date().toISOString() })
@@ -40,7 +40,7 @@ export class WorkExperienceService {
     return data
   }
 
-  static async delete(id: number): Promise<void> {
+  static async delete(id: string): Promise<void> {
     const { error } = await supabase
       .from('work_experience')
       .delete()

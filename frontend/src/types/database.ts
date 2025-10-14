@@ -145,34 +145,37 @@ export interface Database {
       };
       work_experience: {
         Row: {
-          id: number;
+          id: string; // UUID
           position: string;
           company_name: string;
-          year: string;
+          start_year: number; // int4
+          end_year: number; // int4
           work_arrangement: string;
-          tech_stack: string;
+          tech_stack: string[]; // text[]
           description: string;
           created_at: string;
           updated_at: string;
         };
         Insert: {
-          id?: number;
+          id?: string; // UUID
           position: string;
           company_name: string;
-          year: string;
+          start_year: number; // int4
+          end_year: number; // int4
           work_arrangement: string;
-          tech_stack: string;
+          tech_stack: string[]; // text[]
           description: string;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
-          id?: number;
+          id?: string; // UUID
           position?: string;
           company_name?: string;
-          year?: string;
+          start_year?: number; // int4
+          end_year?: number; // int4
           work_arrangement?: string;
-          tech_stack?: string;
+          tech_stack?: string[]; // text[]
           description?: string;
           updated_at?: string;
         };

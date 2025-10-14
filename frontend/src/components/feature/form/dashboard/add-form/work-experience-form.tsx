@@ -19,9 +19,11 @@ import { SelectField } from "@/components/feature/form/field-form/select-field";
 import YearField from "@/components/feature/form/field-form/year-field";
 import { WORK_ARRANGEMENT_OPTIONS } from "@/constant/work-arrangement-options";
 import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
+import { useWorkExperience } from "@/hooks/useWorkExperience";
 
 export default function WorkExperienceAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
+  const { createWorkExperience } = useWorkExperience();
   
   const {
     register,
@@ -37,10 +39,27 @@ export default function WorkExperienceAddForm() {
     console.log("Adding work experience, data:", data);
 
     try {
-      // TODO: Replace with actual API call
-      // Simulate API call delay to show submitting effect
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    
+      // Validate that start year is not after end year (allows equal years)
+      if (parseInt(data.startYear) > parseInt(data.endYear)) {
+        toast.error("Start year cannot be after end year");
+        return;
+      }
+
+      // Transform form data to match API schema
+      const apiData = {
+        position: data.position.trim(),
+        company_name: data.companyName.trim(),
+        start_year: parseInt(data.startYear), // Convert to number
+        end_year: parseInt(data.endYear),     // Convert to number
+        work_arrangement: data.workArrangement,
+        tech_stack: data.techStack.trim().split(',').map(tech => tech.trim()).filter(tech => tech.length > 0), // Convert to array
+        description: data.description.trim(),
+      };
+
+      console.log("API data being sent:", apiData);
+
+      await createWorkExperience(apiData);
+      
       console.log("Work experience added successfully");
 
       // Reset form
@@ -104,16 +123,19 @@ export default function WorkExperienceAddForm() {
             isSubmitting={isSubmitting}
           />
 
-          <YearField
-            label="Year"
-            register={register}
-            name="year"
-            errors={errors}
-            placeholder="Start Year"
-            secondaryPlaceholder="End Year"
-            validation={getFieldValidation("year")}
-            isSubmitting={isSubmitting}
-          />
+            <YearField
+              label="Year Range"
+              register={register}
+              startYearName="startYear"
+              endYearName="endYear"
+              errors={errors}
+              placeholder="Start Year (e.g., 2022)"
+              secondaryPlaceholder="End Year (e.g., 2023)"
+              startYearValidation={getFieldValidation("startYear")}
+              endYearValidation={getFieldValidation("endYear")}
+              isSubmitting={isSubmitting}
+              type="text"
+            />
 
           <SelectField
             label="Work Arrangement"
@@ -131,7 +153,7 @@ export default function WorkExperienceAddForm() {
             register={register}
             name="techStack"
             errors={errors}
-            placeholder="Enter Tech Stack"
+            placeholder="Enter Tech Stack (comma-separated, e.g., React, TypeScript, Node.js)"
             validation={getFieldValidation("techStack")}
             isSubmitting={isSubmitting}
           />
