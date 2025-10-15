@@ -3,6 +3,7 @@
 import DeleteButton from "@/components/button/delete-button";
 import EditWorkExperienceForm from "@/components/feature/form/dashboard/edit-form/edit-work-experience-form";
 import { useWorkExperience } from "@/hooks/useWorkExperience";
+import { toast } from "sonner";
 
 export function WorkExperienceEdit() {
   const { 
@@ -17,8 +18,13 @@ export function WorkExperienceEdit() {
   const handleDelete = async (id: string) => {
     try {
       await deleteWorkExperience(id);
-    } catch (err) {
-      console.error("Failed to delete work experience:", err);
+      toast.success("Work experience deleted successfully");
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`Error: ${error.message}`);
+      } else {
+        toast.error("Failed to delete work experience");
+      }
     }
   };
 
@@ -113,12 +119,21 @@ export function WorkExperienceEdit() {
                 Tech List
               </h4>
             </div>
-            <div className=" w-full min-w-[calc(100%-200px)] min-h-[50px] items-center flex px-2 ">
-              <span className="truncate">
-                {Array.isArray(experience.tech_stack) 
-                  ? experience.tech_stack.join(', ') 
-                  : experience.tech_stack}
-              </span>
+            <div className=" w-full min-w-[calc(100%-200px)] min-h-[50px] items-center flex px-2 table-scroll overflow-x-auto gap-1">
+              {(() => {
+                const techStack = Array.isArray(experience.tech_stack) 
+                  ? experience.tech_stack 
+                  : (experience.tech_stack as string).split(' ').map((s: string) => s.trim()).filter(s => s.length > 0);
+                
+                return techStack.map((tech, index) => (
+                  <span
+                    key={`${tech}-${index}`}
+                    className="px-2 py-1 text-xs bg-primary/10 text-primary rounded-md border border-primary/20"
+                  >
+                    {tech}
+                  </span>
+                ));
+              })()}
             </div>
           </div>
           <div className="flex px-2 flex-col w-full border-t h-full">
@@ -149,7 +164,7 @@ export function WorkExperienceEdit() {
                 endYear: experience.end_year.toString(),
                 workArrangement: experience.work_arrangement,
                 techStack: Array.isArray(experience.tech_stack) 
-                  ? experience.tech_stack.join(', ') 
+                  ? experience.tech_stack.join(' ') 
                   : experience.tech_stack,
                 description: experience.description,
               }}

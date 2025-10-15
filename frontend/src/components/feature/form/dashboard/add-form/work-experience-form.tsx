@@ -52,7 +52,7 @@ export default function WorkExperienceAddForm() {
         start_year: parseInt(data.startYear), // Convert to number
         end_year: parseInt(data.endYear),     // Convert to number
         work_arrangement: data.workArrangement,
-        tech_stack: data.techStack.trim().split(',').map(tech => tech.trim()).filter(tech => tech.length > 0), // Convert to array
+        tech_stack: data.techStack.trim().split(' ').map(tech => tech.trim()).filter(tech => tech.length > 0), // Convert to array
         description: data.description.trim(),
       };
 
@@ -65,7 +65,11 @@ export default function WorkExperienceAddForm() {
       // Reset form
       reset();
       setIsOpen(false);
-      toast.success("Work experience added successfully");
+      
+      // Small delay to ensure dialog is closed before showing toast
+      setTimeout(() => {
+        toast.success("Work experience added successfully");
+      }, 100);
     } catch (error) {
       console.error("Error adding work experience:", error);
       if (error instanceof Error) {
@@ -153,7 +157,7 @@ export default function WorkExperienceAddForm() {
             register={register}
             name="techStack"
             errors={errors}
-            placeholder="Enter Tech Stack (comma-separated, e.g., React, TypeScript, Node.js)"
+            placeholder="Enter Tech Stack (space-separated, e.g., React TypeScript Node.js)"
             validation={getFieldValidation("techStack")}
             isSubmitting={isSubmitting}
           />

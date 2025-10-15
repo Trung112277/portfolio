@@ -10,15 +10,17 @@ const TimelineList = () => {
 
   // Transform work experience data to timeline format
   const currentYear = new Date().getFullYear();
-  const timelineItems: TimelineItemType[] = workExperiences.map((work) => ({
-    id: work.id,
-    title: work.position,
-    company: work.company_name,
-    period: work.end_year === currentYear ? `${work.start_year} - Present` : `${work.start_year} - ${work.end_year}`,
-    location: work.work_arrangement,
-    skills: work.tech_stack,
-    responsibilities: work.description.split('\n').filter(line => line.trim() !== ''),
-  }));
+  const timelineItems: TimelineItemType[] = workExperiences
+    .sort((a, b) => b.start_year - a.start_year) // Sort by start year descending (newest first)
+    .map((work) => ({
+      id: work.id,
+      title: work.position,
+      company: work.company_name,
+      period: work.end_year === currentYear ? `${work.start_year} - Present` : `${work.start_year} - ${work.end_year}`,
+      location: work.work_arrangement,
+      skills: Array.isArray(work.tech_stack) ? work.tech_stack : (work.tech_stack as string).split(' ').map((s: string) => s.trim()).filter(s => s.length > 0),
+      responsibilities: work.description.split('\n').filter(line => line.trim() !== ''),
+    }));
 
   if (loading) {
     return (
@@ -50,7 +52,7 @@ const TimelineList = () => {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-8">
-        {timelineItems.map((item) => (
+        {timelineItems.map((item, index) => (
           <TimelineItem key={item.id} item={item} />
         ))}
       </div>

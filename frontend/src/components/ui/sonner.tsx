@@ -11,12 +11,15 @@ const Toaster = ({ ...props }: ToasterProps) => {
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
       position="top-center"
+      richColors
+      closeButton
+      duration={4000}
       style={
         {
           "--normal-bg": "var(--background)",
           "--normal-text": "var(--foreground)",
           "--normal-border": "var(--border)",
-          zIndex: 50,
+          zIndex: 9999,
         } as React.CSSProperties
       }
       {...props}

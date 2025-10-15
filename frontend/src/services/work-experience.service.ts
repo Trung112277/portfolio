@@ -1,5 +1,3 @@
-// frontend/src/services/work-experience.service.ts
-import { supabase } from '@/lib/supabase-client'
 import { Database } from '@/types/database'
 
 type WorkExperience = Database['public']['Tables']['work_experience']['Row']
@@ -8,44 +6,57 @@ type WorkExperienceUpdate = Database['public']['Tables']['work_experience']['Upd
 
 export class WorkExperienceService {
   static async getAll(): Promise<WorkExperience[]> {
-    const { data, error } = await supabase
-      .from('work_experience')
-      .select('*')
-      .order('created_at', { ascending: false })
+    const response = await fetch('/api/work-experience')
     
-    if (error) throw error
-    return data
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    
+    return response.json()
   }
 
-  static async create(work: WorkExperienceInsert): Promise<WorkExperience> {
-    const { data, error } = await supabase
-      .from('work_experience')
-      .insert(work)
-      .select()
-      .single()
-    
-    if (error) throw error
-    return data
+  static async create(input: WorkExperienceInsert): Promise<WorkExperience> {
+    const response = await fetch('/api/work-experience', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(input),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Failed to create work experience')
+    }
+
+    return response.json()
   }
 
   static async update(id: string, updates: WorkExperienceUpdate): Promise<WorkExperience> {
-    const { data, error } = await supabase
-      .from('work_experience')
-      .update({ ...updates, updated_at: new Date().toISOString() })
-      .eq('id', id)
-      .select()
-      .single()
-    
-    if (error) throw error
-    return data
+    const response = await fetch(`/api/work-experience/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updates),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Failed to update work experience')
+    }
+
+    return response.json()
   }
 
   static async delete(id: string): Promise<void> {
-    const { error } = await supabase
-      .from('work_experience')
-      .delete()
-      .eq('id', id)
-    
-    if (error) throw error
+    const response = await fetch(`/api/work-experience/${id}`, {
+      method: 'DELETE',
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Failed to delete work experience')
+    }
   }
 }
