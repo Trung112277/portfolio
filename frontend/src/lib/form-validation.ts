@@ -64,20 +64,20 @@ export const validationPatterns = {
     message: "Please enter a valid hex color code (e.g., #FF0000)",
   },
 
-  // Pattern cho description
+  // Pattern cho description - cho phép hầu hết ký tự
   description: {
-    value: /^[\p{Emoji}0-9a-zA-Z\s,.=\-+!?'"()\[\]{}:;]+$/u,
+    value: /^[\s\S]*$/,
     message: "Description contains invalid characters",
   },
 
   companyName: {
-    value: /^[a-zA-Z0-9\s&.,'-]+$/,
+    value: /^[\s\S]*$/,
     message: "Company name contains invalid characters",
   },
 
-  // Pattern cho position
+  // Pattern cho position - cho phép hầu hết ký tự
   position: {
-    value: /^[a-zA-Z0-9\s&.,'-]+$/,
+    value: /^[\s\S]*$/,
     message: "Position contains invalid characters",
   },
 
@@ -97,9 +97,9 @@ export const validationPatterns = {
     message: "Please select a valid category",
   },
 
-  // Pattern cho tech stack
+  // Pattern cho tech stack - cho phép hầu hết ký tự
   techStack: {
-    value: /^[a-zA-Z0-9\s,]+$/,
+    value: /^[\s\S]*$/,
     message: "Tech stack contains invalid characters",
   },
 } as const;
@@ -151,7 +151,7 @@ export const validationRules = {
       message: "Description must be at least 5 characters",
     },
     maxLength: {
-      value: 200,
+      value: 1000,
       message: "Description must be less than 200 characters",
     },
   },

@@ -13,6 +13,7 @@ export function WorkExperienceEdit() {
   } = useWorkExperience();
 
 
+
   const handleDelete = async (id: string) => {
     try {
       await deleteWorkExperience(id);
@@ -120,13 +121,13 @@ export function WorkExperienceEdit() {
               </span>
             </div>
           </div>
-          <div className="flex px-2 flex-col w-full border-t">
-            <div className=" min-h-[50px] items-center flex">
+          <div className="flex px-2 flex-col w-full border-t h-full">
+            <div className=" min-h-[50px] items-center flex"> 
               <h4 className="font-bold text-primary text-lg text-center">
                 Description:
               </h4>
             </div>
-            <div className="border rounded-lg p-2 bg-background">
+            <div className="border rounded-lg p-2 bg-background h-full">
               <ul className="list-disc list-inside">
                 {formatDescription(experience.description).map(
                   (line, index) => (
@@ -141,7 +142,17 @@ export function WorkExperienceEdit() {
           <div className="flex justify-center items-center gap-2 w-full py-4">
             <EditWorkExperienceForm
               workExperienceId={experience.id.toString()}
-              initialData={experience}
+              initialData={{
+                position: experience.position,
+                companyName: experience.company_name,
+                startYear: experience.start_year.toString(),
+                endYear: experience.end_year.toString(),
+                workArrangement: experience.work_arrangement,
+                techStack: Array.isArray(experience.tech_stack) 
+                  ? experience.tech_stack.join(', ') 
+                  : experience.tech_stack,
+                description: experience.description,
+              }}
             />
             <DeleteButton
               title="Work Experience"

@@ -20,7 +20,7 @@ import { SelectField } from "@/components/feature/form/field-form/select-field";
 import YearField from "@/components/feature/form/field-form/year-field";
 import { WORK_ARRANGEMENT_OPTIONS } from "@/constant/work-arrangement-options";
 import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
-import { useWorkExperience } from "@/hooks/useWorkExperience";
+import { useWorkExperienceStore } from "@/stores/work-experience-store";
 
 
 
@@ -34,7 +34,7 @@ export default function WorkExperienceEditForm({
   initialData,
 }: WorkExperienceEditFormProps) {
   const { isOpen, setIsOpen } = useDialogState();
-  const { updateWorkExperience } = useWorkExperience();
+  const { updateWorkExperienceById } = useWorkExperienceStore();
   const {
     register,
     handleSubmit,
@@ -60,8 +60,6 @@ export default function WorkExperienceEditForm({
   }, [initialData, reset]);
 
   const handleFormSubmit: SubmitHandler<WorkExperienceFormInputs> = async (data) => {
-    console.log("Updating work experience:", workExperienceId, data);
-
     try {
       // Validate that start year is not after end year (allows equal years)
       if (parseInt(data.startYear) > parseInt(data.endYear)) {
@@ -80,17 +78,12 @@ export default function WorkExperienceEditForm({
         description: data.description.trim(),
       };
 
-      console.log("API data being sent:", apiData);
-
-      await updateWorkExperience(workExperienceId, apiData);
-     
-      console.log("Work experience updated successfully");
+      await updateWorkExperienceById(workExperienceId, apiData);
 
       setIsOpen(false);
 
       toast.success("Work experience updated successfully");
     } catch (error) {
-      console.error("Error updating work experience:", error);
       if (error instanceof Error) {
         toast.error(`Error: ${error.message}`);
       } else {
