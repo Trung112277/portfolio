@@ -11,7 +11,7 @@ export function DashboardAboutMe() {
     <div className="space-y-6">
       <DashboardTitle
         title="About Me Management"
-        description="Update personal information, author, introduction, and social media links."
+        description="Update personal author, introduction, social media links and work experience."
       />
 
       <PersonalInformationPanel />
