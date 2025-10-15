@@ -12,5 +12,6 @@ export default function DashboardClient() {
     }
     checkUser()
   }, [])
+  
   return <DashboardContent />;
 }

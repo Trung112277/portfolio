@@ -11,9 +11,10 @@ import Projects3DWrapper from "@/components/feature/threed-section/projects-3d-w
 import { SocialsGlowBoxList } from "@/components/feature/glow-bow/socials-glow-box-list";
 import { getAuthorNameServerSide } from "@/lib/author-name-server";
 import { generateBaseSEO } from "@/lib/seo";
+import { DynamicTitle } from "@/components/common/dynamic-title";
 
-// Force dynamic rendering to ensure fresh data on every request
-export const dynamic = 'force-dynamic';
+// Use SSR for better performance and SEO
+// export const dynamic = 'force-static'; // Comment out to use default SSR
 
 // Generate metadata for home page
 export async function generateMetadata(): Promise<Metadata> {
@@ -26,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: seoConfig.description,
       keywords: seoConfig.keywords,
       openGraph: {
-        title: `${authorName} | Portfolio`,
+        title: authorName,
         description: seoConfig.description,
         url: seoConfig.url,
         type: seoConfig.type,
@@ -43,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
       },
       twitter: {
         card: "summary_large_image",
-        title: `${authorName} | Portfolio`,
+        title: authorName,
         description: seoConfig.description,
         images: [`${seoConfig.url}${seoConfig.image}`],
         creator: seoConfig.twitterHandle,
@@ -59,9 +60,19 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function Home() {
+export default async function Home() {
+  // Get author name for dynamic title
+  let authorName = "Developer";
+  try {
+    authorName = await getAuthorNameServerSide();
+  } catch (error) {
+    console.error("Error fetching author name:", error);
+  }
+
   return (
-    <main>
+    <>
+      <DynamicTitle title={`${authorName} | Portfolio`} />
+      <main>
       <section className="container mx-auto px-4 mb-10 md:mb-20 flex flex-col justify-between items-center h-screen min-h-[700px] relative">
         <div className="flex-1" />
         <div className="flex-1 flex items-center justify-center z-10">
@@ -133,5 +144,6 @@ export default function Home() {
         </div>
       </section>
     </main>
+    </>
   );
 }

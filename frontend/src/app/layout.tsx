@@ -24,8 +24,8 @@ const openSans = Open_Sans({
   display: "swap",
 });
 
-// Force dynamic rendering to ensure fresh data on every request
-export const dynamic = 'force-dynamic';
+// Use SSR for better performance and SEO
+// export const dynamic = 'force-static'; // Comment out to use default SSR
 
 /**
  * Generate metadata for the root layout
@@ -47,8 +47,6 @@ export async function generateMetadata(): Promise<Metadata> {
   
   return {
     metadataBase: new URL(seoConfig.url),
-    // Always set title immediately to prevent flash
-    title: `${authorName} | Portfolio`,
     description: seoConfig.description,
     keywords: seoConfig.keywords,
     authors: [{ name: seoConfig.author }],
@@ -74,7 +72,7 @@ export async function generateMetadata(): Promise<Metadata> {
       type: seoConfig.type,
       locale: seoConfig.locale,
       url: seoConfig.url,
-      title: `${authorName} | Portfolio`,
+      // Don't set title here to avoid flash - let each page handle its own title
       description: seoConfig.description,
       siteName: seoConfig.siteName,
       images: [
@@ -88,7 +86,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${authorName} | Portfolio`,
+      // Don't set title here to avoid flash - let each page handle its own title
       description: seoConfig.description,
       images: [`${seoConfig.url}${seoConfig.image}`],
       creator: seoConfig.twitterHandle,
@@ -158,6 +156,7 @@ export default async function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
+        {/* Set static title immediately to prevent flash */}
         
         {/* Google Analytics */}
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (

@@ -4,6 +4,7 @@ import AuthGuard from "@/components/feature/auth/auth-guard";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { getAuthorNameServerSide } from "@/lib/author-name-server";
+import { DynamicTitle } from "@/components/common/dynamic-title";
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -30,11 +31,21 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function Login() {
+export default async function Login() {
   const Image = dynamic(() => import("next/image"));
   
+  // Get author name for dynamic title
+  let authorName = "Developer";
+  try {
+    authorName = await getAuthorNameServerSide();
+  } catch (error) {
+    console.error("Error fetching author name:", error);
+  }
+  
   return (
-    <AuthGuard requireAuth={false} redirectTo="/dashboard">
+    <>
+      <DynamicTitle title={`Login | ${authorName} Portfolio`} />
+      <AuthGuard requireAuth={false} redirectTo="/dashboard">
       <div className="relative">
         <div className="absolute top-0 left-0 w-full h-full">
           <Image
@@ -57,5 +68,6 @@ export default function Login() {
         </div>
       </div>
     </AuthGuard>
+    </>
   );
 }

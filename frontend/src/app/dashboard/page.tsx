@@ -1,9 +1,10 @@
 import { Metadata } from "next";
-import DashboardClient from "@/components/pages/dashboard-client";
 import { getAuthorNameServerSide } from "@/lib/author-name-server";
+import { DashboardContent } from "@/components/feature/dashboard/dashboard-content";
+import { DynamicTitle } from "@/components/common/dynamic-title";
 
-// Force dynamic rendering to ensure fresh data on every request
-export const dynamic = 'force-dynamic';
+// Use SSR for better performance and SEO
+// export const dynamic = 'force-static'; // Comment out to use default SSR
 
 // Generate metadata for dashboard page
 export async function generateMetadata(): Promise<Metadata> {
@@ -32,6 +33,19 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // Server component that renders client component
-export default function Dashboard() {
-  return <DashboardClient />;
+export default async function Dashboard() {
+  // Get author name for dynamic title
+  let authorName = "Developer";
+  try {
+    authorName = await getAuthorNameServerSide();
+  } catch (error) {
+    console.error("Error fetching author name:", error);
+  }
+
+  return (
+    <>
+      <DynamicTitle title={`Dashboard | ${authorName} Portfolio`} />
+      <DashboardContent />
+    </>
+  );
 }
