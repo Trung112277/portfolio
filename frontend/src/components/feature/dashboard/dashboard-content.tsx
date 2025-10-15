@@ -20,6 +20,8 @@ export function DashboardContent() {
   };
 
   const [currentSection, setCurrentSection] = useState(getInitialSection);
+  const [isRedirecting, setIsRedirecting] = useState(pathname === "/dashboard");
+  const hasRedirectedRef = useRef(false);
 
 
   // Handle pathname changes and navigation
@@ -29,7 +31,9 @@ export function DashboardContent() {
   
   useEffect(() => {
     // Handle initial redirect from /dashboard to /dashboard/overview
-    if (pathname === "/dashboard") {
+    if (pathname === "/dashboard" && !hasRedirectedRef.current) {
+      hasRedirectedRef.current = true;
+      setIsRedirecting(true);
       router.replace("/dashboard/overview");
       setCurrentSection("overview");
       prevPathname.current = "/dashboard/overview";
@@ -46,6 +50,7 @@ export function DashboardContent() {
         setCurrentSection(section);
       }
       prevPathname.current = pathname;
+      setIsRedirecting(false); // Clear redirecting state when pathname changes
     }
   }, [pathname, router]);
 
@@ -97,6 +102,17 @@ export function DashboardContent() {
         return <DashboardOverview />;
     }
   }, [currentSection]);
+
+  // Don't render content while redirecting or when on /dashboard to prevent double render
+  if (isRedirecting || pathname === "/dashboard") {
+    return (
+      <div className="dashboard-content">
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+      </div>
+    );
+  }
 
   return <div className="dashboard-content">{renderContent}</div>;
 }
