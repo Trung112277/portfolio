@@ -62,7 +62,8 @@ export function SocialsGlowBoxList() {
                   loading="lazy"
                   sizes="50px"
                   fallbackSrc="/file.svg"
-                  className="h-[50px] w-[50px] object-cover rounded-md"
+                  className="object-cover rounded-md"
+                  style={{ width: '50px', height: '50px' }}
                 />
               </Link>
             </GlowBoxItem>

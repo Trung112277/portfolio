@@ -1,5 +1,5 @@
-// Import React Three Fiber patch first
-import "@/lib/react-three-fiber-patch";
+// Import semver fix
+import "@/lib/semver-fix";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import Script from "next/script";
@@ -209,7 +209,9 @@ export default async function RootLayout({
         {/* Preload author name data */}
         <link rel="preload" href="/api/author-name" as="fetch" crossOrigin="anonymous" />
 
-    
+        {/* Load semver fix before any React code */}
+        <Script src="/semver-fix.js" strategy="beforeInteractive" />
+      
       </head>
       <body
         className={`${openSans.variable} font-open-sans antialiased`}

@@ -53,7 +53,6 @@ export function ImageUploadField<T extends FieldValues>({
   imagePreview,
   onImageChange,
   onRemoveImage,
-  isSubmitting,
 }: ImageUploadFieldProps<T>) {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -79,11 +78,12 @@ export function ImageUploadField<T extends FieldValues>({
             <XIcon className="w-4 h-4" />
           </IconButton>
           <SafeImage
-            className="border-2 rounded-md p-2 w-[300px] h-[300px] object-cover"
+            className="border-2 rounded-md p-2 object-cover"
             src={imagePreview}
             alt="Selected image"
-            width={100}
-            height={100}
+            width={200}
+            height={200}
+            style={{ width: '200px', height: '200px' }}
           />
         </div>
       )}

@@ -64,7 +64,8 @@ export default function SocialMediaEdit() {
                   alt={social.description}
                   width={50}
                   height={50}
-                  className="h-[50px] w-[50px] object-contain rounded-md"
+                  className="object-contain rounded-md"
+                  style={{ width: '50px', height: '50px' }}
                 />
               </td>
               <td className="p-2 border">{social.description}</td>
