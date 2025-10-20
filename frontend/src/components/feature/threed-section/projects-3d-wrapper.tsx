@@ -15,6 +15,11 @@ const Projects3DWrapper = memo(() => {
       // Keep loading state for a bit longer to show smooth transition
       setTimeout(() => {
         setIsLoading(false);
+        // Signal that 3D component is loaded
+        const projectsSection = document.querySelector('#projects');
+        if (projectsSection) {
+          projectsSection.setAttribute('data-3d-loaded', 'true');
+        }
       }, 500);
     }, 1000); // Minimum 1 second loading
 
@@ -34,9 +39,6 @@ const Projects3DWrapper = memo(() => {
             </div>
             <p className="text-lg font-semibold animate-pulse">Loading 3D Experience...</p>
             <p className="text-sm opacity-75 mt-2 animate-pulse">Preparing interactive 3D visualization</p>
-            <div className="mt-4 w-48 h-1 bg-white/20 rounded-full overflow-hidden">
-              <div className="h-full bg-white/60 rounded-full animate-pulse"></div>
-            </div>
           </div>
         </div>
       ) : (
