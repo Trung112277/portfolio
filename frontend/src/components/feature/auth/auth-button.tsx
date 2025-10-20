@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AuthService } from "@/services/auth.service";
 import AvatarUser from "./avatar-user";
+import { usePageLoader } from "@/hooks/usePageLoader";
 
 export default function AuthButton() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { startLoading } = usePageLoader();
 
   const checkAuth = async () => {
     try {
@@ -59,6 +61,7 @@ export default function AuthButton() {
     <Link
       href="/login"
       className="hover:text-primary text-xl font-bold transition-colors"
+      onClick={() => startLoading('/login')}
     >
       Login
     </Link>

@@ -8,12 +8,15 @@ import AuthButton from "@/components/feature/auth/auth-button";
 import OAuthCallbackHandler from "@/components/feature/auth/oauth-callback-handler";
 import AuthGuard from "@/components/feature/auth/auth-guard";
 import SessionManager from "@/components/feature/auth/session-manager";
+import { usePageLoader } from "@/hooks/usePageLoader";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { startLoading } = usePageLoader();
+
   return (
     <AuthGuard requireAuth={true} redirectTo="/login">
       <SidebarProvider>
@@ -25,6 +28,7 @@ export default function DashboardLayout({
               <Link
                 href="/"
                 className="hover:text-primary text-xl font-bold flex items-center gap-2 transition-colors"
+                onClick={() => startLoading('/')}
               >
                 <ArrowLeftIcon className="w-4 h-4" />
                 Go Back to Home

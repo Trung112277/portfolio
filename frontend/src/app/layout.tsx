@@ -16,6 +16,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { generatePersonStructuredData, generateWebsiteStructuredData, generateBaseSEO } from "@/lib/seo";
 import { getAuthorNameServerSide } from "@/lib/author-name-server";
 import { GlobalRealtimeProvider } from "@/components/providers/global-realtime-provider";
+import { LoadingProvider } from "@/components/providers/loading-provider";
 
 
 const openSans = Open_Sans({
@@ -220,9 +221,11 @@ export default async function RootLayout({
         <CustomCursor />
         <ErrorBoundary>
           <GlobalRealtimeProvider>
-            <ScrollToTop />
-            <div id="main-content">{children}</div>
-            <Toaster />
+            <LoadingProvider>
+              <ScrollToTop />
+              <div id="main-content">{children}</div>
+              <Toaster />
+            </LoadingProvider>
           </GlobalRealtimeProvider>
         </ErrorBoundary>
       </body>

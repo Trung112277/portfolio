@@ -1,10 +1,13 @@
 
+"use client";
+
 import Link from "next/link";
 import { memo } from "react";
 import { hexToRgb } from "@/lib/utils";
 import { Tooltip, TooltipTrigger } from "@radix-ui/react-tooltip";
 import { BadgeTooltip } from "@/components/common/badge-tooltip";
 import { FloatingButtonProps } from "@/types/components";
+import { usePageLoader } from "@/hooks/usePageLoader";
 
 interface LinkingFloatingButtonProps extends Omit<FloatingButtonProps, 'onClick'> {
   to: string;
@@ -21,6 +24,14 @@ const LinkingFloatingButton = memo(({
   className = "",
 }: LinkingFloatingButtonProps) => {
   const rgbColor = hexToRgb(color);
+  const { startLoading } = usePageLoader();
+
+  const handleClick = () => {
+    // Chỉ start loading cho internal page navigation
+    if (!external && !to.startsWith('#') && !to.startsWith('/dashboard/')) {
+      startLoading(to);
+    }
+  };
 
   return (
     <div>
@@ -37,6 +48,7 @@ const LinkingFloatingButton = memo(({
                 "--button-color-rgb": rgbColor,
               } as React.CSSProperties
             }
+            onClick={handleClick}
           >
             {children}
           </Link>

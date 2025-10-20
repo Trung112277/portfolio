@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { hexToRgb } from "@/lib/utils";
+import { usePageLoader } from "@/hooks/usePageLoader";
 
 export function FloatingButton({
   children,
@@ -11,6 +14,14 @@ export function FloatingButton({
   to: string;
 }) {
   const rgbColor = hexToRgb(color);
+  const { startLoading } = usePageLoader();
+  
+  const handleClick = () => {
+    // Chỉ start loading cho page navigation, không phải anchor links
+    if (!to.startsWith('#') && !to.startsWith('/dashboard/')) {
+      startLoading(to);
+    }
+  };
   
   return (
     <Link 
@@ -21,6 +32,7 @@ export function FloatingButton({
         '--button-color': color,
         '--button-color-rgb': rgbColor,
       } as React.CSSProperties}
+      onClick={handleClick}
     >
       {children}
     </Link>
