@@ -1,51 +1,28 @@
 'use client';
 
-import { memo, useState, useEffect, useRef } from 'react';
+import { memo, useState, useEffect } from 'react';
 import ThreeDSection from '@/components/feature/threed-section/threed-section';
 import { LoadingSpinner } from '@/components/feature/loading/loading-spinner';
 
 const Projects3DWrapper = memo(() => {
   const [shouldLoad, setShouldLoad] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        if (entry.isIntersecting) {
-          // Add minimum loading time to ensure user sees loading state
-          setTimeout(() => {
-            setShouldLoad(true);
-            // Keep loading state for a bit longer to show smooth transition
-            setTimeout(() => {
-              setIsLoading(false);
-            }, 500);
-          }, 1000); // Minimum 1 second loading
-          observer.disconnect();
-        }
-      },
-      {
-        rootMargin: '200px', // Load when 200px away from viewport (increased)
-        threshold: 0.1,
-      }
-    );
+    // Load immediately instead of waiting for intersection
+    const timer = setTimeout(() => {
+      setShouldLoad(true);
+      // Keep loading state for a bit longer to show smooth transition
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+    }, 1000); // Minimum 1 second loading
 
-    const currentRef = containerRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-      observer.disconnect();
-    };
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full h-full">
+    <div>
       {!shouldLoad || isLoading ? (
         <div className="w-full h-full min-h-[800px] flex items-center justify-center bg-gradient-to-br from-purple-900 to-blue-900">
           <div className="text-center text-white">
