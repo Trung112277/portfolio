@@ -9,6 +9,7 @@ import OAuthCallbackHandler from "@/components/feature/auth/oauth-callback-handl
 import AuthGuard from "@/components/feature/auth/auth-guard";
 import SessionManager from "@/components/feature/auth/session-manager";
 import { usePageLoader } from "@/hooks/usePageLoader";
+import { UserRoleBadge } from "@/components/common/user-role-badge";
 
 export default function DashboardLayout({
   children,
@@ -36,6 +37,7 @@ export default function DashboardLayout({
             </div>
             <div>
               <nav className="flex items-center gap-4">
+                <UserRoleBadge />
                 <AuthButton />
               </nav>
             </div>

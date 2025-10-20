@@ -7,10 +7,13 @@ import { DashboardAboutMe } from "@/components/feature/dashboard/sections/dashbo
 import { DashboardProjects } from "@/components/feature/dashboard/sections/dashboard-projects";
 import { DashboardTech } from "@/components/feature/dashboard/sections/dashboard-tech";
 import { DashboardUser } from "@/components/feature/dashboard/sections/dashboard-user";
+import { useUserRole } from "@/hooks/useUserRole";
+import { AccessDenied } from "@/components/common/access-denied";
 
 export function DashboardContent() {
   const router = useRouter();
   const pathname = usePathname();
+  const { isAdmin, loading: roleLoading } = useUserRole();
 
   // Initialize currentSection from pathname to avoid showing overview first
   const getInitialSection = () => {
@@ -45,18 +48,18 @@ export function DashboardContent() {
       const pathParts = pathname.split("/").filter(Boolean);
       const section = pathParts[1] || "overview";
 
-      // Only update if section is different
+      // Allow all users to access all sections, content will be controlled by role
       if (section !== currentSectionRef.current) {
         setCurrentSection(section);
       }
       prevPathname.current = pathname;
       setIsRedirecting(false); // Clear redirecting state when pathname changes
     }
-  }, [pathname, router]);
+  }, [pathname, router, isAdmin, roleLoading]);
 
   const navigateToSection = useCallback(
     (section: string) => {
-      // Always update section with loading
+      // Allow all users to navigate to all sections
       if (section !== currentSection) {
         // Update URL first
         const newPath = `/dashboard/${section}`;
@@ -97,11 +100,24 @@ export function DashboardContent() {
       case "tech":
         return <DashboardTech />;
       case "user":
-        return <DashboardUser />;
+        // Show content based on user role
+        if (isAdmin) {
+          return <DashboardUser />;
+        } else {
+          // Show access denied message for regular users
+          return (
+            <AccessDenied
+              title="User Management Access Denied"
+              message="You don't have permission to access the User Management section."
+              description="Only administrators can manage user accounts and roles."
+              onBack={() => navigateToSection("overview")}
+            />
+          );
+        }
       default:
         return <DashboardOverview />;
     }
-  }, [currentSection]);
+  }, [currentSection, isAdmin, navigateToSection]);
 
   // Don't render content while redirecting or when on /dashboard to prevent double render
   if (isRedirecting || pathname === "/dashboard") {

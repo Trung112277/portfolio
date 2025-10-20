@@ -1,4 +1,6 @@
 import { supabase } from '@/lib/supabase-client'
+import { UserProfileService } from './user-profile.service'
+import { UserWithRole } from '@/types/user-roles'
 
 export const AuthService = {
   async signUp({ email, password, name }: { email: string; password: string; name?: string }) {
@@ -72,7 +74,6 @@ export const AuthService = {
       const { data: sessionData, error: sessionError } = await supabase.auth.getSession()
       
       if (sessionError) {
-        console.error('Session error:', sessionError)
         throw sessionError
       }
       
@@ -97,6 +98,27 @@ export const AuthService = {
         return null
       }
       throw error
+    }
+  },
+
+  async getUserWithRole(): Promise<UserWithRole | null> {
+    try {
+      const user = await this.getUser()
+      if (!user) return null
+
+      const userWithRole = await UserProfileService.getUserWithRole(user.id)
+      return userWithRole
+    } catch {
+      return null
+    }
+  },
+
+  async isAdmin(): Promise<boolean> {
+    try {
+      const userWithRole = await this.getUserWithRole()
+      return userWithRole?.profile?.user_role === 'admin'
+    } catch {
+      return false
     }
   },
 
@@ -134,7 +156,6 @@ export const AuthService = {
     try {
       const { data, error } = await supabase.auth.getSession()
       if (error) {
-        console.error('Session error:', error)
         // Don't throw for session missing - it's normal when not logged in
         if (error.message?.includes('Auth session missing')) {
           return { session: null, user: null }
@@ -155,7 +176,6 @@ export const AuthService = {
   async refreshSession() {
     const { data, error } = await supabase.auth.refreshSession()
     if (error) {
-      console.error('Refresh session error:', error)
       // If refresh fails, clear the session
       await this.signOut()
       throw error

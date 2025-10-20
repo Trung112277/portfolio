@@ -123,7 +123,7 @@ export interface Database {
           id: string;
           email: string;
           display_name: string;
-          user_role: string;
+          user_role: 'admin' | 'user';
           created_at: string;
           updated_at: string;
         };
@@ -131,7 +131,7 @@ export interface Database {
           id: string;
           email: string;
           display_name: string;
-          user_role: string;
+          user_role: 'admin' | 'user';
           created_at?: string;
           updated_at?: string;
         };
@@ -139,7 +139,7 @@ export interface Database {
           id?: string;
           email?: string;
           display_name?: string;
-          user_role?: string;
+          user_role?: 'admin' | 'user';
           updated_at?: string;
         };
       };
