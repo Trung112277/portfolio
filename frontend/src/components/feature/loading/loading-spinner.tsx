@@ -29,12 +29,17 @@ export const LoadingSpinner = memo(({
     <div
       className={cn(
         "animate-spin rounded-full border-2 border-current border-t-transparent",
+        "shadow-lg", // Add shadow for better visibility
         sizeClasses[size],
         colorClasses[color],
         className
       )}
       role="status"
       aria-label="Loading"
+      style={{
+        // Ensure spinner is visible with better contrast
+        filter: color === 'white' ? 'drop-shadow(0 0 8px rgba(255,255,255,0.5))' : undefined
+      }}
     >
       <span className="sr-only">Loading...</span>
     </div>
