@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase-server';
 import { Database } from '@/types/database';
+import { verifyAdminAuth } from '@/lib/auth-helper';
 
-type Profile = Database['public']['Tables']['profiles']['Row'];
 type ProfileUpdate = Database['public']['Tables']['profiles']['Update'];
 
 export async function GET(
@@ -10,6 +10,12 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Verify admin authentication
+    const authResult = await verifyAdminAuth();
+    if (!authResult.success) {
+      return authResult.error!;
+    }
+
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -25,7 +31,7 @@ export async function GET(
     }
 
     return NextResponse.json(data);
-  } catch (error) {
+  } catch {
     // console.error('Unexpected error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
@@ -36,6 +42,12 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Verify admin authentication
+    const authResult = await verifyAdminAuth();
+    if (!authResult.success) {
+      return authResult.error!;
+    }
+
     const body: ProfileUpdate = await request.json();
     
     const { data, error } = await supabase
@@ -51,7 +63,7 @@ export async function PUT(
     }
 
     return NextResponse.json(data);
-  } catch (error) {
+  } catch {
     // console.error('Unexpected error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
@@ -62,6 +74,12 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Verify admin authentication
+    const authResult = await verifyAdminAuth();
+    if (!authResult.success) {
+      return authResult.error!;
+    }
+
     const { error } = await supabase
       .from('profiles')
       .delete()
@@ -73,7 +91,7 @@ export async function DELETE(
     }
 
     return NextResponse.json({ message: 'Profile deleted successfully' });
-  } catch (error) {
+  } catch {
     // console.error('Unexpected error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

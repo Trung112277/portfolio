@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase-server';
 import { Database } from '@/types/database';
+import { verifyAdminAuth } from '@/lib/auth-helper';
 
 type ProfileInsert = Database['public']['Tables']['profiles']['Insert'];
 
 export async function GET() {
   try {
+    // Verify admin authentication
+    const authResult = await verifyAdminAuth();
+    if (!authResult.success) {
+      return authResult.error!;
+    }
+
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -23,6 +30,12 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    // Verify admin authentication
+    const authResult = await verifyAdminAuth();
+    if (!authResult.success) {
+      return authResult.error!;
+    }
+
     const body: ProfileInsert = await request.json();
     
     const { data, error } = await supabase
