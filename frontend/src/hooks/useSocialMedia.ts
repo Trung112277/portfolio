@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSocialMediaDbStore } from '@/stores/social-media-db-store';
 import { SocialMediaService } from '@/services/social-media.service';
 import { Database } from '@/types/database';

@@ -11,7 +11,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ProfileUser } from "@/services/users.service";
+import { UserRole } from "@/types/user-roles";
 import { RefreshCw } from "lucide-react";
+import { supabase } from "@/lib/supabase-client";
 
 export default function UserEdit() {
   const [loading, setLoading] = useState(true);
@@ -59,7 +61,20 @@ export default function UserEdit() {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('/api/users');
+      // Get the current session token
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session?.access_token) {
+        throw new Error('No valid session found. Please log in again.');
+      }
+      
+      const response = await fetch('/api/users', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
       const data = await response.json();
       
       if (!response.ok) {
@@ -84,9 +99,17 @@ export default function UserEdit() {
 
   const handleRoleChange = async (userId: string, newRole: string) => {
     try {
+      // Get the current session token
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session?.access_token) {
+        throw new Error('No valid session found. Please log in again.');
+      }
+      
       const response = await fetch(`/api/users/${userId}`, {
         method: 'PATCH',
         headers: {
+          'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ role: newRole }),
@@ -102,7 +125,7 @@ export default function UserEdit() {
       
       // Update local state
       setUsers(users.map(user => 
-        user.id === userId ? { ...user, user_role: newRole } : user
+        user.id === userId ? { ...user, user_role: newRole as UserRole } : user
       ));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update role');

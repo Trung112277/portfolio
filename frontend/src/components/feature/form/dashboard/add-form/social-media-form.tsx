@@ -171,7 +171,6 @@ export default function SocialMediaAddForm() {
             placeholder="Enter URL"
             validation={getFieldValidation("link")}
             isSubmitting={isSubmitting}
-            type="url"
           />
 
           <ColorPickerField

@@ -2,13 +2,21 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+// Use service role key for server-side operations to bypass RLS
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-if (!url || !anonKey) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY')
+if (!url) {
+  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL')
 }
 
-const supabase = createClient(url, anonKey)
+// Prefer service role key for server-side operations, fallback to anon key
+const key = serviceRoleKey || anonKey
+if (!key) {
+  throw new Error('Missing Supabase keys (SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY)')
+}
+
+const supabase = createClient(url, key)
 
 export async function GET() {
   try {

@@ -4,7 +4,20 @@ import Link from "next/link";
 import { SafeImage } from "@/components/ui/safe-image";
 import { GlowBoxItem } from "@/components/feature/glow-bow/glow-box-item";
 import { useSocialMedia } from "@/hooks/useSocialMedia";
-import { LoadingSpinner } from "@/components/feature/loading/loading-spinner";
+
+// Function to check if a string is an email
+const isEmail = (str: string): boolean => {
+  const emailRegex = /^[^\s@]+[^#$%&'*+\-/=?^_`{|}~]+[\w-]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(str);
+};
+
+// Function to get the appropriate href based on the link type
+const getHref = (link: string): string => {
+  if (isEmail(link)) {
+    return `mailto:${link}`;
+  }
+  return link;
+};
 
 export function SocialsGlowBoxList() {
   const { socialMedia, loading, error } = useSocialMedia();
@@ -53,17 +66,15 @@ export function SocialsGlowBoxList() {
               color={item.color}
               content={item.description}
             >
-              <Link href={item.link} target="_blank" rel="noopener noreferrer">
+              <Link href={getHref(item.link)} target="_blank" rel="noopener noreferrer">
                 <SafeImage
                   src={item.image_url}
                   alt={item.description}
                   width={50}
                   height={50}
                   loading="lazy"
-                  sizes="50px"
                   fallbackSrc="/file.svg"
                   className="object-cover rounded-md"
-                  style={{ width: '50px', height: '50px' }}
                 />
               </Link>
             </GlowBoxItem>

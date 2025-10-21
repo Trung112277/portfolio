@@ -1,6 +1,7 @@
 // frontend/src/services/users.service.ts
-import { supabase } from '@/lib/supabase-client'
+import { supabase } from '@/lib/supabase-server'
 import { Database } from '@/types/database'
+import { UserRole } from '@/types/user-roles'
 
 type ProfileUpdate = Database['public']['Tables']['profiles']['Update']
 
@@ -9,7 +10,7 @@ export interface ProfileUser {
   id: string
   display_name: string
   email: string
-  user_role: string
+  user_role: UserRole
   created_at: string
   updated_at: string
 }
@@ -23,7 +24,6 @@ export class UsersService {
       .order('created_at', { ascending: false })
     
     if (error) {
-      console.error('Supabase error:', error)
       throw error
     }
     
@@ -43,7 +43,7 @@ export class UsersService {
   }
 
   // Create new user in profiles table
-  static async create(userData: { id: string; email: string; display_name: string; user_role?: string }): Promise<ProfileUser> {
+  static async create(userData: { id: string; email: string; display_name: string; user_role?: UserRole }): Promise<ProfileUser> {
     const { id, email, display_name, user_role = 'user' } = userData
     
     const { data, error } = await supabase
@@ -62,7 +62,7 @@ export class UsersService {
   }
 
   // Update user role in profiles table
-  static async updateRole(id: string, user_role: string): Promise<ProfileUser> {
+  static async updateRole(id: string, user_role: UserRole): Promise<ProfileUser> {
     const { data, error } = await supabase
       .from('profiles')
       .update({ 
@@ -78,7 +78,7 @@ export class UsersService {
   }
 
   // Update user in profiles table
-  static async updateUser(id: string, updates: { email?: string; display_name?: string; user_role?: string }): Promise<ProfileUser> {
+  static async updateUser(id: string, updates: { email?: string; display_name?: string; user_role?: UserRole }): Promise<ProfileUser> {
     const updateData: ProfileUpdate = {
       updated_at: new Date().toISOString()
     }

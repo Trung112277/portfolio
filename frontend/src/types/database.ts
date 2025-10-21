@@ -3,16 +3,19 @@ export interface Database {
     Tables: {
       author_name: {
         Row: {
+          id: number;
           name: string;
           created_at?: string;
           updated_at?: string;
         };
         Insert: {
+          id?: number;
           name: string;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
+          id?: number;
           name?: string;
           created_at?: string;
           updated_at?: string;

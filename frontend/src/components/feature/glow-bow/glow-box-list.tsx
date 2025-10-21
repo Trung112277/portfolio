@@ -21,10 +21,8 @@ export function GlowBoxList({ techStack }: GlowBoxListProps) {
             width={50}
             height={50}
             loading="lazy"
-            sizes="50px"
             fallbackSrc="/file.svg"
             className="object-contain rounded-md"
-            style={{ width: '50px', height: '50px' }}
           />
         </GlowBoxItem>
       ))}
