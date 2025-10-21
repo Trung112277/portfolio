@@ -1,56 +1,28 @@
-import { useEffect, useState } from 'react';
-import { AuthService } from '@/services/auth.service';
-import { UserWithRole, UserRole } from '@/types/user-roles';
+import { useEffect } from 'react';
+import { useUserRole as useUserRoleStore, useUserRoleActions } from '@/stores/user-role-store';
+import { UserRole } from '@/types/user-roles';
 
 export function useUserRole() {
-  const [userWithRole, setUserWithRole] = useState<UserWithRole | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const store = useUserRoleStore();
+  const { fetchUserRole } = useUserRoleActions();
 
   useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const user = await AuthService.getUserWithRole();
-        setUserWithRole(user);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch user role');
-        setUserWithRole(null);
-      } finally {
-        setLoading(false);
-      }
-    };
+    // Only fetch if we don't have data or it's stale
+    if (!store.userWithRole && !store.loading) {
+      fetchUserRole();
+    }
+  }, [store.userWithRole, store.loading, fetchUserRole]);
 
-    fetchUserRole();
-  }, []);
-
-  const isAdmin = userWithRole?.profile?.user_role === 'admin';
-  const isUser = userWithRole?.profile?.user_role === 'user';
-  const hasRole = (role: UserRole) => userWithRole?.profile?.user_role === role;
-  
-  // Default to 'user' role if no profile exists but user is authenticated
-  const userRole = userWithRole?.profile?.user_role || (userWithRole ? 'user' : null);
+  const hasRole = (role: UserRole) => store.userWithRole?.profile?.user_role === role;
 
   return {
-    userWithRole,
-    loading,
-    error,
-    isAdmin,
-    isUser,
+    userWithRole: store.userWithRole,
+    loading: store.loading,
+    error: store.error,
+    isAdmin: store.isAdmin,
+    isUser: store.isUser,
     hasRole,
-    userRole,
-    refetch: async () => {
-      try {
-        setLoading(true);
-        const user = await AuthService.getUserWithRole();
-        setUserWithRole(user);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch user role');
-      } finally {
-        setLoading(false);
-      }
-    }
+    userRole: store.userRole,
+    refetch: store.refetch,
   };
 }

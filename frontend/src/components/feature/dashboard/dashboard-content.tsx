@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef, useMemo } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo, memo } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { DashboardOverview } from "@/components/feature/dashboard/sections/dashboard-overview";
 import { DashboardAboutMe } from "@/components/feature/dashboard/sections/dashboard-about-me";
@@ -10,7 +10,7 @@ import { DashboardUser } from "@/components/feature/dashboard/sections/dashboard
 import { useUserRole } from "@/hooks/useUserRole";
 import { AccessDenied } from "@/components/common/access-denied";
 
-export function DashboardContent() {
+const DashboardContent = memo(function DashboardContent() {
   const router = useRouter();
   const pathname = usePathname();
   const { isAdmin, loading: roleLoading } = useUserRole();
@@ -131,7 +131,7 @@ export function DashboardContent() {
   }
 
   return <div className="dashboard-content">{renderContent}</div>;
-}
+});
 
 // Global interface for navigation
 declare global {
@@ -143,3 +143,5 @@ declare global {
     };
   }
 }
+
+export { DashboardContent };

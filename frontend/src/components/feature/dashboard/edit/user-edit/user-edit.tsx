@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, memo, useCallback } from "react";
 import {
   Select,
   SelectContent,
@@ -15,46 +15,22 @@ import { UserRole } from "@/types/user-roles";
 import { RefreshCw } from "lucide-react";
 import { supabase } from "@/lib/supabase-client";
 
-export default function UserEdit() {
+const UserEdit = memo(function UserEdit() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [users, setUsers] = useState<ProfileUser[]>([]);
 
-  useEffect(() => {
-    console.log('UserEdit component mounted, fetching users...');
-    fetchUsersRef.current = fetchUsers();
-    
-    // Cleanup function to prevent memory leaks
-    return () => {
-      console.log('UserEdit component unmounted');
-      fetchUsersRef.current = null;
-    };
-  }, []);
-
-  // Add a ref to track if component is mounted
-  const isMountedRef = useRef(true);
-  
-  useEffect(() => {
-    isMountedRef.current = true;
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
-
   // Add a ref to prevent duplicate API calls
   const fetchUsersRef = useRef<Promise<void> | null>(null);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
-      console.log('fetchUsers called, isMounted:', isMountedRef.current);
       if (!isMountedRef.current) {
-        console.log('Component unmounted, skipping fetch');
         return;
       }
 
       // Prevent duplicate API calls
       if (fetchUsersRef.current) {
-        console.log('API call already in progress, skipping duplicate');
         return;
       }
       
@@ -85,7 +61,6 @@ export default function UserEdit() {
         setUsers(data.users || []);
       }
     } catch (err) {
-      console.error('Error in fetchUsers:', err);
       if (isMountedRef.current) {
         setError(err instanceof Error ? err.message : 'Failed to fetch users');
       }
@@ -95,7 +70,26 @@ export default function UserEdit() {
       }
       fetchUsersRef.current = null;
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchUsersRef.current = fetchUsers();
+    
+    // Cleanup function to prevent memory leaks
+    return () => {
+      fetchUsersRef.current = null;
+    };
+  }, [fetchUsers]);
+
+  // Add a ref to track if component is mounted
+  const isMountedRef = useRef(true);
+  
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const handleRoleChange = async (userId: string, newRole: string) => {
     try {
@@ -223,4 +217,6 @@ export default function UserEdit() {
       </div>
     </div>
   );
-}
+});
+
+export default UserEdit;

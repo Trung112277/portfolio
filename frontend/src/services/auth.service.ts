@@ -66,6 +66,14 @@ export const AuthService = {
       localStorage.removeItem(key);
       sessionStorage.removeItem(key);
     });
+
+    // Clear user role cache
+    try {
+      const { useUserRoleStore } = await import('@/stores/user-role-store');
+      useUserRoleStore.getState().clearUserRole();
+    } catch (error) {
+      // Silently fail if store is not available
+    }
   },
 
   async getUser() {
