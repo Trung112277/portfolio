@@ -4,10 +4,13 @@ import { toast } from "sonner";
 import DeleteButton from "@/components/button/delete-button";
 import EditProjectsForm from "@/components/feature/form/dashboard/edit-form/edit-project-form";
 import { useEffect, useRef } from "react";
+import { useUserRole } from "@/hooks/useUserRole";
+import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
 
 export default function ProjectsEdit() {
   const { projects, loading, error, updateProject, deleteProject } =
     useProjects();
+  const { isAdmin } = useUserRole();
   const isMountedRef = useRef(true);
 
   useEffect(() => {
@@ -18,6 +21,12 @@ export default function ProjectsEdit() {
   }, []);
 
   const handleDelete = async (id: number, title: string) => {
+    // Check admin permission before deleting
+    const permission = checkAdminPermission(isAdmin, PermissionActions.DELETE);
+    if (!permission.hasPermission) {
+      return; // Toast is already shown by checkAdminPermission
+    }
+
     try {
       await deleteProject(id);
       toast.success(`Project "${title}" deleted successfully`);
@@ -125,6 +134,12 @@ export default function ProjectsEdit() {
                       color: project.color,
                     }}
                     onUpdate={async (updatedData) => {
+                      // Check admin permission before updating
+                      const permission = checkAdminPermission(isAdmin, PermissionActions.UPDATE);
+                      if (!permission.hasPermission) {
+                        return; // Toast is already shown by checkAdminPermission
+                      }
+
                       try {
                         await updateProject(project.id, updatedData);
                         console.log("Project updated successfully");
@@ -132,10 +147,12 @@ export default function ProjectsEdit() {
                         console.error("Error updating project:", error);
                       }
                     }}
+                    disabled={!isAdmin}
                   />
                   <DeleteButton
                     title={project.name}
                     onDelete={() => handleDelete(project.id, project.name)}
+                    disabled={!isAdmin}
                   />
                 </div>
               </td>

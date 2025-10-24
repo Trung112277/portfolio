@@ -24,12 +24,14 @@ interface ProjectsEditFormProps {
   socialMediaId: string;
   initialData: Partial<ProjectsFormInputs>;
   onUpdate?: (updatedData: ProjectsFormInputs) => void;
+  disabled?: boolean;
 }
 
 export default function ProjectsEditForm({
   socialMediaId,
   initialData,
   onUpdate,
+  disabled = false,
 }: ProjectsEditFormProps) {
   const { isOpen, setIsOpen } = useDialogState();
 
@@ -104,7 +106,7 @@ export default function ProjectsEditForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogClose}>
-      <EditButton onClick={() => setIsOpen(true)} />
+      <EditButton onClick={() => setIsOpen(true)} disabled={disabled} />
       
       <DialogContent
         aria-describedby={undefined}

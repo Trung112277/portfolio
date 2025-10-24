@@ -6,17 +6,20 @@ export default function IconButton({
   children,
   onClick,
   className,
+  disabled = false,
   props,
 }: {
   children: React.ReactNode;
   onClick: () => void;
   className?: string;
+  disabled?: boolean;
   props?: React.ButtonHTMLAttributes<HTMLButtonElement>;
 }) {
   return (
     <Button
       variant="outline"
       onClick={onClick}
+      disabled={disabled}
       className={cn("p-2", className)}
       {...props}
     > 

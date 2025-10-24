@@ -1,20 +1,55 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-if (!url || !anonKey) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY')
-}
-
-const supabase = createClient(url, anonKey)
+import { headers } from 'next/headers'
+import { supabase } from '@/lib/supabase-server'
 
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
+    // Get the current user from the request headers
+    const authHeader = headers().get('authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Unauthorized - No token provided' },
+        { status: 401 }
+      )
+    }
+
+    const token = authHeader.split(' ')[1]
+    
+    // Verify the token and get user info
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Unauthorized - Invalid token' },
+        { status: 401 }
+      )
+    }
+
+    // Get user profile to check role
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('user_role')
+      .eq('id', user.id)
+      .single()
+
+    if (profileError || !profile) {
+      return NextResponse.json(
+        { error: 'User profile not found' },
+        { status: 404 }
+      )
+    }
+
+    // Check if user is admin
+    if (profile.user_role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Forbidden - Admin access required' },
+        { status: 403 }
+      )
+    }
+
     const id = parseInt(params.id)
     if (isNaN(id)) {
       return NextResponse.json(
@@ -72,6 +107,49 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Get the current user from the request headers
+    const authHeader = headers().get('authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Unauthorized - No token provided' },
+        { status: 401 }
+      )
+    }
+
+    const token = authHeader.split(' ')[1]
+    
+    // Verify the token and get user info
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Unauthorized - Invalid token' },
+        { status: 401 }
+      )
+    }
+
+    // Get user profile to check role
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('user_role')
+      .eq('id', user.id)
+      .single()
+
+    if (profileError || !profile) {
+      return NextResponse.json(
+        { error: 'User profile not found' },
+        { status: 404 }
+      )
+    }
+
+    // Check if user is admin
+    if (profile.user_role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Forbidden - Admin access required' },
+        { status: 403 }
+      )
+    }
+
     const id = parseInt(params.id)
     if (isNaN(id)) {
       return NextResponse.json(

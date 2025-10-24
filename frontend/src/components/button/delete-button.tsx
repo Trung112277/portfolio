@@ -17,9 +17,10 @@ import { useState } from "react";
 interface DeleteButtonProps {
   title: string;
   onDelete: () => Promise<void> | void;
+  disabled?: boolean;
 }
 
-export default function DeleteButton({ title, onDelete }: DeleteButtonProps) {
+export default function DeleteButton({ title, onDelete, disabled = false }: DeleteButtonProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -35,10 +36,11 @@ export default function DeleteButton({ title, onDelete }: DeleteButtonProps) {
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
+      <AlertDialogTrigger asChild disabled={disabled}>
         <IconButton
           onClick={() => {}}
-          className="bg-red-500/10 border-red-500/10 hover:bg-red-500/20 text-red-500 hover:border-red-500/20 hover:text-red-500"
+          disabled={disabled}
+          className="bg-red-500/10 border-red-500/10 hover:bg-red-500/20 text-red-500 hover:border-red-500/20 hover:text-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <TrashIcon className="w-4 h-4 " />
         </IconButton>

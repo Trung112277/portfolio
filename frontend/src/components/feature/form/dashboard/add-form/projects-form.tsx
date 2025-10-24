@@ -19,10 +19,13 @@ import { TextInputField } from "@/components/feature/form/field-form/text-input-
 import { useProjects } from "@/hooks/useProjects";
 import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 import { useEffect, useRef } from "react";
+import { useUserRole } from "@/hooks/useUserRole";
+import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
 
 export default function ProjectsAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
   const { createProject } = useProjects();
+  const { isAdmin } = useUserRole();
   const isMountedRef = useRef(true);
 
   useEffect(() => {
@@ -47,6 +50,12 @@ export default function ProjectsAddForm() {
     useColorSync(watch, setValue);
 
     const handleSubmit = async (data: ProjectsFormInputs) => {
+      // Check admin permission before submitting
+      const permission = checkAdminPermission(isAdmin, PermissionActions.CREATE);
+      if (!permission.hasPermission) {
+        return; // Toast is already shown by checkAdminPermission
+      }
+
       try {
         const project = await createProject({
           name: data.name,
@@ -82,7 +91,11 @@ export default function ProjectsAddForm() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogClose}>
-      <AddItemButton onClick={() => setIsOpen(true)} label="Add Project" />
+      <AddItemButton 
+        onClick={() => setIsOpen(true)} 
+        label="Add Project" 
+        disabled={!isAdmin}
+      />
 
       <DialogContent
         aria-describedby={undefined}

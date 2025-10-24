@@ -52,10 +52,10 @@ export const validationPatterns = {
       "Introduction must contain at least one character",
   },
 
-  // Pattern cho email
+  // Pattern cho URL
   url: {
-    value: /^[^\s@]+[^#$%&'*+\-/=?^_`{|}~]+[\w-]+@[^\s@]+\.[^\s@]+$/,
-    message: "Please enter a valid email address",
+    value: /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/,
+    message: "Please enter a valid URL (e.g., https://example.com)",
   },
 
   // Pattern cho color hex
