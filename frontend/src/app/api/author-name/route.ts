@@ -1,25 +1,28 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-// Use service role key for server-side operations to bypass RLS
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+// Helper function to create Supabase client with error handling
+function createSupabaseClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-if (!url) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL')
+  if (!url) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL - please set up your Supabase environment variables')
+  }
+
+  const key = serviceRoleKey || anonKey
+  if (!key) {
+    throw new Error('Missing Supabase keys (SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY) - please set up your Supabase environment variables')
+  }
+
+  return createClient(url, key)
 }
-
-// Prefer service role key for server-side operations, fallback to anon key
-const key = serviceRoleKey || anonKey
-if (!key) {
-  throw new Error('Missing Supabase keys (SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY)')
-}
-
-const supabase = createClient(url, key)
 
 export async function GET() {
   try {
+    const supabase = createSupabaseClient()
+    
     const { data: authorName, error } = await supabase
       .from('author_name')
       .select('*')
@@ -37,7 +40,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching author name:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch author name' },
+      { error: 'Failed to fetch author name: ' + (error instanceof Error ? error.message : 'Unknown error') },
       { status: 500 }
     )
   }
@@ -45,8 +48,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const supabase = createSupabaseClient()
     const authorData = await request.json()
-    
     
     const { data: authorName, error } = await supabase
       .from('author_name')
@@ -66,7 +69,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error creating/updating author name:', error)
     return NextResponse.json(
-      { error: 'Failed to create/update author name' },
+      { error: 'Failed to create/update author name: ' + (error instanceof Error ? error.message : 'Unknown error') },
       { status: 500 }
     )
   }
@@ -74,6 +77,7 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
+    const supabase = createSupabaseClient()
     const authorData = await request.json()
     
     const { data: authorName, error } = await supabase
@@ -94,7 +98,7 @@ export async function PUT(request: Request) {
   } catch (error) {
     console.error('Error updating author name:', error)
     return NextResponse.json(
-      { error: 'Failed to update author name' },
+      { error: 'Failed to update author name: ' + (error instanceof Error ? error.message : 'Unknown error') },
       { status: 500 }
     )
   }

@@ -13,21 +13,21 @@ export async function getAuthorNameServerSide(): Promise<string> {
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (!url) {
-      console.warn('Missing NEXT_PUBLIC_SUPABASE_URL');
+      console.warn('Missing NEXT_PUBLIC_SUPABASE_URL - please set up your Supabase environment variables');
       return 'Developer';
     }
 
     // Prefer service role key for server-side operations, fallback to anon key
     const key = serviceRoleKey || anonKey;
     if (!key) {
-      console.warn('Missing Supabase keys (SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY)');
+      console.warn('Missing Supabase keys (SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY) - please set up your Supabase environment variables');
       return 'Developer';
     }
 
     const supabase = createClient(url, key);
     
     // Query by singleton ID for better performance
-    const singletonId = '00000000-0000-0000-0000-000000000001';
+    const singletonId = '1';
     
     const { data: authorName, error } = await supabase
       .from('author_name')
@@ -36,7 +36,7 @@ export async function getAuthorNameServerSide(): Promise<string> {
       .maybeSingle();
     
     if (error) {
-      console.error('Error fetching author name:', error);
+      console.error('Error fetching author name from Supabase:', error);
       return 'Developer';
     }
     
@@ -48,7 +48,7 @@ export async function getAuthorNameServerSide(): Promise<string> {
     
     return 'Developer';
   } catch (error) {
-    console.error('Error in getAuthorNameServerSide:', error);
+    console.error('Error in getAuthorNameServerSide - this is likely due to missing Supabase environment variables:', error);
     return 'Developer';
   }
 }
