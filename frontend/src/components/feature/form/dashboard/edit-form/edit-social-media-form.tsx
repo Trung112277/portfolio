@@ -21,6 +21,7 @@ import { TextInputField } from "@/components/feature/form/field-form/text-input-
 import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 import { useUserRole } from "@/hooks/useUserRole";
 import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
+import { supabase } from "@/lib/supabase-client";
 
 interface SocialMediaEditFormProps {
   socialMediaId: string;
@@ -92,6 +93,13 @@ export default function SocialMediaEditForm({
     console.log("Selected image:", selectedImage);
 
     try {
+      // Get the current session token
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session?.access_token) {
+        throw new Error('No valid session found. Please log in again.');
+      }
+
       let imageUrl = existingImageUrl || "";
       
       // Upload new image if selected
@@ -103,6 +111,9 @@ export default function SocialMediaEditForm({
         
         const uploadResponse = await fetch('/api/upload-image', {
           method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+          },
           body: formData,
         });
         
@@ -118,6 +129,7 @@ export default function SocialMediaEditForm({
       const response = await fetch(`/api/social-media/${socialMediaId}`, {
         method: 'PUT',
         headers: {
+          'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
