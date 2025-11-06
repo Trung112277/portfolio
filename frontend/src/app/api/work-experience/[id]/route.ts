@@ -8,10 +8,10 @@ type WorkExperienceUpdate = Database["public"]["Tables"]["work_experience"]["Upd
 // GET /api/work-experience/[id] - Fetch a single work experience by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = params.id;
+    const { id } = await params;
     
     if (!id) {
       return NextResponse.json({ error: "ID is required" }, { status: 400 });
@@ -50,7 +50,7 @@ export async function GET(
 // PUT /api/work-experience/[id] - Update a work experience by ID
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current user from the request headers
@@ -97,7 +97,7 @@ export async function PUT(
       )
     }
 
-    const id = params.id;
+    const { id } = await params;
     
     if (!id) {
       return NextResponse.json({ error: "ID is required" }, { status: 400 });
@@ -179,7 +179,7 @@ export async function PUT(
 // DELETE /api/work-experience/[id] - Delete a work experience by ID
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current user from the request headers
@@ -226,7 +226,7 @@ export async function DELETE(
       )
     }
 
-    const id = params.id;
+    const { id } = await params;
     
     if (!id) {
       return NextResponse.json({ error: "ID is required" }, { status: 400 });

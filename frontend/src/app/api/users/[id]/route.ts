@@ -5,11 +5,12 @@ import { supabase } from '@/lib/supabase-server'
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current user from the request headers
-    const authHeader = headers().get('authorization')
+    const headersList = await headers()
+    const authHeader = headersList.get('authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'Unauthorized - No token provided' },
@@ -60,7 +61,8 @@ export async function PATCH(
       )
     }
 
-    const updatedUser = await UsersService.updateRole(params.id, role)
+    const { id } = await params;
+    const updatedUser = await UsersService.updateRole(id, role)
     return NextResponse.json({ user: updatedUser })
   } catch (error) {
     console.error('Error updating user role:', error)
@@ -73,11 +75,12 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current user from the request headers
-    const authHeader = headers().get('authorization')
+    const headersList = await headers()
+    const authHeader = headersList.get('authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'Unauthorized - No token provided' },
@@ -119,7 +122,8 @@ export async function DELETE(
       )
     }
 
-    await UsersService.delete(params.id)
+    const { id } = await params;
+    await UsersService.delete(id)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting user:', error)

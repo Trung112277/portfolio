@@ -7,7 +7,7 @@ type ProfileUpdate = Database['public']['Tables']['profiles']['Update'];
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify admin authentication
@@ -16,10 +16,11 @@ export async function GET(
       return authResult.error!;
     }
 
+    const { id } = await params;
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (error) {
@@ -39,7 +40,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify admin authentication
@@ -48,12 +49,13 @@ export async function PUT(
       return authResult.error!;
     }
 
+    const { id } = await params;
     const body: ProfileUpdate = await request.json();
     
     const { data, error } = await supabase
       .from('profiles')
       .update(body)
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single();
 
@@ -71,7 +73,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify admin authentication
@@ -80,10 +82,11 @@ export async function DELETE(
       return authResult.error!;
     }
 
+    const { id } = await params;
     const { error } = await supabase
       .from('profiles')
       .delete()
-      .eq('id', params.id);
+      .eq('id', id);
 
     if (error) {
       // console.error('Error deleting profile:', error);

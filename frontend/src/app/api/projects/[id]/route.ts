@@ -4,13 +4,14 @@ import { supabase } from '@/lib/supabase-server'
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { data: project, error } = await supabase
       .from('projects')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
     
     if (error) {
@@ -39,7 +40,7 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current user from the request headers
@@ -86,12 +87,13 @@ export async function PATCH(
       )
     }
 
+    const { id } = await params;
     const updates = await request.json()
     
     const { data: project, error } = await supabase
       .from('projects')
       .update({ ...updates, updated_at: new Date().toISOString() })
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single()
     
@@ -115,7 +117,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current user from the request headers
@@ -162,10 +164,11 @@ export async function DELETE(
       )
     }
 
+    const { id } = await params;
     const { error } = await supabase
       .from('projects')
       .delete()
-      .eq('id', params.id)
+      .eq('id', id)
     
     if (error) {
       console.error('Supabase error:', error)

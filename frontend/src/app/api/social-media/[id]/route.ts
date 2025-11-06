@@ -7,7 +7,7 @@ type SocialMediaUpdate = Database['public']['Tables']['social_media']['Update']
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current user from the request headers
@@ -53,7 +53,8 @@ export async function PUT(
       )
     }
 
-    const id = parseInt(params.id)
+    const { id: idParam } = await params;
+    const id = parseInt(idParam)
     if (isNaN(id)) {
       return NextResponse.json(
         { error: 'Invalid social media ID' },
@@ -107,7 +108,7 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current user from the request headers
@@ -153,7 +154,8 @@ export async function DELETE(
       )
     }
 
-    const id = parseInt(params.id)
+    const { id: idParam } = await params;
+    const id = parseInt(idParam)
     if (isNaN(id)) {
       return NextResponse.json(
         { error: 'Invalid social media ID' },
