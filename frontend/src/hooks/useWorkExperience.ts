@@ -9,11 +9,13 @@ type WorkExperience = Database['public']['Tables']['work_experience']['Row']
 // Global flag to prevent multiple API calls
 let isWorkExperiencesLoading = false
 let workExperiencesRealtimeSetup = false
+let hasWorkExperiencesLoaded = false // Global flag to track if data has been loaded
 
 // Function to reset global flags
 export function resetWorkExperiencesFlags() {
   isWorkExperiencesLoading = false
   workExperiencesRealtimeSetup = false
+  hasWorkExperiencesLoaded = false
 }
 
 export function useWorkExperience() {
@@ -34,30 +36,30 @@ export function useWorkExperience() {
     }
   }, [])
 
+  // Ensure loading is set to false after initial load completes
   useEffect(() => {
-    // If we already have data and have loaded before, just show data
-    if (workExperiences.length > 0 && hasLoadedRef.current && !isWorkExperiencesLoading) {
-      // Show loading for a brief moment to indicate component is mounting
-      const timer = setTimeout(() => {
-        if (isMountedRef.current) {
-          setLoading(false)
-        }
-      }, 100) // Brief loading state
-      return () => clearTimeout(timer)
-    }
-
-    // If already loaded but no data, still set loading to false
-    if (hasLoadedRef.current && !isWorkExperiencesLoading) {
+    if (hasWorkExperiencesLoaded && !isWorkExperiencesLoading && isMountedRef.current) {
       setLoading(false)
+    }
+  }, [workExperiences.length]) // Only depend on workExperiences.length, global flags are checked inside
+
+  useEffect(() => {
+    // Skip if already loaded (to prevent re-fetching when workExperiences.length changes)
+    if (hasWorkExperiencesLoaded) {
+      // If data already exists, ensure loading is false
+      if (workExperiences.length > 0) {
+        setLoading(false)
+      }
       return
     }
 
-    // Prevent duplicate API calls only if already loading
+    // Prevent duplicate API calls
     if (isWorkExperiencesLoading) {
       return
     }
 
     isWorkExperiencesLoading = true
+    hasWorkExperiencesLoaded = true
     hasLoadedRef.current = true
     
     ;(async () => {
@@ -70,7 +72,7 @@ export function useWorkExperience() {
         const data = await WorkExperienceService.getAll()
         
         if (isMountedRef.current) {
-          setWorkExperiencesRef.current(data)
+          setWorkExperiencesRef.current(data || [])
         }
       } catch (err) {
         if (isMountedRef.current) {
@@ -83,7 +85,8 @@ export function useWorkExperience() {
         isWorkExperiencesLoading = false
       }
     })()
-  }, [workExperiences.length])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Only fetch once on mount, realtime will handle updates
 
   // Realtime (enable bảng `work_experience` trong Realtime trên Supabase)
   useEffect(() => {
@@ -97,29 +100,22 @@ export function useWorkExperience() {
     const channel = supabase
       .channel('work-experiences-changes')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'work_experience' }, (payload) => {
-        console.log('Work experience INSERT:', payload.new)
         // Get fresh store functions inside the callback
         const { addWorkExperience: addWorkExperienceFresh } = useWorkExperienceDbStore.getState()
         addWorkExperienceFresh(payload.new as WorkExperience)
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'work_experience' }, (payload) => {
-        console.log('Work experience UPDATE:', payload.new)
         // Get fresh store functions inside the callback
         const { updateWorkExperience: updateWorkExperienceFresh } = useWorkExperienceDbStore.getState()
         updateWorkExperienceFresh((payload.new as WorkExperience).id, payload.new as Partial<WorkExperience>)
       })
       .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'work_experience' }, (payload) => {
-        console.log('Work experience DELETE:', payload.old)
         // Get fresh store functions inside the callback
         const { removeWorkExperience: removeWorkExperienceFresh } = useWorkExperienceDbStore.getState()
         removeWorkExperienceFresh((payload.old as WorkExperience).id)
       })
       .subscribe((status) => {
-        console.log('Work experiences realtime subscription status:', status)
-        if (status === 'SUBSCRIBED') {
-          console.log('Successfully subscribed to work_experience changes')
-        } else if (status === 'CHANNEL_ERROR') {
-          console.error('Error subscribing to work_experience changes')
+        if (status === 'CHANNEL_ERROR') {
           workExperiencesRealtimeSetup = false
         }
       })
@@ -162,11 +158,13 @@ export function useWorkExperience() {
     deleteWorkExperience, 
     refetch: async () => {
       isWorkExperiencesLoading = false
+      hasWorkExperiencesLoaded = false
       hasLoadedRef.current = false
       setLoading(true)
       try {
         const data = await WorkExperienceService.getAll()
         setWorkExperiences(data)
+        hasWorkExperiencesLoaded = true
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load work experiences')
       } finally {
@@ -175,3 +173,4 @@ export function useWorkExperience() {
     }
   }
 }
+  
