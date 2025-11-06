@@ -7,6 +7,7 @@ import { DynamicTitle } from "@/components/common/dynamic-title";
 import { LoginPageLink } from "@/components/feature/auth/login-page-link";
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export const metadata: Metadata = {
   title: "Login | Portfolio",

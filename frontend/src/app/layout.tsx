@@ -19,6 +19,8 @@ import { GlobalRealtimeProvider } from "@/components/providers/global-realtime-p
 import { LoadingProvider } from "@/components/providers/loading-provider";
 import OAuthCallbackHandler from "@/components/feature/auth/oauth-callback-handler";
 
+export const runtime = 'nodejs';
+
 
 const openSans = Open_Sans({
   subsets: ["latin"],
@@ -170,7 +172,7 @@ export default async function RootLayout({
             <Script id="google-analytics" strategy="afterInteractive">
               {`
                 window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
+                function gtag(){dataLayer.push(arguments);} 
                 gtag('js', new Date());
                 gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
                   page_location: window.location.href,
