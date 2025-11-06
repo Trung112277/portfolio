@@ -8,30 +8,11 @@ import { LoginPageLink } from "@/components/feature/auth/login-page-link";
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata(): Promise<Metadata> {
-  try {
-    const authorName = await getAuthorNameServerSide();
-    
-    return {
-      title: `Login | ${authorName} Portfolio`,
-      description: "Login to access the admin dashboard for managing portfolio content.",
-      robots: {
-        index: false,
-        follow: false,
-      },
-    };
-  } catch (error) {
-    console.error("Error generating login metadata:", error);
-    return {
-      title: "Login | Portfolio",
-      description: "Login to access the admin dashboard for managing portfolio content.",
-      robots: {
-        index: false,
-        follow: false,
-      },
-    };
-  }
-}
+export const metadata: Metadata = {
+  title: "Login | Portfolio",
+  description: "Login to access the admin dashboard for managing portfolio content.",
+  robots: { index: false, follow: false },
+};
 
 export default async function Login() {
   // Get author name for dynamic title
