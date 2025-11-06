@@ -11,7 +11,8 @@ export async function PUT(
 ) {
   try {
     // Get the current user from the request headers
-    const authHeader = headers().get('authorization')
+    const headersList = await headers()
+    const authHeader = headersList.get('authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'Unauthorized - No token provided' },
@@ -112,7 +113,8 @@ export async function DELETE(
 ) {
   try {
     // Get the current user from the request headers
-    const authHeader = headers().get('authorization')
+    const headersList = await headers()
+    const authHeader = headersList.get('authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'Unauthorized - No token provided' },

@@ -17,7 +17,7 @@ interface SocialMediaDbState {
   setError: (error: string | null) => void;
 }
 
-export const useSocialMediaDbStore = create<SocialMediaDbState>((set, get) => ({
+export const useSocialMediaDbStore = create<SocialMediaDbState>((set) => ({
   // Initial state
   socialMedia: [],
   loading: true,
