@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { AuthService } from '@/services/auth.service';
-import { UserWithRole } from '@/types/user-roles';
+import { UserWithRole, UserRole } from '@/types/user-roles';
 
 interface UserRoleState {
   userWithRole: UserWithRole | null;
@@ -10,7 +10,7 @@ interface UserRoleState {
   lastFetched: number | null;
   isAdmin: boolean;
   isUser: boolean;
-  userRole: string | null;
+  userRole: UserRole | null;
   
   // Actions
   setUserWithRole: (user: UserWithRole | null) => void;
