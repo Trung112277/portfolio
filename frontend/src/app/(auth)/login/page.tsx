@@ -6,6 +6,7 @@ import { getAuthorNameServerSide } from "@/lib/author-name-server";
 import { DynamicTitle } from "@/components/common/dynamic-title";
 import { LoginPageLink } from "@/components/feature/auth/login-page-link";
 
+
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const authorName = await getAuthorNameServerSide();

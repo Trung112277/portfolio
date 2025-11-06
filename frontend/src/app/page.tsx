@@ -13,6 +13,8 @@ import { getAuthorNameServerSide } from "@/lib/author-name-server";
 import { generateBaseSEO } from "@/lib/seo";
 import { DynamicTitle } from "@/components/common/dynamic-title";
 
+export const dynamic = 'force-dynamic';
+
 // Use SSR for better performance and SEO
 // export const dynamic = 'force-static'; // Comment out to use default SSR
 

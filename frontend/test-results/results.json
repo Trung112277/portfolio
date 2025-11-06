@@ -126,7 +126,7 @@
     "workers": 6,
     "webServer": {
       "command": "npm run dev",
-      "url": "http://localhost:3000",
+      "url": "https://portfolio-nhat-trung.vercel.app",
       "reuseExistingServer": true,
       "timeout": 120000
     }
