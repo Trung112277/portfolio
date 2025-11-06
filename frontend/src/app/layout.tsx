@@ -17,6 +17,7 @@ import { generatePersonStructuredData, generateWebsiteStructuredData, generateBa
 import { getAuthorNameServerSide } from "@/lib/author-name-server";
 import { GlobalRealtimeProvider } from "@/components/providers/global-realtime-provider";
 import { LoadingProvider } from "@/components/providers/loading-provider";
+import OAuthCallbackHandler from "@/components/feature/auth/oauth-callback-handler";
 
 
 const openSans = Open_Sans({
@@ -222,6 +223,7 @@ export default async function RootLayout({
         <ErrorBoundary>
           <GlobalRealtimeProvider>
             <LoadingProvider>
+              <OAuthCallbackHandler />
               <ScrollToTop />
               <div id="main-content">{children}</div>
               <Toaster />

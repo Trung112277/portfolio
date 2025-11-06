@@ -12,8 +12,13 @@ export default function OAuthCallbackHandler() {
     const handleOAuthCallback = async () => {
       try {
         // Check if this is a fresh OAuth redirect by looking for OAuth parameters
+        // Check both query params (?code=...) and hash fragments (#access_token=...)
         const urlParams = new URLSearchParams(window.location.search);
-        const hasOAuthParams = urlParams.has('code') || urlParams.has('state') || urlParams.has('access_token');
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        
+        const hasQueryParams = urlParams.has('code') || urlParams.has('state') || urlParams.has('access_token');
+        const hasHashParams = hashParams.has('access_token') || hashParams.has('code') || hashParams.has('state');
+        const hasOAuthParams = hasQueryParams || hasHashParams;
         
         // Only process OAuth callback if we have OAuth parameters
         if (!hasOAuthParams) {
@@ -39,9 +44,15 @@ export default function OAuthCallbackHandler() {
           // Dispatch custom event to notify other components
           window.dispatchEvent(new CustomEvent('auth-changed'));
           
-          // Clean up URL parameters after successful OAuth
+          // Clean up URL - remove both query params and hash fragments
           if (window.history.replaceState) {
-            window.history.replaceState({}, document.title, window.location.pathname);
+            const cleanUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+          }
+          
+          // Redirect to dashboard if not already there
+          if (window.location.pathname !== '/dashboard') {
+            router.push('/dashboard');
           }
         } else {
           // No session found, user might not be authenticated
@@ -56,8 +67,8 @@ export default function OAuthCallbackHandler() {
       }
     };
 
-    // Only run on client side and if we're on the dashboard (OAuth redirect target)
-    if (typeof window !== 'undefined' && window.location.pathname === '/dashboard') {
+    // Run on client side - check for OAuth params on any page
+    if (typeof window !== 'undefined') {
       handleOAuthCallback();
     }
   }, [router]);
