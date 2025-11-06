@@ -1,5 +1,3 @@
-"use client";
-
 import { Metadata } from "next";
 import Auth from "@/components/feature/auth/auth";
 import AuthGuard from "@/components/feature/auth/auth-guard";
@@ -35,10 +33,18 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function Login() {
+export default async function Login() {
+  // Get author name for dynamic title
+  let authorName = "Developer";
+  try {
+    authorName = await getAuthorNameServerSide();
+  } catch (error) {
+    console.error("Error fetching author name:", error);
+  }
+
   return (
     <>
-      <DynamicTitle title={`Login | Portfolio`} />
+      <DynamicTitle title={`Login | ${authorName} Portfolio`} />
       <AuthGuard requireAuth={false} redirectTo="/dashboard">
       <div className="relative">
         <div className="absolute top-0 left-0 w-full h-full">
