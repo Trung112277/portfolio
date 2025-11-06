@@ -4,6 +4,8 @@ import DeleteButton from "@/components/button/delete-button";
 import EditWorkExperienceForm from "@/components/feature/form/dashboard/edit-form/edit-work-experience-form";
 import { useWorkExperience } from "@/hooks/useWorkExperience";
 import { toast } from "sonner";
+import { useUserRole } from "@/hooks/useUserRole";
+import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
 
 export function WorkExperienceEdit() {
   const { 
@@ -12,10 +14,15 @@ export function WorkExperienceEdit() {
     error, 
     deleteWorkExperience 
   } = useWorkExperience();
-
-
+  const { isAdmin } = useUserRole();
 
   const handleDelete = async (id: string) => {
+    // Check admin permission before deleting
+    const permission = checkAdminPermission(isAdmin, PermissionActions.DELETE);
+    if (!permission.hasPermission) {
+      return; // Toast is already shown by checkAdminPermission
+    }
+
     try {
       await deleteWorkExperience(id);
       toast.success("Work experience deleted successfully");
@@ -25,6 +32,7 @@ export function WorkExperienceEdit() {
       } else {
         toast.error("Failed to delete work experience");
       }
+      throw error;
     }
   };
 
@@ -168,10 +176,12 @@ export function WorkExperienceEdit() {
                   : experience.tech_stack,
                 description: experience.description,
               }}
+              disabled={!isAdmin}
             />
             <DeleteButton
               title="Work Experience"
               onDelete={() => handleDelete(experience.id)}
+              disabled={!isAdmin}
             />
           </div>
         </div>

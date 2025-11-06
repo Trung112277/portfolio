@@ -22,6 +22,8 @@ import { SelectField } from "@/components/feature/form/field-form/select-field";
 import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 import { useTechStack } from "@/hooks/useTechStack";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import { useUserRole } from "@/hooks/useUserRole";
+import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
 
 export default function TechListAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
@@ -29,6 +31,7 @@ export default function TechListAddForm() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { createTech } = useTechStack();
   const { uploadImage, isUploading, error: uploadError, clearError } = useImageUpload();
+  const { isAdmin } = useUserRole();
 
   const {
     register,
@@ -64,6 +67,12 @@ export default function TechListAddForm() {
   };
 
   const handleFormSubmit: SubmitHandler<TechListFormInputs> = async (data) => {
+    // Check admin permission before submitting
+    const permission = checkAdminPermission(isAdmin, PermissionActions.CREATE);
+    if (!permission.hasPermission) {
+      return; // Toast is already shown by checkAdminPermission
+    }
+
     try {
       console.log('Starting form submission with data:', data);
       
@@ -150,7 +159,7 @@ export default function TechListAddForm() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogClose}>
-      <AddItemButton onClick={() => setIsOpen(true)} label="Add Tech" />
+      <AddItemButton onClick={() => setIsOpen(true)} label="Add Tech" disabled={!isAdmin} />
 
       <DialogContent
         aria-describedby={undefined}

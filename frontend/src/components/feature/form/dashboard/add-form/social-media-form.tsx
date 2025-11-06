@@ -19,11 +19,14 @@ import { SocialMediaFormInputs } from "@/types/social-media-form";
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
 import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
+import { useUserRole } from "@/hooks/useUserRole";
+import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
 
 export default function SocialMediaAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const { isAdmin } = useUserRole();
 
   const {
     register,
@@ -50,6 +53,12 @@ export default function SocialMediaAddForm() {
   };
 
   const handleFormSubmit: SubmitHandler<SocialMediaFormInputs> = async (data) => {
+    // Check admin permission before submitting
+    const permission = checkAdminPermission(isAdmin, PermissionActions.CREATE);
+    if (!permission.hasPermission) {
+      return; // Toast is already shown by checkAdminPermission
+    }
+
     console.log("=== FORM SUBMIT START ===");
     console.log("Adding social media, data:", data);
     console.log("Selected image:", selectedImage);
@@ -131,7 +140,7 @@ export default function SocialMediaAddForm() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogClose}>
-      <AddItemButton onClick={() => setIsOpen(true)} label="Add Social Media" />
+      <AddItemButton onClick={() => setIsOpen(true)} label="Add Social Media" disabled={!isAdmin} />
       
       <DialogContent
         aria-describedby={undefined}

@@ -20,10 +20,13 @@ import YearField from "@/components/feature/form/field-form/year-field";
 import { WORK_ARRANGEMENT_OPTIONS } from "@/constant/work-arrangement-options";
 import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 import { useWorkExperience } from "@/hooks/useWorkExperience";
+import { useUserRole } from "@/hooks/useUserRole";
+import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
 
 export default function WorkExperienceAddForm() {
   const { isOpen, setIsOpen } = useDialogState();
   const { createWorkExperience } = useWorkExperience();
+  const { isAdmin } = useUserRole();
   
   const {
     register,
@@ -36,6 +39,12 @@ export default function WorkExperienceAddForm() {
   });
 
   const handleFormSubmit: SubmitHandler<WorkExperienceFormInputs> = async (data) => {
+    // Check admin permission before submitting
+    const permission = checkAdminPermission(isAdmin, PermissionActions.CREATE);
+    if (!permission.hasPermission) {
+      return; // Toast is already shown by checkAdminPermission
+    }
+
     console.log("Adding work experience, data:", data);
 
     try {
@@ -95,6 +104,7 @@ export default function WorkExperienceAddForm() {
       <AddItemButton
         onClick={() => setIsOpen(true)}
         label="Add Work Experience"
+        disabled={!isAdmin}
       />
       
       <DialogContent

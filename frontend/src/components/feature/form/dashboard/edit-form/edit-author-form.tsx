@@ -6,9 +6,12 @@ import { validationRules } from "@/lib/form-validation";
 import { FormConfig, UseFormHandlerReturn } from "@/hooks/useFormHandler";
 import { useAuthorName } from "@/hooks/useAuthorName";
 import React, { useEffect, useRef } from "react";
+import { useUserRole } from "@/hooks/useUserRole";
+import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
 
 export default function EditAuthorForm() {
   const { authorName, loading, updateAuthorName } = useAuthorName();
+  const { isAdmin } = useUserRole();
   const formRef = useRef<UseFormHandlerReturn["form"] | null>(null);
 
   // Reset form when data is loaded
@@ -24,6 +27,14 @@ export default function EditAuthorForm() {
     },
     successMessage: "Author name updated successfully",
     onSubmit: async (data) => {
+      // Check admin permission before submitting
+      const permission = checkAdminPermission(isAdmin, PermissionActions.UPDATE);
+      if (!permission.hasPermission) {
+        // Permission error toast already shown by checkAdminPermission
+        // Return early to prevent form submission
+        return;
+      }
+
       try {
         const name = data.name as string;
         await updateAuthorName({ name });
@@ -47,8 +58,8 @@ export default function EditAuthorForm() {
   }
 
   return (
-    <BaseEditForm config={config}>
-      {(form, isSubmitting) => {
+    <BaseEditForm config={config} disabled={!isAdmin}>
+      {(form, isSubmitting, disabled) => {
         // Store form instance for reset using ref
         formRef.current = form;
 
@@ -64,7 +75,7 @@ export default function EditAuthorForm() {
               }`}
               name="name"
               type="text"
-              disabled={isSubmitting || loading}
+              disabled={isSubmitting || loading || disabled}
             />
             {form.formState.errors.name && (
               <p className="mt-1 text-sm text-red-600">

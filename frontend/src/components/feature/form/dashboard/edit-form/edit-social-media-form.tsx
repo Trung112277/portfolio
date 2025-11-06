@@ -19,21 +19,26 @@ import { SocialMediaFormInputs } from "@/types/social-media-form";
 import { getFieldValidation } from "@/lib/form-validation";
 import { TextInputField } from "@/components/feature/form/field-form/text-input-field";
 import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
+import { useUserRole } from "@/hooks/useUserRole";
+import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
 
 interface SocialMediaEditFormProps {
   socialMediaId: string;
   initialData: Partial<SocialMediaFormInputs>;
   existingImageUrl?: string;
+  disabled?: boolean;
 }
 
 export default function SocialMediaEditForm({
   socialMediaId,
   initialData,
   existingImageUrl,
+  disabled = false,
 }: SocialMediaEditFormProps) {
   const { isOpen, setIsOpen } = useDialogState();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const { isAdmin } = useUserRole();
 
   const {
     register,
@@ -77,6 +82,12 @@ export default function SocialMediaEditForm({
   };
 
   const handleFormSubmit: SubmitHandler<SocialMediaFormInputs> = async (data) => {
+    // Check admin permission before submitting
+    const permission = checkAdminPermission(isAdmin, PermissionActions.UPDATE);
+    if (!permission.hasPermission) {
+      return; // Toast is already shown by checkAdminPermission
+    }
+
     console.log("Updating social media:", socialMediaId, data);
     console.log("Selected image:", selectedImage);
 
@@ -155,7 +166,7 @@ export default function SocialMediaEditForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogClose}>
-      <EditButton onClick={() => setIsOpen(true)} />
+      <EditButton onClick={() => setIsOpen(true)} disabled={disabled} />
       
       <DialogContent
         aria-describedby={undefined}

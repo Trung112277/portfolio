@@ -21,20 +21,25 @@ import { TechListFormInputs } from "@/types/tech-list-form";
 import { SelectField } from "../../field-form/select-field";
 import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 import { ImageUploadService } from "@/services/image-upload.service";
+import { useUserRole } from "@/hooks/useUserRole";
+import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
 
 interface TechListEditFormProps {
   techListId: string;
   initialData: Partial<TechListFormInputs>;
   onUpdate?: (updatedData: TechListFormInputs) => Promise<void>;
+  disabled?: boolean;
 }
 
 export default function TechListEditForm({
   initialData,
   onUpdate,
+  disabled = false,
 }: TechListEditFormProps) {
   const { isOpen, setIsOpen } = useDialogState();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const { isAdmin } = useUserRole();
 
   const {
     control,
@@ -82,6 +87,12 @@ export default function TechListEditForm({
   };
 
   const handleFormSubmit: SubmitHandler<TechListFormInputs> = async (data) => {
+    // Check admin permission before submitting
+    const permission = checkAdminPermission(isAdmin, PermissionActions.UPDATE);
+    if (!permission.hasPermission) {
+      return; // Toast is already shown by checkAdminPermission
+    }
+
     try {
       let imageUrl = data.image_url || "/placeholder-tech.png";
       
@@ -152,7 +163,7 @@ export default function TechListEditForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogClose}>
-      <EditButton onClick={() => setIsOpen(true)} />
+      <EditButton onClick={() => setIsOpen(true)} disabled={disabled} />
       
       <DialogContent
         aria-describedby={undefined}

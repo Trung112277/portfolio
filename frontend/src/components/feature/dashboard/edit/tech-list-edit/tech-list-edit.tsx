@@ -6,13 +6,22 @@ import { SafeImage } from "@/components/ui/safe-image";
 import EditTechListForm from "@/components/feature/form/dashboard/edit-form/edit-tech-list-form";
 import SubTitle from "@/components/heading/sub-title";
 import { TechListFormInputs } from "@/types/tech-list-form";
+import { useUserRole } from "@/hooks/useUserRole";
+import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
 
 export default function TechListEdit({ category }: { category: string }) {
   const { techStack, loading, error, updateTech, deleteTech } = useTechStack(
     category.toLowerCase()
   );
+  const { isAdmin } = useUserRole();
 
   const handleDelete = async (id: number, name: string) => {
+    // Check admin permission before deleting
+    const permission = checkAdminPermission(isAdmin, PermissionActions.DELETE);
+    if (!permission.hasPermission) {
+      return; // Toast is already shown by checkAdminPermission
+    }
+
     try {
       await deleteTech(id);
       console.log(`Tech stack "${name}" deleted successfully`);
@@ -120,6 +129,12 @@ export default function TechListEdit({ category }: { category: string }) {
                         image_url: tech.image_url,
                       }}
                       onUpdate={async (updatedData: TechListFormInputs) => {
+                        // Check admin permission before updating
+                        const permission = checkAdminPermission(isAdmin, PermissionActions.UPDATE);
+                        if (!permission.hasPermission) {
+                          return; // Toast is already shown by checkAdminPermission
+                        }
+
                         try {
                           await updateTech(tech.id, {
                             name: updatedData.name,
@@ -132,10 +147,12 @@ export default function TechListEdit({ category }: { category: string }) {
                           console.error("Error updating tech stack:", error);
                         }
                       }}
+                      disabled={!isAdmin}
                     />
                     <DeleteButton
                       title={tech.name}
                       onDelete={() => handleDelete(tech.id, tech.name)}
+                      disabled={!isAdmin}
                     />
                   </div>
                 </td>

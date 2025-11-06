@@ -9,9 +9,10 @@ import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 
 interface BaseEditFormProps {
   config: FormConfig;
-  children: (form: UseFormReturn<Record<string, unknown>>, isSubmitting: boolean) => ReactNode;
+  children: (form: UseFormReturn<Record<string, unknown>>, isSubmitting: boolean, disabled: boolean) => ReactNode;
   submitButtonText?: string;
   loadingButtonText?: string;
+  disabled?: boolean;
 }
 
 export default function BaseEditForm({
@@ -19,6 +20,7 @@ export default function BaseEditForm({
   children,
   submitButtonText = "Change",
   loadingButtonText = "Changing...",
+  disabled = false,
 }: BaseEditFormProps) {
   const { form, isSubmitting, handleFormSubmit } = useFormHandler(config);
 
@@ -26,10 +28,10 @@ export default function BaseEditForm({
     <div className="relative">
       <LoadingOverlay isLoading={isSubmitting} />
       <form onSubmit={handleFormSubmit} className="space-y-4">
-        {children(form, isSubmitting)}
+        {children(form, isSubmitting, disabled)}
         <PrimaryButton
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || disabled}
         >
           {isSubmitting ? loadingButtonText : submitButtonText}
         </PrimaryButton>

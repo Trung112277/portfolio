@@ -21,20 +21,23 @@ import YearField from "@/components/feature/form/field-form/year-field";
 import { WORK_ARRANGEMENT_OPTIONS } from "@/constant/work-arrangement-options";
 import { LoadingOverlay } from "@/components/feature/loading/loading-overlay";
 import { useWorkExperience } from "@/hooks/useWorkExperience";
-
-
+import { useUserRole } from "@/hooks/useUserRole";
+import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
 
 interface WorkExperienceEditFormProps {
   workExperienceId: string;
   initialData: Partial<WorkExperienceFormInputs>;
+  disabled?: boolean;
 }
 
 export default function WorkExperienceEditForm({
   workExperienceId,
   initialData,
+  disabled = false,
 }: WorkExperienceEditFormProps) {
   const { isOpen, setIsOpen } = useDialogState();
   const { updateWorkExperience } = useWorkExperience();
+  const { isAdmin } = useUserRole();
   const {
     register,
     handleSubmit,
@@ -60,6 +63,12 @@ export default function WorkExperienceEditForm({
   }, [initialData, reset]);
 
   const handleFormSubmit: SubmitHandler<WorkExperienceFormInputs> = async (data) => {
+    // Check admin permission before submitting
+    const permission = checkAdminPermission(isAdmin, PermissionActions.UPDATE);
+    if (!permission.hasPermission) {
+      return; // Toast is already shown by checkAdminPermission
+    }
+
     try {
       // Validate that start year is not after end year (allows equal years)
       if (parseInt(data.startYear) > parseInt(data.endYear)) {
@@ -107,7 +116,7 @@ export default function WorkExperienceEditForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogClose}>
-      <EditButton onClick={() => setIsOpen(true)} />
+      <EditButton onClick={() => setIsOpen(true)} disabled={disabled} />
       
       <DialogContent
         aria-describedby={undefined}

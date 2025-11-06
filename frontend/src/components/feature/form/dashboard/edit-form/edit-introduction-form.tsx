@@ -7,10 +7,13 @@ import { FormConfig } from "@/hooks/useFormHandler";
 import { useIntroductionStore } from "@/stores/introduction-store";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
+import { useUserRole } from "@/hooks/useUserRole";
+import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
 
 export default function EditIntroductionForm() {
   const { introduction, loadIntroduction, updateIntroduction, isLoading, isInitialized, isCurrentlyLoading } =
     useIntroductionStore();
+  const { isAdmin } = useUserRole();
   const formRef = useRef<UseFormReturn<Record<string, unknown>> | null>(null);
   const [isComponentLoading, setIsComponentLoading] = useState(true);
 
@@ -44,6 +47,14 @@ export default function EditIntroductionForm() {
     defaultValues: {},
     successMessage: "Introduction changed successfully",
     onSubmit: async (data) => {
+      // Check admin permission before submitting
+      const permission = checkAdminPermission(isAdmin, PermissionActions.UPDATE);
+      if (!permission.hasPermission) {
+        // Permission error toast already shown by checkAdminPermission
+        // Return early to prevent form submission
+        return;
+      }
+
       try {
         await updateIntroduction(data.introduction as string);
       } catch (error) {
@@ -66,8 +77,8 @@ export default function EditIntroductionForm() {
   }
 
   return (
-    <BaseEditForm config={config}>
-      {(form, isSubmitting) => {
+    <BaseEditForm config={config} disabled={!isAdmin}>
+      {(form, isSubmitting, disabled) => {
         // Store form reference for reset functionality
         formRef.current = form;
 
@@ -82,7 +93,7 @@ export default function EditIntroductionForm() {
               className={`w-full h-[300px] text-foreground placeholder:text-foreground/60 ${
                 form.formState.errors.introduction ? "border-red-500" : ""
               }`}
-              disabled={isSubmitting}
+              disabled={isSubmitting || disabled}
             />
             {form.formState.errors.introduction && (
               <p className="mt-1 text-sm text-red-600">

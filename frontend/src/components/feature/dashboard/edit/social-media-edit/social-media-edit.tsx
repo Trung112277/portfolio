@@ -4,15 +4,28 @@ import DeleteButton from "@/components/button/delete-button";
 import { SafeImage } from "@/components/ui/safe-image";
 import EditSocialMediaForm from "@/components/feature/form/dashboard/edit-form/edit-social-media-form";
 import { useSocialMedia } from "@/hooks/useSocialMedia";
+import { useUserRole } from "@/hooks/useUserRole";
+import { checkAdminPermission, PermissionActions } from "@/lib/permission-utils";
+import { toast } from "sonner";
 
 export default function SocialMediaEdit() {
   const { socialMedia, loading, error, deleteSocialMedia } = useSocialMedia();
+  const { isAdmin } = useUserRole();
 
   const handleDelete = async (id: number) => {
+    // Check admin permission before deleting
+    const permission = checkAdminPermission(isAdmin, PermissionActions.DELETE);
+    if (!permission.hasPermission) {
+      return; // Toast is already shown by checkAdminPermission
+    }
+
     try {
       await deleteSocialMedia(id);
+      toast.success("Social media deleted successfully");
     } catch (error) {
       console.error("Error deleting social media:", error);
+      toast.error("Error deleting social media");
+      throw error;
     }
   };
 
@@ -98,10 +111,12 @@ export default function SocialMediaEdit() {
                       color: social.color,
                     }}
                     existingImageUrl={social.image_url}
+                    disabled={!isAdmin}
                   />
                   <DeleteButton
                     title={social.description}
                     onDelete={() => handleDelete(social.id)}
+                    disabled={!isAdmin}
                   />
                 </div>
               </td>
