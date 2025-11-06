@@ -1,5 +1,6 @@
 // frontend/src/services/tech-stack.service.ts
 import { Database } from '@/types/database'
+import { supabase } from '@/lib/supabase-client'
 
 type TechStack = Database['public']['Tables']['tech_stack']['Row']
 type TechStackInsert = Database['public']['Tables']['tech_stack']['Insert']
@@ -34,9 +35,17 @@ export class TechStackService {
       throw new Error('Name and category are required')
     }
 
+    // Get the current session token
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError || !session?.access_token) {
+      throw new Error('No valid session found. Please log in again.');
+    }
+
     const response = await fetch('/api/tech-stack', {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${session.access_token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(tech),
@@ -45,6 +54,9 @@ export class TechStackService {
     const data = await response.json()
     
     if (!response.ok) {
+      if (response.status === 403) {
+        throw new Error('You do not have permission to create a new tech stack item. Only admin can perform this action.');
+      }
       throw new Error(data.error || 'Failed to create tech stack')
     }
     
@@ -52,9 +64,17 @@ export class TechStackService {
   }
 
   static async update(id: number, updates: TechStackUpdate): Promise<TechStack> {
+    // Get the current session token
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError || !session?.access_token) {
+      throw new Error('No valid session found. Please log in again.');
+    }
+
     const response = await fetch(`/api/tech-stack/${id}`, {
       method: 'PATCH',
       headers: {
+        'Authorization': `Bearer ${session.access_token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(updates),
@@ -63,6 +83,9 @@ export class TechStackService {
     const data = await response.json()
     
     if (!response.ok) {
+      if (response.status === 403) {
+        throw new Error('You do not have permission to update tech stack item. Only admin can perform this action.');
+      }
       throw new Error(data.error || 'Failed to update tech stack')
     }
     
@@ -70,12 +93,25 @@ export class TechStackService {
   }
 
   static async delete(id: number): Promise<void> {
+    // Get the current session token
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError || !session?.access_token) {
+      throw new Error('No valid session found. Please log in again.');
+    }
+
     const response = await fetch(`/api/tech-stack/${id}`, {
       method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`,
+      },
     })
     
     if (!response.ok) {
       const data = await response.json()
+      if (response.status === 403) {
+        throw new Error('You do not have permission to delete tech stack item. Only admin can perform this action.');
+      }
       throw new Error(data.error || 'Failed to delete tech stack')
     }
   }

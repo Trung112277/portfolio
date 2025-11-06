@@ -119,7 +119,8 @@ function calculateProjectsGrowth(projects: Project[]): string {
   if (growth > 0) {
     return `+${growth} from last month`;
   } else if (growth < 0) {
-    return `${growth} from last month`;
+    // Show last month's project count with + sign
+    return `+${lastMonthProjects} last month`;
   } else if (currentMonthProjects > 0) {
     return "Same as last month";
   } else {

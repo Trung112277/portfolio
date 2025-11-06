@@ -13,13 +13,10 @@ export function DashboardOverview() {
         description="Welcome to portfolio dashboard. Manage content and track progress."
       />
       
-      {/* Quick Stats */}
       <QuickStatsPanel />
 
-      {/* Welcome Section */}
       <WelcomePanel />
 
-      {/* Recent Activity */}
       <RecentActivityPanel />
     </div>
   );
