@@ -3,13 +3,14 @@ import { supabase } from '@/lib/supabase-server'
 
 export async function GET(
   request: Request,
-  { params }: { params: { category: string } }
+  { params }: { params: Promise<{ category: string }> }
 ) {
   try {
+    const { category } = await params;
     const { data: techStack, error } = await supabase
       .from('tech_stack')
       .select('*')
-      .eq('category', params.category)
+      .eq('category', category)
       .order('created_at', { ascending: false })
     
     if (error) {
