@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { supabase } from '@/lib/supabase-server'
+import { Database } from '@/types/database'
+
+type SocialMediaUpdate = Database['public']['Tables']['social_media']['Update']
 
 export async function PUT(
   request: Request,
@@ -61,7 +64,7 @@ export async function PUT(
     const body = await request.json()
     const { image_url, description, link, color } = body
 
-    const updateData: any = {}
+    const updateData: Partial<SocialMediaUpdate> = {}
     if (image_url !== undefined) updateData.image_url = image_url
     if (description !== undefined) updateData.description = description
     if (link !== undefined) updateData.link = link
