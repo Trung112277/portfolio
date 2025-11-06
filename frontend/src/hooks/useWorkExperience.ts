@@ -35,8 +35,8 @@ export function useWorkExperience() {
   }, [])
 
   useEffect(() => {
-    // If we already have data, show it immediately but still show loading briefly
-    if (workExperiences.length > 0 && !isWorkExperiencesLoading) {
+    // If we already have data and have loaded before, just show data
+    if (workExperiences.length > 0 && hasLoadedRef.current && !isWorkExperiencesLoading) {
       // Show loading for a brief moment to indicate component is mounting
       const timer = setTimeout(() => {
         if (isMountedRef.current) {
@@ -44,6 +44,12 @@ export function useWorkExperience() {
         }
       }, 100) // Brief loading state
       return () => clearTimeout(timer)
+    }
+
+    // If already loaded but no data, still set loading to false
+    if (hasLoadedRef.current && !isWorkExperiencesLoading) {
+      setLoading(false)
+      return
     }
 
     // Prevent duplicate API calls only if already loading
@@ -91,21 +97,32 @@ export function useWorkExperience() {
     const channel = supabase
       .channel('work-experiences-changes')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'work_experience' }, (payload) => {
+        console.log('Work experience INSERT:', payload.new)
         // Get fresh store functions inside the callback
         const { addWorkExperience: addWorkExperienceFresh } = useWorkExperienceDbStore.getState()
         addWorkExperienceFresh(payload.new as WorkExperience)
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'work_experience' }, (payload) => {
+        console.log('Work experience UPDATE:', payload.new)
         // Get fresh store functions inside the callback
         const { updateWorkExperience: updateWorkExperienceFresh } = useWorkExperienceDbStore.getState()
         updateWorkExperienceFresh((payload.new as WorkExperience).id, payload.new as Partial<WorkExperience>)
       })
       .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'work_experience' }, (payload) => {
+        console.log('Work experience DELETE:', payload.old)
         // Get fresh store functions inside the callback
         const { removeWorkExperience: removeWorkExperienceFresh } = useWorkExperienceDbStore.getState()
         removeWorkExperienceFresh((payload.old as WorkExperience).id)
       })
-      .subscribe()
+      .subscribe((status) => {
+        console.log('Work experiences realtime subscription status:', status)
+        if (status === 'SUBSCRIBED') {
+          console.log('Successfully subscribed to work_experience changes')
+        } else if (status === 'CHANNEL_ERROR') {
+          console.error('Error subscribing to work_experience changes')
+          workExperiencesRealtimeSetup = false
+        }
+      })
 
     return () => {
       supabase.removeChannel(channel)
@@ -115,13 +132,19 @@ export function useWorkExperience() {
 
   const createWorkExperience = async (input: Database['public']['Tables']['work_experience']['Insert']) => {
     const created = await WorkExperienceService.create(input)
-    // Note: Work experience will be added via realtime subscription, no need for optimistic update
+    // Optimistic update: Add to store immediately for instant UI update
+    // Realtime subscription will also handle it, but store's duplicate check will prevent duplicates
+    const { addWorkExperience: addWorkExperienceFresh } = useWorkExperienceDbStore.getState()
+    addWorkExperienceFresh(created)
     return created
   }
 
   const updateWorkExperience = async (id: string, updates: Database['public']['Tables']['work_experience']['Update']) => {
     const updated = await WorkExperienceService.update(id, updates)
-    // Note: Work experience will be updated via realtime subscription, no need for optimistic update
+    // Optimistic update: Update store immediately for instant UI update
+    // Realtime subscription will also handle it
+    const { updateWorkExperience: updateWorkExperienceFresh } = useWorkExperienceDbStore.getState()
+    updateWorkExperienceFresh(id, updated as Partial<WorkExperience>)
     return updated
   }
 
