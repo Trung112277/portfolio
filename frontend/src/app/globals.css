@@ -134,7 +134,24 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50 cursor-none scroll-smooth;
+    @apply border-border outline-ring/50 scroll-smooth;
+    cursor: none !important;
+  }
+
+  /* Ensure cursor is hidden in all states */
+  *:hover,
+  *:active,
+  *:focus,
+  *:disabled,
+  *:enabled,
+  button:disabled,
+  input:disabled,
+  textarea:disabled,
+  select:disabled,
+  a:disabled,
+  [disabled],
+  [aria-disabled="true"] {
+    cursor: none !important;
   }
 
   /* Hide default scrollbar */

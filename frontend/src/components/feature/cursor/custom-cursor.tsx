@@ -24,9 +24,7 @@ export function CustomCursor() {
   const cursorEnabledRef = useRef(cursorEnabled);
   const cursorSizeRef = useRef(cursorSize);
   
-  // Throttling refs
-  const lastUpdateRef = useRef(0);
-  const throttleDelay = 16; // ~60fps
+  // Mouse position ref for RAF optimization
   const mousePosRef = useRef({ x: 0, y: 0 });
   const rafRef = useRef<number | undefined>(undefined);
 
@@ -76,6 +74,12 @@ export function CustomCursor() {
     }
   }, []); // No dependencies needed
 
+  // Handle mouse leave to keep cursor visible
+  const handleMouseLeave = useCallback(() => {
+    // Keep cursor at last position when mouse leaves window
+    // Don't hide it
+  }, []);
+
   // Handle cursor enabled/disabled state
   useEffect(() => {
     if (!isClient) return;
@@ -112,11 +116,18 @@ export function CustomCursor() {
     
     try {
       document.addEventListener("mousemove", handleMouseMove, { passive: true });
-      return () => document.removeEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseleave", handleMouseLeave, { passive: true });
+      // Also listen on window for scroll events
+      window.addEventListener("mousemove", handleMouseMove, { passive: true });
+      return () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseleave", handleMouseLeave);
+        window.removeEventListener("mousemove", handleMouseMove);
+      };
     } catch (err) {
       console.error('Event listener error:', err);
     }
-  }, [handleMouseMove, isClient]); // Remove cursorEnabled from dependencies
+  }, [handleMouseMove, handleMouseLeave, isClient]); // Remove cursorEnabled from dependencies
 
   // Respect prefers-reduced-motion
   useEffect(() => {
@@ -164,18 +175,27 @@ export function CustomCursor() {
     };
   }, [isClient]); // Remove cursorEnabled dependency
 
-  // Scroll detection
+  // Scroll detection - keep cursor visible during scroll
   useEffect(() => {
     if (!isClient) return;
     
     const handleScroll = () => {
       setScrolling(true);
+      // Keep cursor visible during scroll - don't hide it
+      // Update cursor position based on current mouse position
+      if (mousePosRef.current) {
+        setMousePos(mousePosRef.current);
+      }
       const timeout = setTimeout(() => setScrolling(false), 150);
       return () => clearTimeout(timeout);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    document.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('scroll', handleScroll);
+    };
   }, [setScrolling, isClient]);
 
   // Cleanup on unmount
