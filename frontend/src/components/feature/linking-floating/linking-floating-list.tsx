@@ -1,5 +1,5 @@
 "use client";
-import { memo } from "react";
+import { memo, useState, useEffect } from "react";
 import { LinkingFloatingButton } from "@/components/button/linking-floating-button";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { PROJECT_POSITIONS } from "@/types/project";
@@ -23,13 +23,38 @@ export type LinkingFloatingListProps = {
 };
 
 function useBreakpoint(): Breakpoint {
-  if (typeof window === 'undefined') return 'base';
-  const width = window.innerWidth;
-  if (width >= 1280) return 'xl';
-  if (width >= 1024) return 'lg';
-  if (width >= 768) return 'md';
-  if (width >= 640) return 'sm';
-  return 'base';
+  const [breakpoint, setBreakpoint] = useState<Breakpoint>('base');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const updateBreakpoint = () => {
+      const width = window.innerWidth;
+      if (width >= 1280) {
+        setBreakpoint('xl');
+      } else if (width >= 1024) {
+        setBreakpoint('lg');
+      } else if (width >= 768) {
+        setBreakpoint('md');
+      } else if (width >= 640) {
+        setBreakpoint('sm');
+      } else {
+        setBreakpoint('base');
+      }
+    };
+
+    // Set initial breakpoint
+    updateBreakpoint();
+
+    // Listen for resize events
+    window.addEventListener('resize', updateBreakpoint);
+    
+    return () => {
+      window.removeEventListener('resize', updateBreakpoint);
+    };
+  }, []);
+
+  return breakpoint;
 }
 
 export const LinkingFloatingList = memo(({ items, positions = PROJECT_POSITIONS }: LinkingFloatingListProps) => {

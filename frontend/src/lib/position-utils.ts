@@ -55,6 +55,7 @@ export function validatePosition(position: Position): boolean {
 
 /**
  * Resolve a responsive position to a concrete position for a given breakpoint
+ * Breakpoints cascade: base -> sm -> md -> lg -> xl
  */
 export function resolveResponsivePosition(
   position: ResponsivePosition,
@@ -65,7 +66,20 @@ export function resolveResponsivePosition(
     return position as Position;
   }
   const responsive = position as Exclude<ResponsivePosition, Position>;
-  const base: Position = responsive.base ?? {};
-  const override: Position | undefined = responsive[breakpoint];
-  return { ...base, ...(override ?? {}) };
+  
+  // Build breakpoint order
+  const breakpointOrder: Breakpoint[] = ['base', 'sm', 'md', 'lg', 'xl'];
+  const currentIndex = breakpointOrder.indexOf(breakpoint);
+  
+  // Merge all breakpoints up to and including the current one
+  let result: Position = {};
+  for (let i = 0; i <= currentIndex; i++) {
+    const bp = breakpointOrder[i];
+    const bpPosition = responsive[bp];
+    if (bpPosition) {
+      result = { ...result, ...bpPosition };
+    }
+  }
+  
+  return result;
 }
